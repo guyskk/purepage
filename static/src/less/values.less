@@ -1,0 +1,503 @@
+// font
+// --------------------------------------------------
+@font-family-default: "Helvetica Neue",
+Helvetica,
+sans-serif;
+@font-size-default: 17px;
+@font-weight-default: 500;
+@font-weight-light: 400;
+@line-height-default: 21px;
+// colors
+//--------------------------------------------------
+@color-default: #FEFEFE;
+@color-primary: #00AF64;
+@color-positive: #7ccd38; 
+@color-negative: #0E51A7;
+@color-warning: #eea236;
+@color-danger:#ff4900;
+
+// size
+// ----------------------------------------
+@padding-lg: 20px;
+@padding-md: 15px;
+@padding-sm: 10px;
+@padding-xs: 4px;
+@head-one-row-min-width: 535px;
+html,
+body {
+    margin: 0;
+    height: 100%;
+}
+
+// common
+// --------------------------------------
+
+.ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.placeholder(@color) {
+    ::-webkit-input-placeholder {
+        /* WebKit browsers */
+        color: @color;
+    }
+    :-moz-placeholder {
+        /* Mozilla Firefox 4 to 18 */
+        color: @color;
+    }
+    ::-moz-placeholder {
+        /* Mozilla Firefox 19+ */
+        color: @color;
+    }
+    :-ms-input-placeholder {
+        /* Internet Explorer 10+ */
+        color: @color;
+    }
+}
+
+// 基础布局
+// -------------------------------------------
+.wrap {
+    min-height: 100%;
+    min-width: 312px;
+    position: relative;
+}
+
+.head {
+    position: fixed;
+    right: 0;
+    left: 0;
+    top: 0;
+    z-index: 1030;
+    height: 87px; //Height of head
+    padding-left: 15px;
+    padding-right: 15px;
+    @media (max-width: 768px) {
+        padding-left: @padding-xs;
+        padding-right: @padding-xs;
+        height: 69px; //Height of head
+    }
+}
+
+.foot {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px; //Height of foot
+}
+
+.center {
+    padding-top: 87px; //Height of head
+    @media (max-width: 768px) {
+        padding-top: 69px; //Height of head
+    }
+    padding-bottom: 60px; //Height of foot
+    .clearfix();
+}
+
+.head-title {
+    font-size: 2*@font-size-default;
+    padding-left: @padding-xs;
+    margin-top: 0;
+    margin-bottom: 0;
+    line-height: 1.42857143;
+    .subtitle {
+        margin-left: 8px;
+        margin-right: 8px;
+        font-size: 1.5*@font-size-default;
+    }
+    @media (max-width:768px) {
+        font-size: 1.2*@font-size-default;
+        .subtitle {
+            font-size: @font-size-default;
+        }
+    }
+}
+
+.head-bar {
+    float: right;
+    min-width: 312px;
+}
+
+.side {
+    position: fixed;
+    top: 69px; //Height of head
+    bottom: 60px;
+    right: 0;
+    min-height: 300px;
+    @media (min-width: 768px) {
+        width: 300px;
+        top: 87px; //Height of head
+    }
+}
+
+.content {
+    @media (min-width: 768px) {
+        margin-right: 300px
+    }
+}
+
+.head-one-row {
+    @media (min-width: @head-one-row-min-width) {
+        height: 32px;
+    }
+    @media (min-width: 768px) {
+        height: 48px;
+    }
+}
+
+.head-one-row .head-title {
+    @media (min-width: @head-one-row-min-width) {
+        float: left;
+    }
+}
+
+.head-one-row .head-bar {
+    overflow: hidden;
+    @media (min-width: @head-one-row-min-width) {
+        margin-top: 0px;
+    }
+    @media (min-width: 768px) {
+        margin-top: 8px;
+    }
+}
+
+.center-one-row {
+    @media (min-width: @head-one-row-min-width) {
+        padding-top: 48px; //Height of head
+    }
+}
+
+.center-one-row .side {
+    @media (min-width: @head-one-row-min-width) {
+        top: 48px; //Height of head
+    }
+}
+
+.center-one-row .content {
+    @media (min-width: @head-one-row-min-width) {
+        margin-top: 69px; //Height of head
+    }
+    @media (min-width: 768px) {
+        margin-top: 87px; //Height of head
+    }
+}
+
+// style
+//----------------------------------
+.head {
+    border-width: 0;
+    background: @color-primary;
+    color: @color-default;
+    font-size: @font-size-default;
+}
+
+.head-nav,
+.head-search {
+    float: left;
+}
+
+.head-nav {
+    list-style: none;
+    padding-left: 0;
+    .clearfix();
+    li {
+        position: relative;
+        display: block;
+        float: left;
+        a {
+            line-height: 20px;
+            display: block;
+            padding: 6px 15px;
+            margin: 4px 0;
+            @media (max-width: 768px) {
+                padding-left: @padding-xs;
+                padding-right: @padding-xs;
+                padding-top: 2px;
+                padding-bottom: 2px;
+                margin: 4px 0;
+            }
+            color: #fff;
+            font-weight: @font-weight-default;
+            &:hover {
+                background-color: darken(@color-primary, 10%);
+                text-decoration: none;
+            }
+        }
+    }
+}
+
+.placeholder(darken(#fefefe, 16%));
+.search-box {
+    display: block;
+    position: relative;
+    line-height: 20px;
+    width: 160px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: .35em;
+    padding-right: .25em;
+    margin-top: 7px;
+    margin-bottom: 7px;
+    margin-left: 15px;
+    @media (max-width: 768px) {
+        margin-left: @padding-xs;
+    }
+    // margin-right: 15px;
+    border-radius: 2px;
+    color: #fefefe;
+    background: transparent;
+    background: darken(@color-primary, 5%);
+    border: none;
+    outline: none;
+    // border-bottom: 1px #fefefe solid;
+}
+
+.search-btn {
+    display: block;
+    float: right;
+    position: relative;
+    line-height: 20px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 12px;
+    padding-right: 12px;
+    margin-top: 7px;
+    margin-bottom: 7px;
+    margin-left: 4px;
+    margin-right: 15px;
+    border-radius: 2px;
+    color: #fefefe;
+    background: transparent;
+    background: darken(@color-primary, 5%);
+    border: none;
+    outline: none;
+    &:hover {
+        background: darken(@color-primary, 10%);
+    }
+    &:active {
+        background: darken(@color-primary, 15%);
+    }
+}
+
+.article,
+.comment {
+    padding-top: 20px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.article-title {
+    color: lighten(@color-negative, 10%);
+}
+
+.article-subtitle {
+    // color: lighten(@color-negative, 10%);
+    // 
+}
+
+.article-info {
+    text-align: right;
+    color: lighten(@color-negative, 10%);
+    padding-right: 15px;
+    border-bottom: 1px solid #d3d3d3;
+    font-family: Georgia, serif;
+    span {
+        margin-left: 0.6em;
+        margin-right: 0.5em;
+    }
+}
+
+.article-content {}
+
+.article-foot {}
+
+.side {
+    box-sizing: border-box;
+    // background: @color-positive;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.side::-webkit-scrollbar {
+    background: transparent;
+}
+
+.side .side-container {
+    padding: 10px 4px;
+}
+
+.tag h4,
+.archive h4 {
+    // border-bottom: 1px dashed #d3d3d3;
+}
+
+.tag p,
+.archive p {
+    .clearfix();
+}
+
+.tag .title,
+.archive .title {
+    padding-left: 8px;
+}
+
+.tag a,
+.archive a {
+    position: relative;
+    float: left;
+    padding: 4px 8px;
+    span {
+        position: relative;
+        top: -6px;
+        left: 2px;
+        font-size: 14px;
+    }
+}
+
+.content {
+    background: @color-default;
+    @media (min-width: 768px) {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+    @media (min-width: 992px) {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    @media (min-width: 1200px) {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+}
+
+.comment {
+    h3 {
+        border-bottom: 1px solid #d3d3d3;
+        color: lighten(@color-negative, 10%);
+    }
+}
+
+.comment-count {
+    font-family: Georgia, serif;
+}
+
+.comment-list {
+    list-style: none;
+    padding-left: 15px;
+    li {
+        position: relative;
+        display: block;
+        .clearfix();
+    }
+}
+
+.comment-item {
+    border-bottom: 1px dashed #d3d3d3;
+}
+
+.comment-title {
+    font-family: Georgia, serif;
+    span {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+}
+
+.comment-content {
+    padding-left: 15px;
+}
+
+.comment-info {
+    float: right;
+    font-family: Georgia, serif;
+}
+
+.comment-add {
+    h3 {
+        border-bottom: 1px solid #d3d3d3;
+        color: lighten(@color-negative, 10%);
+    }
+    textarea {
+        display: block;
+        width: 90%;
+        @media (max-width:768px) {
+        	width: 100%;
+        }
+    }
+    .input-row {
+        margin: 10px 0;
+        padding: 5px 0;
+        textarea {
+            outline-style: none;
+            border: 1px solid #d3d3d3;
+            padding: 0.4em 0.3em;
+            &:focus {
+                border-color: @color-positive;
+            }
+        }
+        input,
+        button {
+            display: block;
+            outline-style: none;
+            border: 1px solid #d3d3d3;
+            margin-top: 0;
+            line-height: 1.2;
+            padding: 0.4em 0.3em;
+        }
+        input {
+            width: 60%;
+            max-width: 400px;
+            @media (max-width: 350px) {
+                max-width: 160px;
+            }
+            &:focus {
+                border-color: @color-positive;
+            }
+        }
+        button {
+            padding-right: 30px;
+            padding-left: 30px;
+        }
+        label {
+            display: inline-block;
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+        .input-wrap {
+            position: relative;
+            span {
+                margin-left: 8px;
+                line-height: 180%;
+            }
+        }
+    }
+    .comment-submit {
+        color: #fefefe;
+        background: darken(@color-positive, 5%);
+        &:hover {
+            background: darken(@color-positive, 10%);
+        }
+        &:active {
+            background: darken(@color-positive, 18%);
+        }
+    }
+}
+
+.foot {
+    p {
+        line-height: 2.7;
+        letter-spacing: 1px;
+    }
+    a {
+        text-decoration: none;
+    }
+    span {
+        font-family: Georgia, serif;
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+}
