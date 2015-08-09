@@ -1,0 +1,48 @@
+//文章
+//------------------------------------------
+
+.article{
+    position: relative;
+}
+
+.article-title {
+    color: @color-negative;
+    @media (max-width:768px) {
+        font-size: 22px;
+    }
+}
+
+.article-subtitle {
+    @media (max-width:768px) {
+        font-size: 17px;
+    }
+}
+
+.article-info {
+    .bottom-line();
+    text-align: right;
+    color: @color-negative;
+    font-family: @font-family-serif;
+    span {
+        margin-left: 0.6em;
+        margin-right: 0.5em;
+    }
+    a{
+        color: @color-negative;
+    }
+}
+
+.article-content {
+    text-align: justify;
+}
+
+.article-foot {
+	color: @color-warning;
+	margin-top: 24px;
+	margin-bottom: 12px;
+
+}
+
+
+
+

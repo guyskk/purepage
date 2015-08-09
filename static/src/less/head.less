@@ -1,0 +1,125 @@
+//头部
+//--------------------------------------------------
+.head {
+    //总高度64px
+    padding-left: @padding-md;
+    padding-right: @padding-md;
+    position: relative;
+    @media (max-width:768px) {
+        padding-left: @padding-xs;
+        padding-right: @padding-md;
+    }
+    .clearfix();
+    .head-title,
+    .head-bar{
+        margin-top: 20px;
+        margin-bottom: 8px;
+        // @media (max-width:768px) {
+        //     margin-top: 20px * 0.6;
+        //     margin-bottom: 8px * 0.6;
+        // }
+    }
+    .head-title {
+        float: left;
+        span {
+            margin-left: 8px;
+            margin-right: 8px;
+        }
+    }
+
+    .head-bar {
+        float: right;
+    }
+}
+
+.head-nav,
+.head-search{
+    float: left;
+}
+.head-nav-toggle {
+    float: left;
+    cursor: pointer;
+    display: block;
+    padding: 4px @padding-md;
+    margin: 2px 0;
+    color: #fff;
+    @media (min-width:768px){
+        display: none;
+    }
+}
+.head-nav {
+    list-style: none;
+    @media (max-width:768px) {
+        display: none;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 66px;
+        z-index: 200;
+        padding:5px 15px;
+        background: @color-primary;
+        li {
+            position: relative;
+        }
+    }
+    @media (min-width:768px) {
+        .clearfix();
+        padding-left: 0;
+        margin-bottom: 0;
+        li {
+            position: relative;
+            float: left;
+        }
+    }
+    li a{
+        display: block;
+        padding: 4px @padding-md;
+        margin: 2px 0;
+        color: #fff;
+        &:hover {
+            background-color: darken(@color-primary, 10%);
+            text-decoration: none;
+        }
+    }
+}
+.head-search {
+    .placeholder();
+    .clearfix();
+    .search-box,.search-btn{
+        float: left;
+        height: 32.5px;
+        margin: 2px 2px;
+        padding-left: .33em;
+        padding-right: .33em;
+        border-radius: 2px;
+        color: #fefefe;
+        border: none;
+        outline: none;
+        background: transparent;
+        background: darken(@color-primary, 5%);
+    }
+    .search-box {
+        width: 180px;
+        max-width: 180px;
+        min-width:60px;
+        @media (max-width:768px) {
+            width:60px;
+        }
+    }
+
+    .search-btn {
+        &:hover {
+            background: darken(@color-primary, 10%);
+        }
+        &:active {
+            background: darken(@color-primary, 15%);
+        }
+    }
+}
+
+.head {
+    border-width: 0;
+    background: @color-primary;
+    color: @color-default;
+    font-size: @font-size-default;
+}

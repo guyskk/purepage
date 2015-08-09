@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>kkblog</title>
+    <title>KkBloG 全栈工程师笔记</title>
     <link rel="stylesheet" type="text/css" href="lib/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="css/kkblog.css">
     <script type="text/javascript" src="lib/jquery-2.1.4.js"></script>
@@ -14,202 +14,137 @@
 
 <body>
     <div class="wrap container-fluid">
-        <div class="head">
-            <h3 id="head-title" class="head-title">kkblog<span class="subtitle hidden-sm">全栈工程师笔记</span></h3>
+        <div class="head row">
+            <h3 class="head-title"><span>KkBloG</span><span class="hidden-sm hidden-xs">全栈工程师笔记</span></h3>
             <div id="head-bar" class="head-bar">
                 <ul class="head-nav">
-                    <li><a href="#">首页</a></li>
+                    <li><a href="/">首页</a></li>
                     <li><a href="#">归档</a></li>
                     <li><a href="#">收藏夹</a></li>
                     <li><a href="#">工具箱</a></li>
                     <li><a href="#">关于我</a></li>
-                    <li><a class="visible-xs-block" href="#">搜索</a></li>
                 </ul>
-                <div class="head-search hidden-xs">
-                    <button id="search-btn" class="search-btn">搜索</button>
+                <span class="head-nav-toggle">导航</span>
+                <div class="head-search">
                     <input class="search-box" type="text" placeholder="文章/收藏/标签">
+                    <button id="search-btn" class="search-btn">搜索</button>
                 </div>
             </div>
         </div>
         <div class="center row">
             <div class="side hidden-xs">
-                <div class="side-container">
+                <div class="side-list">
                     <div class="archive">
-                        <h4 class="title">归档</h4>
-                        <p>
-                            <a href="#">CS<span>14</span></a>
-                            <a href="#">Gi<span>3</span></a>
-                            <a href="#">Grun<span>1</span></a>
-                            <a href="#">JavaScrip<span>2</span></a>
-                            <a href="#">Linu<span>1</span></a>
-                            <a href="#">Node.j<span>12</span></a>
-                            <a href="#">Pytho<span>3</span></a>
-                            <a href="#">Sas<span>1</span></a>
-                            <a href="#">sas<span>1</span></a>
-                            <a href="#">webp<span>1</span></a>
-                            <a href="#">web优<span>3</span></a>
-                            <a href="#">兼容<span>3</span></a>
-                            <a href="#">命令<span>1</span></a>
-                            <a href="#">填坑日<span>2</span></a>
-                            <a href="#">工<span>1</span></a>
-                            <a href="#">移动web开<span>1</span></a>
-                            <a href="#">笔<span>24</span></a>
-                            <a href="#">译<span>5</span></a>
-                            <a href="#">随<span>1</span></a>
-                        </p>
+                        <h4>归档</h4>
+                        <ul>
+                            <li><a href="#">前端JavaScript前端JavaScript<span>（5篇）</span></a></li>
+                            <li><a href="#">Python 实战<span>（12篇）</span></a></li>
+                            <li><a href="#">Nginx<span>（16篇）</span></a></li>
+                            <li><a href="#">前端JavaScript和node.js<span>（1篇）</span></a></li>
+                            <li><a href="#">嵌入式和四轴飞行器<span>（16篇）</span></a></li>
+                            <li><a href="#">算法与数学<span>（6篇）</span></a></li>
+                        </ul>
                     </div>
                     <div class="tag">
-                        <h4 class="title">标签</h4>
-                        <p>
-                            <a href="#">CSS<span>14</span></a>
-                            <a href="#">Git<span>14</span></a>
-                            <a href="#">Grunt<span>14</span></a>
-                            <a href="#">JavaScript<span>14</span></a>
-                            <a href="#">Linux<span>14</span></a>
-                            <a href="#">Node.js<span>14</span></a>
-                            <a href="#">Python<span>14</span></a>
-                            <a href="#">Sass<span>14</span></a>
-                            <a href="#">sass<span>14</span></a>
-                            <a href="#">webpy</a>
-                            <a href="#">web优<span>3</span></a>
-                            <a href="#">兼容<span>3</span></a>
-                            <a href="#">命令<span>1</span></a>
-                            <a href="#">填坑日<span>2</span></a>
-                            <a href="#">工<span>1</span></a>
-                            <a href="#">移动web开<span>1</span></a>
-                            <a href="#">笔<span>24</span></a>
-                            <a href="#">译<span>5</span></a>
-                            <a href="#">随<span>1</span></a>
-                            <a href="#">CS<span>14</span></a>
-                            <a href="#">Gi<span>3</span></a>
-                            <a href="#">Grun<span>1</span></a>
-                            <a href="#">JavaScrip<span>2</span></a>
-                            <a href="#">Linu<span>1</span></a>
-                            <a href="#">Node.j<span>12</span></a>
-                            <a href="#">Pytho<span>3</span></a>
-                            <a href="#">Sas<span>1</span></a>
-                            <a href="#">sas<span>1</span></a>
-                            <a href="#">webp<span>1</span></a>
-                            <a href="#">web优<span>3</span></a>
-                            <a href="#">兼容<span>3</span></a>
-                            <a href="#">命令<span>1</span></a>
-                            <a href="#">填坑日<span>2</span></a>
-                            <a href="#">工<span>1</span></a>
-                            <a href="#">移动web开<span>1</span></a>
-                            <a href="#">笔<span>24</span></a>
-                            <a href="#">译<span>5</span></a>
-                            <a href="#">随<span>1</span></a>
-                        </p>
+                        <h4>标签</h4>
+                        <ul>
+                            <li><a href="#">CSS<span>14</span></a></li>
+                            <li><a href="#">Git<span>14</span></a></li>
+                            <li><a href="#">Grunt<span>14</span></a></li>
+                        </ul>
+                    </div>
+                    <div class="friend">
+                        <h4>我的朋友</h4>
+                        <ul>
+                            <li><img src="img/friend.jpg"><a href="#">张小伦爱学习</a></li>
+                            <li><img src="img/friend.jpg"><a href="#">张小伦爱学习</a></li>
+                            <li><img src="img/friend.jpg"><a href="#">张小伦爱学习</a></li>
+                            <li><img src="img/friend.jpg"><a href="#">张小伦爱学习</a></li>
+                            <li><img src="img/friend.jpg"><a href="#">张小伦爱学习</a></li>
+                            <li><img src="img/friend.jpg"><a href="#">张小伦爱学习</a></li>
+                        </ul>
                     </div>
                 </div>
             </div>
             <div class="content">
-                <div class="article">
-                    <h3 class="article-title">响应式设计</h3>
-                    <div class="article-info">
-                        <span>作者：kk</span><span>日期：2015年7月16日</span>
-                    </div>
-                    <h4 class="article-subtitle">有一种设计叫响应式设计</h4>
-                    <div class="article-content">
-                        <p>但是，要知道: new关键词的使用与否，产生的效果是不一样的。输出p1和p2可以很清楚的看到， p1指向的是一个对象，这个对象的构造函数是Point()，而p2返回的是undefined。仔细一想其实也很好理解。不带new关键字的调用，实质上与调用普通的方法函数无异，关键之处在于调用时，所处的作用域为全局作用域，this指向了window，也就是说，这次调用发生之后，平白无故的为window对象增添了两个属性x和y。 为了解决这种问题，可以在构造函数中检查当前作用域，也就是this指向何处。
-                        </p>
-                        <p>但是，要知道: new关键词的使用与否，产生的效果是不一样的。输出p1和p2可以很清楚的看到， p1指向的是一个对象，这个对象的构造函数是Point()，而p2返回的是undefined。仔细一想其实也很好理解。不带new关键字的调用，实质上与调用普通的方法函数无异，关键之处在于调用时，所处的作用域为全局作用域，this指向了window，也就是说，这次调用发生之后，平白无故的为window对象增添了两个属性x和y。 为了解决这种问题，可以在构造函数中检查当前作用域，也就是this指向何处。
-                        </p>
-                        <p>但是，要知道: new关键词的使用与否，产生的效果是不一样的。输出p1和p2可以很清楚的看到， p1指向的是一个对象，这个对象的构造函数是Point()，而p2返回的是undefined。仔细一想其实也很好理解。不带new关键字的调用，实质上与调用普通的方法函数无异，关键之处在于调用时，所处的作用域为全局作用域，this指向了window，也就是说，这次调用发生之后，平白无故的为window对象增添了两个属性x和y。 为了解决这种问题，可以在构造函数中检查当前作用域，也就是this指向何处。
-                        </p>
-                        <p>但是，要知道: new关键词的使用与否，产生的效果是不一样的。输出p1和p2可以很清楚的看到， p1指向的是一个对象，这个对象的构造函数是Point()，而p2返回的是undefined。仔细一想其实也很好理解。不带new关键字的调用，实质上与调用普通的方法函数无异，关键之处在于调用时，所处的作用域为全局作用域，this指向了window，也就是说，这次调用发生之后，平白无故的为window对象增添了两个属性x和y。 为了解决这种问题，可以在构造函数中检查当前作用域，也就是this指向何处。
-                        </p>
-                        <p>但是，要知道: new关键词的使用与否，产生的效果是不一样的。输出p1和p2可以很清楚的看到， p1指向的是一个对象，这个对象的构造函数是Point()，而p2返回的是undefined。仔细一想其实也很好理解。不带new关键字的调用，实质上与调用普通的方法函数无异，关键之处在于调用时，所处的作用域为全局作用域，this指向了window，也就是说，这次调用发生之后，平白无故的为window对象增添了两个属性x和y。 为了解决这种问题，可以在构造函数中检查当前作用域，也就是this指向何处。
-                        </p>
-                        <p>但是，要知道: new关键词的使用与否，产生的效果是不一样的。输出p1和p2可以很清楚的看到， p1指向的是一个对象，这个对象的构造函数是Point()，而p2返回的是undefined。仔细一想其实也很好理解。不带new关键字的调用，实质上与调用普通的方法函数无异，关键之处在于调用时，所处的作用域为全局作用域，this指向了window，也就是说，这次调用发生之后，平白无故的为window对象增添了两个属性x和y。 为了解决这种问题，可以在构造函数中检查当前作用域，也就是this指向何处。
-                        </p>
-                        <p>但是，要知道: new关键词的使用与否，产生的效果是不一样的。输出p1和p2可以很清楚的看到， p1指向的是一个对象，这个对象的构造函数是Point()，而p2返回的是undefined。仔细一想其实也很好理解。不带new关键字的调用，实质上与调用普通的方法函数无异，关键之处在于调用时，所处的作用域为全局作用域，this指向了window，也就是说，这次调用发生之后，平白无故的为window对象增添了两个属性x和y。 为了解决这种问题，可以在构造函数中检查当前作用域，也就是this指向何处。
-                        </p>
-                        <p>但是，要知道: new关键词的使用与否，产生的效果是不一样的。输出p1和p2可以很清楚的看到， p1指向的是一个对象，这个对象的构造函数是Point()，而p2返回的是undefined。仔细一想其实也很好理解。不带new关键字的调用，实质上与调用普通的方法函数无异，关键之处在于调用时，所处的作用域为全局作用域，this指向了window，也就是说，这次调用发生之后，平白无故的为window对象增添了两个属性x和y。 为了解决这种问题，可以在构造函数中检查当前作用域，也就是this指向何处。
-                        </p>
-                        <p>但是，要知道: new关键词的使用与否，产生的效果是不一样的。输出p1和p2可以很清楚的看到， p1指向的是一个对象，这个对象的构造函数是Point()，而p2返回的是undefined。仔细一想其实也很好理解。不带new关键字的调用，实质上与调用普通的方法函数无异，关键之处在于调用时，所处的作用域为全局作用域，this指向了window，也就是说，这次调用发生之后，平白无故的为window对象增添了两个属性x和y。 为了解决这种问题，可以在构造函数中检查当前作用域，也就是this指向何处。
-                        </p>
-                        <p>但是，要知道: new关键词的使用与否，产生的效果是不一样的。输出p1和p2可以很清楚的看到， p1指向的是一个对象，这个对象的构造函数是Point()，而p2返回的是undefined。仔细一想其实也很好理解。不带new关键字的调用，实质上与调用普通的方法函数无异，关键之处在于调用时，所处的作用域为全局作用域，this指向了window，也就是说，这次调用发生之后，平白无故的为window对象增添了两个属性x和y。 为了解决这种问题，可以在构造函数中检查当前作用域，也就是this指向何处。
-                        </p>
-                        <p>但是，要知道: new关键词的使用与否，产生的效果是不一样的。输出p1和p2可以很清楚的看到， p1指向的是一个对象，这个对象的构造函数是Point()，而p2返回的是undefined。仔细一想其实也很好理解。不带new关键字的调用，实质上与调用普通的方法函数无异，关键之处在于调用时，所处的作用域为全局作用域，this指向了window，也就是说，这次调用发生之后，平白无故的为window对象增添了两个属性x和y。 为了解决这种问题，可以在构造函数中检查当前作用域，也就是this指向何处。
-                        </p>
-                        <p>但是，要知道: new关键词的使用与否，产生的效果是不一样的。输出p1和p2可以很清楚的看到， p1指向的是一个对象，这个对象的构造函数是Point()，而p2返回的是undefined。仔细一想其实也很好理解。不带new关键字的调用，实质上与调用普通的方法函数无异，关键之处在于调用时，所处的作用域为全局作用域，this指向了window，也就是说，这次调用发生之后，平白无故的为window对象增添了两个属性x和y。 为了解决这种问题，可以在构造函数中检查当前作用域，也就是this指向何处。
-                        </p>
-                        <p>但是，要知道: new关键词的使用与否，产生的效果是不一样的。输出p1和p2可以很清楚的看到， p1指向的是一个对象，这个对象的构造函数是Point()，而p2返回的是undefined。仔细一想其实也很好理解。不带new关键字的调用，实质上与调用普通的方法函数无异，关键之处在于调用时，所处的作用域为全局作用域，this指向了window，也就是说，这次调用发生之后，平白无故的为window对象增添了两个属性x和y。 为了解决这种问题，可以在构造函数中检查当前作用域，也就是this指向何处。
-                        </p>
-                        <p>但是，要知道: new关键词的使用与否，产生的效果是不一样的。输出p1和p2可以很清楚的看到， p1指向的是一个对象，这个对象的构造函数是Point()，而p2返回的是undefined。仔细一想其实也很好理解。不带new关键字的调用，实质上与调用普通的方法函数无异，关键之处在于调用时，所处的作用域为全局作用域，this指向了window，也就是说，这次调用发生之后，平白无故的为window对象增添了两个属性x和y。 为了解决这种问题，可以在构造函数中检查当前作用域，也就是this指向何处。
-                        </p>
-                        <p>但是，要知道: new关键词的使用与否，产生的效果是不一样的。输出p1和p2可以很清楚的看到， p1指向的是一个对象，这个对象的构造函数是Point()，而p2返回的是undefined。仔细一想其实也很好理解。不带new关键字的调用，实质上与调用普通的方法函数无异，关键之处在于调用时，所处的作用域为全局作用域，this指向了window，也就是说，这次调用发生之后，平白无故的为window对象增添了两个属性x和y。 为了解决这种问题，可以在构造函数中检查当前作用域，也就是this指向何处。
-                        </p>
-                        <p>但是，要知道: new关键词的使用与否，产生的效果是不一样的。输出p1和p2可以很清楚的看到， p1指向的是一个对象，这个对象的构造函数是Point()，而p2返回的是undefined。仔细一想其实也很好理解。不带new关键字的调用，实质上与调用普通的方法函数无异，关键之处在于调用时，所处的作用域为全局作用域，this指向了window，也就是说，这次调用发生之后，平白无故的为window对象增添了两个属性x和y。 为了解决这种问题，可以在构造函数中检查当前作用域，也就是this指向何处。
-                        </p>
-                        <p>但是，要知道: new关键词的使用与否，产生的效果是不一样的。输出p1和p2可以很清楚的看到， p1指向的是一个对象，这个对象的构造函数是Point()，而p2返回的是undefined。仔细一想其实也很好理解。不带new关键字的调用，实质上与调用普通的方法函数无异，关键之处在于调用时，所处的作用域为全局作用域，this指向了window，也就是说，这次调用发生之后，平白无故的为window对象增添了两个属性x和y。 为了解决这种问题，可以在构造函数中检查当前作用域，也就是this指向何处。
-                        </p>
-                        <p>但是，要知道: new关键词的使用与否，产生的效果是不一样的。输出p1和p2可以很清楚的看到， p1指向的是一个对象，这个对象的构造函数是Point()，而p2返回的是undefined。仔细一想其实也很好理解。不带new关键字的调用，实质上与调用普通的方法函数无异，关键之处在于调用时，所处的作用域为全局作用域，this指向了window，也就是说，这次调用发生之后，平白无故的为window对象增添了两个属性x和y。 为了解决这种问题，可以在构造函数中检查当前作用域，也就是this指向何处。
-                        </p>
-                        <p>但是，要知道: new关键词的使用与否，产生的效果是不一样的。输出p1和p2可以很清楚的看到， p1指向的是一个对象，这个对象的构造函数是Point()，而p2返回的是undefined。仔细一想其实也很好理解。不带new关键字的调用，实质上与调用普通的方法函数无异，关键之处在于调用时，所处的作用域为全局作用域，this指向了window，也就是说，这次调用发生之后，平白无故的为window对象增添了两个属性x和y。 为了解决这种问题，可以在构造函数中检查当前作用域，也就是this指向何处。
-                        </p>
-                    </div>
-                    <div class="article-foot">
-                        <p>版权声明：自由转载-非商用-非衍生-保持署名（创意共享3.0许可证）</p>
-                    </div>
-                </div>
-                <div class="comment">
-                    <h3>留言<span class="comment-count">（23条）</span></h3>
-                    <ul class="comment-list">
-                        <li class="comment-item">
-                            <h4 class="comment-title">
-                                <a href="#">Trinity</a><span>说：</span>
-                            </h4>
-                            <div class="comment-content">
-                                <p>monad 意思就是单阶的，跟UNIX管道意义上一样，只是在具体上更抽象。 前文的 chaining operations 这个词解释的很到位。 实际中，请把 monad 当作 Interger,String 之类的，每个 chaining operation 是一个 instance 就对了。</p>
-                            </div>
-                            <p class="comment-info">2015年7月23日 11:59</p>
+                <div class="article-list">
+                    <ul>
+                        <li>
+                            <h4 class="item-title"><a href="article.html">全栈工程师笔记之响应式设计</a></h4>
+                            <h5 class="item-subtitle">有一种设计叫响应式设计</h5>
+                            <p class="read"><a href="article.html">阅读全文</a></p>
+                            <p class="item-info">
+                                <span class="hidden-xs">分类：<a href="#">前端</a> <a href="#">响应式</a></span><span>作者：kk</span><span>日期：2015年7月16日</span>
+                            </p>
                         </li>
-                        <li class="comment-item">
-                            <h4 class="comment-title">
-                                <a href="#">Trinity</a><span>说：</span>
-                            </h4>
-                            <div class="comment-content">
-                                <p>monad 意思就是单阶的，跟UNIX管道意义上一样，只是在具体上更抽象。 前文的 chaining operations 这个词解释的很到位。 实际中，请把 monad 当作 Interger,String 之类的，每个 chaining operation 是一个 instance 就对了。</p>
-                            </div>
-                            <p class="comment-info">2015年7月23日 11:59</p>
+                        <li>
+                            <h4 class="item-title"><a href="#">全栈工程师笔记之响应式设计</a></h4>
+                            <h5 class="item-subtitle">全栈工程师笔记之响应式设计有一种设计叫响应式设计</h5>
+                            <p class="read"><a href="#">阅读全文</a></p>
+                            <p class="item-info">
+                                <span class="hidden-xs">分类：<a href="#">前端</a> <a href="#">响应式</a></span><span>作者：kk</span><span>日期：2015年7月16日</span>
+                            </p>
+                        </li>
+                        <li>
+                            <h4 class="item-title"><a href="#">全栈工程师笔记之响应式设计</a></h4>
+                            <h5 class="item-subtitle">有一种设计叫响应式设计</h5>
+                            <p class="read"><a href="#">阅读全文</a></p>
+                            <p class="item-info">
+                                <span class="hidden-xs">分类：<a href="#">前端</a> <a href="#">响应式</a></span><span>作者：kk</span><span>日期：2015年7月16日</span>
+                            </p>
+                        </li>
+                        <li>
+                            <h4 class="item-title"><a href="#">全栈工程师笔记之响应式设计</a></h4>
+                            <h5 class="item-subtitle">有一种设计叫响应式设计</h5>
+                            <p class="read"><a href="#">阅读全文</a></p>
+                            <p class="item-info">
+                                <span class="hidden-xs">分类：<a href="#">前端</a> <a href="#">响应式</a></span><span>作者：kk</span><span>日期：2015年7月16日</span>
+                            </p>
+                        </li>
+                        <li>
+                            <h4 class="item-title"><a href="#">全栈工程师笔记之响应式设计</a></h4>
+                            <h5 class="item-subtitle">全栈工程师笔记之响应式设计有一种设计叫响应式设计</h5>
+                            <p class="read"><a href="#">阅读全文</a></p>
+                            <p class="item-info">
+                                <span class="hidden-xs">分类：<a href="#">前端</a> <a href="#">响应式</a></span><span>作者：kk</span><span>日期：2015年7月16日</span>
+                            </p>
+                        </li>
+                        <li>
+                            <h4 class="item-title"><a href="#">全栈工程师笔记之响应式设计</a></h4>
+                            <h5 class="item-subtitle">有一种设计叫响应式设计</h5>
+                            <p class="read"><a href="#">阅读全文</a></p>
+                            <p class="item-info">
+                                <span class="hidden-xs">分类：<a href="#">前端</a> <a href="#">响应式</a></span><span>作者：kk</span><span>日期：2015年7月16日</span>
+                            </p>
+                        </li>
+                        <li>
+                            <h4 class="item-title"><a href="#">全栈工程师笔记之响应式设计</a></h4>
+                            <h5 class="item-subtitle">有一种设计叫响应式设计</h5>
+                            <p class="read"><a href="#">阅读全文</a></p>
+                            <p class="item-info">
+                                <span class="hidden-xs">分类：<a href="#">前端</a> <a href="#">响应式</a></span><span>作者：kk</span><span>日期：2015年7月16日</span>
+                            </p>
+                        </li>
+                        <li>
+                            <h4 class="item-title"><a href="#">全栈工程师笔记之响应式设计</a></h4>
+                            <h5 class="item-subtitle">全栈工程师笔记之响应式设计有一种设计叫响应式设计</h5>
+                            <p class="read"><a href="#">阅读全文</a></p>
+                            <p class="item-info">
+                                <span class="hidden-xs">分类：<a href="#">前端</a> <a href="#">响应式</a></span><span>作者：kk</span><span>日期：2015年7月16日</span>
+                            </p>
+                        </li>
+                        <li>
+                            <h4 class="item-title"><a href="#">全栈工程师笔记之响应式设计</a></h4>
+                            <h5 class="item-subtitle">有一种设计叫响应式设计</h5>
+                            <p class="read"><a href="#">阅读全文</a></p>
+                            <p class="item-info">
+                                <span class="hidden-xs">分类：<a href="#">前端</a> <a href="#">响应式</a></span><span>作者：kk</span><span>日期：2015年7月16日</span>
+                            </p>
                         </li>
                     </ul>
-                    <div class="comment-add">
-                        <h3>我要发表看法</h3>
-                        <div class="input-row">
-                            <label>您的留言 （HTML标签部分可用）</label>
-                            <textarea class="comment-content" rows="6"></textarea>
-                        </div>
-                        <div class="input-row">
-                            <label>您的大名：</label>
-                            <div class="input-wrap clearfix">
-                                <input class="comment-name pull-left" type="text">
-                                <span class="pull-left">«-必填</span>
-                            </div>
-                        </div>
-                        <div class="input-row">
-                            <label>电子邮箱：</label>
-                            <div class="input-wrap clearfix">
-                                <input class="comment-email pull-left" type="text">
-                                <span class="pull-left">«-必填，不公开</span>
-                            </div>
-                        </div>
-                        <div class="input-row">
-                            <label>个人网站：</label>
-                            <div class="input-wrap clearfix">
-                                <input class="comment-website pull-left" type="text">
-                                <!-- <span class="pull-left"> </span> -->
-                            </div>
-                        </div>
-                        <div class="input-row">
-                            <div class="input-wrap clearfix">
-                                <button class="comment-submit">发表</button>
-                                <!-- <span class="pull-left"> </span> -->
-                            </div>
-                        </div>
-                    </div>
+                </div>
+                <div class="nextpage">
+                    
                 </div>
             </div>
         </div>

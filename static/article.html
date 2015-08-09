@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>微信页面整合WebApi</title>
+    <link rel="stylesheet" type="text/css" href="lib/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css/kkblog.css">
+    <link rel="stylesheet" type="text/css" href="lib/markdown.css">
+    <script type="text/javascript" src="lib/jquery-2.1.4.js"></script>
+    <script type="text/javascript" src="lib/bootstrap.js"></script>
+    <script type="text/javascript" src="js/kkblog.js"></script>
+</head>
+
+<body>
+    <div class="wrap container-fluid">
+        <div class="head row">
+            <h3 class="head-title"><span>KkBloG</span><span class="hidden-sm hidden-xs">全栈工程师笔记</span></h3>
+            <div id="head-bar" class="head-bar">
+                <ul class="head-nav">
+                    <li><a href="/">首页</a></li>
+                    <li><a href="#">归档</a></li>
+                    <li><a href="#">收藏夹</a></li>
+                    <li><a href="#">工具箱</a></li>
+                    <li><a href="#">关于我</a></li>
+                </ul>
+                <span class="head-nav-toggle">导航</span>
+                <div class="head-search">
+                    <input class="search-box" type="text" placeholder="文章/收藏/标签">
+                    <button id="search-btn" class="search-btn">搜索</button>
+                </div>
+            </div>
+        </div>
+        <div class="center row">
+            <div class="side-toggle">目录</div>
+            <div class="side">
+                <div class="side-outline">
+                    <!-- 文章目录 -->
+
+<div class="toc">
+<ul>
+<li><a href="#webapi">微信页面整合WebApi</a><ul>
+<li><a href="#httpxzzx2015ncuhomecn">域名：http://xzzx2015.ncuhome.cn/</a></li>
+<li><a href="#_1">登录流程</a></li>
+<li><a href="#jquery">jQuery请求示例</a></li>
+<li><a href="#_2">家园网账号登陆</a><ul>
+<li><a href="#1-post-apiauthloginbypassword">1. 账号或学号+密码登陆: POST api/Auth/LoginByPassword</a></li>
+<li><a href="#2-guid-post-apiauthloginbyguid">2. Guid登陆: POST api/Auth/LoginByGuid</a></li>
+</ul>
+</li>
+<li><a href="#_3">奖学金信息</a><ul>
+<li><a href="#1-post-apijxjjxjterms">1.奖学金学期: POST api/JXJ/JXJTerms</a></li>
+<li><a href="#2-post-apijxjjxjinfo">2.个人奖学金: POST api/JXJ/JXJInfo</a></li>
+<li><a href="#3-post-apijxjclassjxjinfo">3.班级奖学金: POST api/JXJ/ClassJXJInfo</a></li>
+</ul>
+</li>
+<li><a href="#_4">教务系统</a><ul>
+<li><a href="#1-post-apijwxtloginpage">1.登录信息: POST api/JWXT/LogInPage</a></li>
+<li><a href="#2get-apijwxtverifycodejsessionidjsessionid">2.验证码：GET api/JWXT/VerifyCode?jSessionId={jSessionId}</a></li>
+<li><a href="#3-post-apijwxtlogin">3.登录: POST api/JWXT/LogIn</a></li>
+<li><a href="#4-post-apijwxtmyterms">4.学期: POST api/JWXT/MyTerms</a></li>
+<li><a href="#5-post-apijwxtscorelist">5.成绩: POST api/JWXT/ScoreList</a></li>
+<li><a href="#6-post-apijwxtcoursetable">6.课程表: POST api/JWXT/CourseTable</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+
+                </div>
+            </div>
+            <div class="content">
+                <div class="article">
+                    <h3 id="webapi" class="article-title">微信页面整合WebApi</h3>
+                    <div class="article-info">
+                        <span class="hidden-xs">分类：<a href="#">WebApi</a> <a href="#">响应式</a></span><span>作者：kk</span><span>日期：2015年7月16日</span>
+                    </div>
+                    <h4 class="article-subtitle"><!-- 有一种设计叫响应式设计 --></h4>
+                    <div class="article-content markdown-body">
+                        <!-- 文章内容 -->
+
+
+<h5 id="httpxzzx2015ncuhomecn">域名：<code>http://xzzx2015.ncuhome.cn/</code></h5>
+<p>请求的<code>Content-Type</code>为<code>application/json</code>。</p>
+<p>返回数据为JSON格式：</p>
+<pre><code>{
+    success:true,
+    data:object,
+    error:{
+        message:"error message",
+        detail:"error detail"
+    }
+}
+</code></pre>
+<p>其中<code>success</code>表示是否成功，<code>data</code>为请求成功返回的数据，请求失败时<code>data</code>为<code>null</code>。以下文档中请求成功返回数据示例均为<code>data</code>，省略了<code>success</code>和<code>error</code>；请求失败返回数据均为<code>error</code>。</p>
+<p><strong>url不区分大小写，Json数据区分大小写。</strong></p>
+<h3 id="_1">登录流程</h3>
+<pre><code>if 第一次访问
+    用账号密码登录
+    if 登录成功
+        保存guid
+    else
+        重新登录
+else
+    用js在后台用guid登录
+    if 登录成功
+        保存guid
+    else
+        转到用账号密码登录
+</code></pre>
+<h3 id="jquery">jQuery请求示例</h3>
+<p><strong>data必须是JSON格式的</strong>，jQuery默认生成的是表单格式的。</p>
+<p><strong>contentType必须是application/json</strong>，jQuery默认是application/x-www-form-urlencoded。</p>
+<pre><code>$.ajax({
+    url:"http://xzzx2015.ncuhome.cn/api/auth/loginbypassword",
+    type:"Post",
+    data:JSON.stringify({
+        userName:"6102114062",
+        password:"19381x"}),
+    contentType:"application/json",
+    success:function(result,status,xhr){
+        if (result.success) {
+            //登录成功
+            var data=result.data;
+            var guid=data.guid;
+            alert(guid);
+        }else{
+            //登录失败
+            var error=data.error;
+            var message=error.message;
+            alert(message);
+        }
+    }
+})
+</code></pre>
+<p>用chrome插件Advanced Rest Client可以发送各种请求测试WebApi。</p>
+<h3 id="_2">家园网账号登陆</h3>
+<p>登陆成功后客户端保存guid，请求相应功能时需提供guid。</p>
+<h4 id="1-post-apiauthloginbypassword">1. 账号或学号+密码登陆: <code>POST api/Auth/LoginByPassword</code></h4>
+<p>请求数据：</p>
+<pre><code>{
+    userName:"6102114062",
+    password:"19381x"
+}
+</code></pre>
+<p>请求成功返回：</p>
+<pre><code>{
+    userName: "6102114062"
+    guid: "c478113d-2c64-41b9-ba92-c52b88acfecd"
+    trueName: "黄康德"
+    schoolId: "6102114062"
+}
+</code></pre>
+<p>请求失败返回：</p>
+<pre><code>{
+    message: "登录失败：用户名或密码错误",
+    detail: ""
+}
+</code></pre>
+<h4 id="2-guid-post-apiauthloginbyguid">2. Guid登陆: <code>POST api/Auth/LoginByGuid</code></h4>
+<p>请求数据：</p>
+<pre><code>{
+    guid:"c478113d-2c64-41b9-ba92-c52b88acfecd"
+}
+</code></pre>
+<p>请求成功返回：</p>
+<pre><code>{
+    userName: "6102114062"
+    guid: "c478113d-2c64-41b9-ba92-c52b88acfecd"
+    trueName: "黄康德"
+    schoolId: "6102114062"
+}
+</code></pre>
+<p>请求失败返回：</p>
+<pre><code>{
+    message: "登录失败：Guid无效",
+    detail: ""
+}
+</code></pre>
+<h3 id="_3">奖学金信息</h3>
+<p>目前只能查询到最近一学期的加减分信息，查询其他学期的加减分信息时返回是还是本学期的数据。</p>
+<p>获取个人奖学金信息只能查询到本学期的奖学金和加减分。</p>
+<h4 id="1-post-apijxjjxjterms">1.奖学金学期: <code>POST api/JXJ/JXJTerms</code></h4>
+<p>请求数据：</p>
+<pre><code>{
+    guid:"c478113d-2c64-41b9-ba92-c52b88acfecd"
+}
+</code></pre>
+<p>请求成功返回：</p>
+<pre><code>[
+    {
+        "Item1":2014,
+        "Item2":2015,
+        "Item3":1
+    }
+]
+</code></pre>
+<p>请求失败返回：</p>
+<pre><code>{
+    message: "查询失败：Guid无效",
+    detail: ""
+}
+</code></pre>
+<h4 id="2-post-apijxjjxjinfo">2.个人奖学金: <code>POST api/JXJ/JXJInfo</code></h4>
+<p>请求数据：</p>
+<pre><code>{
+    guid:"c478113d-2c64-41b9-ba92-c52b88acfecd"
+}
+</code></pre>
+<p>请求成功返回：</p>
+<pre><code> {
+    "XH": "6102114062",
+    "XQBJID": 18177,
+    "XM": "黄康德",
+    "SHDF_ZF": 3,
+    "HJXJQK": "无",
+    "HJXJJE": 0,
+    "PX_ZF": 14,
+    "JJF": [
+        {
+            "GUID": 1625762,
+            "DXLB": "思想道德素质",
+            "JJFYY": "家园网部委",
+            "JJFBZ": "加",
+            "SHDF": 3
+        },
+        {
+            "GUID": 1625766,
+            "DXLB": "专业文化素质",
+            "JJFYY": "",
+            "JJFBZ": "加",
+            "SHDF": 81.84
+        }
+    ]
+}
+</code></pre>
+<p>请求失败返回：</p>
+<pre><code>{
+    message: "查询失败：Guid无效",
+    detail: ""
+}
+</code></pre>
+<h4 id="3-post-apijxjclassjxjinfo">3.班级奖学金: <code>POST api/JXJ/ClassJXJInfo</code></h4>
+<p>请求数据：</p>
+<pre><code>{
+    guid:"c478113d-2c64-41b9-ba92-c52b88acfecd"，
+    term:"2014-2015-1"
+}
+</code></pre>
+<p>请求成功返回：</p>
+<pre><code>[
+    {
+        "XH": "6102114073",
+        "XQBJID": 18177,
+        "XM": "郇文明",
+        "SHDF_ZF": 86.35,
+        "HJXJQK": "特等",
+        "HJXJJE": 2000,
+        "PX_ZF": 1,
+        "JJF": [
+            {
+                "GUID": 1625626,
+                "DXLB": "专业文化素质",
+                "JJFYY": "",
+                "JJFBZ": "加",
+                "SHDF": 86.35
+            },
+            {
+                "GUID": 1625684,
+                "DXLB": "思想道德素质",
+                "JJFYY": "国防生委员会部委",
+                "JJFBZ": "加",
+                "SHDF": 3
+            }
+        ]
+    },
+    {
+        "XH": "6102114057",
+        "XQBJID": 18177,
+        "XM": "贾书阳",
+        "SHDF_ZF": 3,
+        "HJXJQK": "特等",
+        "HJXJJE": 2000,
+        "PX_ZF": 2,
+        "JJF": [
+            {
+                "GUID": 1625687,
+                "DXLB": "思想道德素质",
+                "JJFYY": "国防生委员会部委",
+                "JJFBZ": "加",
+                "SHDF": 3
+            },
+            {
+                "GUID": 1625636,
+                "DXLB": "专业文化素质",
+                "JJFYY": "",
+                "JJFBZ": "加",
+                "SHDF": 85.16
+            },
+            {
+                "GUID": 1625638,
+                "DXLB": "实践创新素质",
+                "JJFYY": "高级摄影师",
+                "JJFBZ": "加",
+                "SHDF": 6
+            }
+        ]
+    }
+]
+</code></pre>
+<p>请求失败返回：</p>
+<pre><code>{
+    message: "查询失败：Guid无效",
+    detail:""
+}
+</code></pre>
+<h3 id="_4">教务系统</h3>
+<p>客户端保存jSessionId，请求相应功能时需提供jSessionId。</p>
+<h4 id="1-post-apijwxtloginpage">1.登录信息: <code>POST api/JWXT/LogInPage</code></h4>
+<p>请求数据：无</p>
+<p>请求成功返回：</p>
+<pre><code>{
+    success: true,
+    data: {
+        jSessionId: "C81D0FE05B85F9376065A469651F2772",
+        needVerifyCode: true //是否需要验证码
+    },
+    error: null
+}
+</code></pre>
+<h4 id="2get-apijwxtverifycodejsessionidjsessionid">2.验证码：<code>GET api/JWXT/VerifyCode?jSessionId={jSessionId}</code></h4>
+<p>请求数据：jSessionId</p>
+<p>请求成功返回：验证码图片</p>
+<h4 id="3-post-apijwxtlogin">3.登录: <code>POST api/JWXT/LogIn</code></h4>
+<p>请求数据：</p>
+<pre><code>{
+    jSessionId:"4388C6DB23857DB9ECF8A2174E007672",
+    userId:"6102114062",
+    password:"em123456",
+    verifyCode:"xyxc"
+}
+</code></pre>
+<p>请求成功返回：</p>
+<pre><code>{
+    message: "登录成功"
+}
+</code></pre>
+<p>请求失败返回：</p>
+<pre><code>{
+    message: "账号，密码或验证码错误"
+    detail: ""
+}
+</code></pre>
+<h4 id="4-post-apijwxtmyterms">4.学期: <code>POST api/JWXT/MyTerms</code></h4>
+<p>请求数据：</p>
+<pre><code>{
+    schoolId:"6102114062"
+}
+</code></pre>
+<p>请求成功返回：</p>
+<pre><code>[{"m_Item1":2014,"m_Item2":2015,"m_Item3":2},
+{"m_Item1":2014,"m_Item2":2015,"m_Item3":1}]
+</code></pre>
+<h4 id="5-post-apijwxtscorelist">5.成绩: <code>POST api/JWXT/ScoreList</code></h4>
+<p>请求数据：</p>
+<pre><code>{
+    jSessionId:"C81D0FE05B85F9376065A469651F2772",
+    term:"2014-2015-2"
+}
+</code></pre>
+<p>请求成功返回：</p>
+<pre><code>[
+    {
+        Score:"77",
+        ScoreTag:"&amp;nbsp;",
+        CourseID:"J5510N0006",
+        CourseName:"线性代数",
+        CourseSemester:"2014-2015-2",
+        CourseProperties:"学科基础课程",
+        CourseCategory:"必修",
+        CourseTime:"32",
+        CourseScore:"2",
+        ExamProperties:"正常",
+        BuChongSemester:"&amp;nbsp;"
+    },
+    ...
+]
+</code></pre>
+<h4 id="6-post-apijwxtcoursetable">6.课程表: <code>POST api/JWXT/CourseTable</code></h4>
+<p>请求数据：</p>
+<pre><code>{
+    jSessionId:"C81D0FE05B85F9376065A469651F2772",
+    term:"2014-2015-2"
+}
+</code></pre>
+<p>请求成功返回，其中Courses是一个5x7的二维数组：</p>
+<pre><code>{
+    Semester: "2014-2015-2",
+    Courses: [
+        [{
+            Name: "数据结构",
+            ClassName: "电子信息工程[141-142]班",
+            Teacher: "刘小东",
+            Time: " 1-19周",
+            Address: "计算中心多媒体B312",
+            Tag: 1
+        },
+        {
+            Name: "高等数学(Ⅰ)下",
+            ClassName: "计算机科学与技术[141-144]班,测控技术与仪器[141-142]班,新能源材料与器件141班,",
+            Teacher: "樊树平",
+            Time: " 1-16周",
+            Address: "教223",
+            Tag: 1
+        },  
+        ...
+        ],
+    ...
+    ]
+}
+</code></pre>
+<p>Tag的值含义如下：</p>
+<pre><code>Week = 1,
+SingleWeek = 2,//单周
+DoubleWeek = 3 //双周
+</code></pre>
+
+
+                    </div>
+                    <div class="article-foot">
+                        <p>版权声明：自由转载-非商用-非衍生-保持署名（创意共享3.0许可证）</p>
+                    </div>
+                </div>
+                <div class="comment">
+                    <h3>留言<span class="comment-count">（23条）</span></h3>
+                    <ul class="comment-list">
+                        <li class="comment-item">
+                            <h4 class="comment-title">
+                                <a href="#">Trinity</a><span>说：</span>
+                            </h4>
+                            <div class="comment-content">
+                                <p>monad 意思就是单阶的，跟UNIX管道意义上一样，只是在具体上更抽象。 前文的 chaining operations 这个词解释的很到位。 实际中，请把 monad 当作 Interger,String 之类的，每个 chaining operation 是一个 instance 就对了。</p>
+                            </div>
+                            <p class="comment-info">2015年7月23日 11:59</p>
+                        </li>
+                        <li class="comment-item">
+                            <h4 class="comment-title">
+                                <a href="#">Trinity</a><span>说：</span>
+                            </h4>
+                            <div class="comment-content">
+                                <p>monad 意思就是单阶的，跟UNIX管道意义上一样，只是在具体上更抽象。 前文的 chaining operations 这个词解释的很到位。 实际中，请把 monad 当作 Interger,String 之类的，每个 chaining operation 是一个 instance 就对了。</p>
+                            </div>
+                            <p class="comment-info">2015年7月23日 11:59</p>
+                        </li>
+                    </ul>
+                    <div class="comment-add">
+                        <h3>我要发表看法</h3>
+                        <div class="input-row">
+                            <label>您的留言（部分Markdown语法可用）</label>
+                            <textarea class="comment-content" rows="6"></textarea>
+                        </div>
+                        <div class="input-row">
+                            <label>您的大名：<span>«-必填</span></label>
+                            <input class="comment-name" type="text">
+                        </div>
+                        <div class="input-row">
+                            <label>电子邮箱：<span>«-必填，不公开</span></label>
+                            <input class="comment-email " type="text">
+                        </div>
+                        <div class="input-row">
+                            <label>个人网站：<span>«-可选</span><span> </span></label>
+                            <input class="comment-website " type="text">
+                        </div>
+                        <div class="input-row">
+                            <button class="comment-submit">发表</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="foot text-center">
+            <p><a href="http://www.kkblog.me">kkblog.me</a><span>2015 - 2015</span></p>
+        </div>
+    </div>
+    </div>
+</body>
+
+</html>

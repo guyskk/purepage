@@ -1,21 +1,82 @@
-function add_head_one_row() {
-    $(".head").addClass("head-one-row");
-    $(".center").addClass("center-one-row");
-    $(".side").addClass("side-one-row");
-}
-
-function remove_head_one_row() {
-    $(".head").removeClass("head-one-row");
-    $(".center").removeClass("center-one-row");
-    $(".side").removeClass("side-one-row");
-} 
-
 $(document).ready(function() {
-    $(document).scroll(function() {
-        if ($(document).scrollTop() < 45) {
-            remove_head_one_row();
-        } else /* if (document.body.scrollTop < 120) */ {
-            add_head_one_row();
+
+    //导航条
+    $(".head-nav-toggle").click(function() {
+        if ($(".head-nav").is(":visible")) {
+            $(".head-nav-toggle").text("导航");
+        } else {
+            $(".head-nav-toggle").text("关闭");
         }
+        $(".head-nav").slideToggle(150);
     });
+
+    var searchbox_space = window.innerWidth - $(".head-title").outerWidth() - $(".head-nav-toggle").outerWidth() - $(".search-btn").outerWidth() - 50;
+    $(".search-box").animate({
+        width: (searchbox_space + "px")
+    });
+    if (searchbox_space < 125) {
+        $(".search-box").focus(function() {
+            $(".head-nav-toggle").hide();
+            $(".search-box").animate({
+                width: (searchbox_space + $(".head-nav-toggle").outerWidth()) + "px"
+            });
+        });
+        $(".search-box").blur(function() {
+            $(".search-box").animate({
+                width: searchbox_space + "px"
+            }, function() {
+                $(".head-nav-toggle").show();
+            });
+        });
+    }
+
+    var head_offset = $(".head").height();
+    var foot_offset = $(document).height() - window.innerHeight - 60;
+    $(document).scroll(function() {
+        var scrollTop = $(document).scrollTop();
+        //侧边栏
+        if (scrollTop < head_offset) {
+            $(".side").removeClass("side-nohead");
+        } else {
+            $(".side").addClass("side-nohead");
+        }
+        if (scrollTop > foot_offset) {
+            $(".side").removeClass("side-nofoot");
+        } else {
+            $(".side").addClass("side-nofoot");
+        }
+
+    });
+
+    //只作用于宽度<768px的article页面
+    if (window.innerWidth < 768 && $(".article").length > 0) {
+        var article_offset = $(".head").height() + $(".article").height() - 0.5 * window.innerHeight;
+        //侧边栏小按钮（目录）
+        $(document).scroll(function() {
+            var scrollTop = $(document).scrollTop();
+            if (scrollTop > head_offset && scrollTop < article_offset) {
+                $(".side-toggle").show();
+            } else {
+                $(".side-toggle").hide();
+                $(".side").hide();
+                $(".side-toggle").text("目录");
+            }
+        });
+
+        //侧边栏（目录）
+        $(".side-toggle").click(function() {
+            $(".side").toggle();
+            if ($(".side").is(":visible")) {
+                $(".side-toggle").text("X");
+            } else {
+                $(".side-toggle").text("目录");
+            }
+        });
+
+        //点击后关闭侧边栏
+        $(".side-outline a").click(function(event) {
+            $(".side").fadeOut(150);
+            $(".side-toggle").text("目录");
+        });
+    }
 });

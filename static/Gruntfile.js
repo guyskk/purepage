@@ -67,7 +67,7 @@ module.exports = function(grunt) {
       },
       less:{
         files: ['src/less/*.less'],
-        tasks: ['less','csslint','cssmin']
+        tasks: ['less',/*'csslint',*/'cssmin']
       }
     }
   });

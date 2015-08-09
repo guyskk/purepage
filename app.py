@@ -61,11 +61,12 @@ class Todo(Resource):
         del TODOS[todo_id]
         return '', 204
 
+    @marshal_with(todo_resp)
     def put(self, todo_id):
         args = todo_parser.parse_args()
         task = args
         TODOS[todo_id] = task
-        return task, 201
+        return make_public_task(task, todo_id), 201
 
 
 class TodoList(Resource):
@@ -73,16 +74,21 @@ class TodoList(Resource):
     def get(self):
         return TODOS
 
+    @marshal_with(todo_resp)
     def post(self):
         args = todo_parser.parse_args()
-        todo_id = len(TODOS) + 1
-        TODOS[todo_id] = args
-        return TODOS[todo_id], 201
+        todo_id = len(TODOS)
+        TODOS.append(args)
+        return make_public_task(TODOS[todo_id], todo_id), 201
 
+
+@app.route("/")
+def index():
+    return "hello world"
 
 api.add_resource(TodoList, '/todo', endpoint='todolist')
 api.add_resource(Todo, '/todo/<int:todo_id>', endpoint='todo')
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0", debug=True)
