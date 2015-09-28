@@ -1,0 +1,42 @@
+// size
+// ----------------------------------------
+@padding-lg: 20px;
+@padding-md: 15px;
+@padding-sm: 10px;
+@padding-xs: 8px;
+@screen-xs:768px;
+
+// common
+// --------------------------------------
+.ellipsis(){
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.placeholder(@color: #d5d5d5) {
+    ::-webkit-input-placeholder {
+        /* WebKit browsers */
+        color: @color;
+    }
+    :-moz-placeholder {
+        /* Mozilla Firefox 4 to 18 */
+        color: @color;
+    }
+    ::-moz-placeholder {
+        /* Mozilla Firefox 19+ */
+        color: @color;
+    }
+    :-ms-input-placeholder {
+        /* Internet Explorer 10+ */
+        color: @color;
+    }
+}
+
+.bottom-line(@color: #d3d3d3) {
+    border-bottom: 1px solid @color;
+}
+
+.bottom-line{
+    .bottom-line();
+}

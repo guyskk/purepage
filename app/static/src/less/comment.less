@@ -1,0 +1,105 @@
+//评论
+//----------------------------------
+
+.comment {
+    h3 {
+        .bottom-line();
+        color: @brand-info;
+    }
+    .comment-count {
+	    font-family: @font-family-serif;
+	}
+}
+
+.comment-list {
+    list-style: none;
+    padding-left: @padding-md;
+    @media (max-width:768px) {
+        padding-left:@padding-xs;
+    }
+    .comment-item {
+        position: relative;
+        display: block;
+        .clearfix();
+        .bottom-line();
+
+        .comment-title {
+		    font-family: @font-family-serif;
+		    span {
+		        padding-left: 8px;
+		        padding-right: 8px;
+		    }
+		}
+
+		.comment-content {
+		    padding-left: @padding-md;
+            @media (max-width:768px) {
+                padding-left:@padding-xs;
+            }
+		}
+
+		.comment-info {
+		    text-align: right;
+		    padding-right: 15px;
+		    font-family: @font-family-serif;
+		}
+    }
+}
+
+
+
+.comment-add {
+    
+    .input-row {
+    	margin: 15px 0;
+    	padding-left: 2%;
+		textarea,
+		input,
+        button{
+        	display: block;
+        	outline: none;
+			border-width: 1px;
+			border-style: solid;
+			border-color: rgb(169, 169, 169);
+			&:focus {
+                border-color: @brand-success;
+            }
+        }
+        textarea,
+		input{
+			padding-left: 0.4em;
+			padding-right: 0.4em;
+			width: 90%;
+	        @media (max-width:768px) {
+	        	width: 96%;
+	        }
+		}
+        input{
+            line-height: 1.2;
+            padding-top: 0.4em;
+            padding-bottom: 0.4em;
+        }
+        button {
+            padding:4px 30px;
+        }
+        label {
+            display: inline-block;
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+        .comment-submit {
+        	margin-top: 24px;
+	        color: #fff;
+            letter-spacing: 4px;
+	        border-color: @brand-success;
+	        background: @brand-success;
+	        &:hover {
+	            background: darken(@brand-success, 5%);
+	        }
+	        &:active {
+	            background: darken(@brand-success, 10%);
+	        }
+    	}
+    }
+    
+}

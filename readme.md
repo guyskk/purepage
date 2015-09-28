@@ -31,11 +31,18 @@ Web框架 Flask
 	pip install flask
 	pip install flask-restful
 	pip install flask-cors
+	pip install PyMongo
+	pip install Flask-PyMongo
 
-数据库 mongodb或者mysql
+数据库 mongodb 或者mysql
 	
+http://docs.mongodb.org/master/tutorial/install-mongodb-on-ubuntu/
+
 	//mongodb及python客户端
-	sudo apt-get install mongodb
+	sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
+	echo "deb http://repo.mongodb.org/apt/ubuntu "$(lsb_release -sc)"/mongodb-org/3.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.0.list
+	sudo apt-get update
+	sudo apt-get install -y mongodb-org
 	pip install pymongo
 	
 	//mysql及python客户端

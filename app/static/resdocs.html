@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Api Documrnts</title>
+    <link rel="stylesheet" type="text/css" href="http://apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.css">
+    <script type="text/javascript" src="/static/res.js"></script>
+    <style type="text/css">
+    .resource {
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+        border-bottom: solid 2px orange;
+    }
+    </style>
+</head>
+
+<body class="container-fluid">
+    <div class="page-header">
+        <h1>Api Documents</h1>
+    </div>
+    <ul>
+        <li>auth_header: <code>Authorization</code></li>
+        <li>blueprint: <code>api</code></li>
+        <li>url_prefix: <code>/api</code></li>
+        
+        <li>
+        <a class="lead" href="#article">article</a>
+        </li>
+        
+        <li>
+        <a class="lead" href="#githooks">githooks</a>
+        </li>
+        
+    </ul>
+    
+    <div class="resource table-responsive">
+        <h2 id="article">article</h2>
+        <p><pre>docstring for Article</pre></p>
+        <table class="table table-striped">
+            <tr>
+                <th>action</th>
+                <th>url</th>
+                <th>method</th>
+                <th>param</th>
+                <th>auth</th>
+                <th>return</th>
+                <th>docs</th>
+            </tr>
+            
+            <tr>
+                <td class="info"><strong>get</strong></td>
+                <td class="success"><code>/api/article</code></td>
+                <td class="info"><code>get</code></td>
+                <td class="success">
+                <pre>{
+  "name": {
+    "desc": "markdown file name", 
+    "required": true, 
+    "validate": "safestr"
+  }
+}</pre>
+                </td>
+                <td class="info">False</td>
+                <td class="success">
+                <pre>{
+  "content": {
+    "desc": "article content", 
+    "required": true, 
+    "validate": "unicode"
+  }, 
+  "meta": {
+    "author": {
+      "validate": "unicode"
+    }, 
+    "date": {
+      "validate": "unicode"
+    }, 
+    "subtitle": {
+      "validate": "unicode"
+    }, 
+    "tags": [
+      {
+        "validate": "unicode"
+      }
+    ], 
+    "title": {
+      "required": true, 
+      "validate": "unicode"
+    }
+  }, 
+  "toc": {
+    "desc": "article toc", 
+    "required": true, 
+    "validate": "unicode"
+  }
+}</pre>
+                </td>
+                <td class="info">获取一篇文章</td>
+            </tr>
+            
+            <tr>
+                <td class="info"><strong>get_list</strong></td>
+                <td class="success"><code>/api/article/list</code></td>
+                <td class="info"><code>get</code></td>
+                <td class="success">
+                <pre>null</pre>
+                </td>
+                <td class="info">False</td>
+                <td class="success">
+                <pre>[
+  {
+    "author": {
+      "validate": "unicode"
+    }, 
+    "date": {
+      "validate": "unicode"
+    }, 
+    "subtitle": {
+      "validate": "unicode"
+    }, 
+    "tags": [
+      {
+        "validate": "unicode"
+      }
+    ], 
+    "title": {
+      "required": true, 
+      "validate": "unicode"
+    }
+  }
+]</pre>
+                </td>
+                <td class="info">获取文章列表</td>
+            </tr>
+            
+        </table>
+    </div>
+    
+    <div class="resource table-responsive">
+        <h2 id="githooks">githooks</h2>
+        <p><pre>docstring for GitHooks</pre></p>
+        <table class="table table-striped">
+            <tr>
+                <th>action</th>
+                <th>url</th>
+                <th>method</th>
+                <th>param</th>
+                <th>auth</th>
+                <th>return</th>
+                <th>docs</th>
+            </tr>
+            
+            <tr>
+                <td class="info"><strong>get</strong></td>
+                <td class="success"><code>/api/githooks</code></td>
+                <td class="info"><code>get</code></td>
+                <td class="success">
+                <pre>null</pre>
+                </td>
+                <td class="info">True</td>
+                <td class="success">
+                <pre>null</pre>
+                </td>
+                <td class="info">None</td>
+            </tr>
+            
+        </table>
+    </div>
+    
+</body>
+
+</html>

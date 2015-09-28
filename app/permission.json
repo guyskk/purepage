@@ -1,0 +1,11 @@
+{
+    "admin": {
+        "*": []
+    },
+    "*": {
+        "article": ["get", "get_list"]
+    },
+    "blogger": {
+        "article*": []
+    }
+}
