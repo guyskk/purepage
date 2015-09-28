@@ -7,6 +7,13 @@ NoBlog是一套基于Python的个人博客程序，采用Restful架构，简单�
 
 ####安装相关依赖
 
+	pip install flask
+	pip install flask-restaction
+	pip install markdown
+	pip install pony
+	pip install pyquery
+
+	
 Python2.7
 	
 	apt-get install python2.7

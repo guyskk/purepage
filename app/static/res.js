@@ -273,8 +273,6 @@ window.res = (function(window) {
         ress.githooks.get=function(data,fn,progress){
             header={accept:"application/json,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"};
             
-            addToken(header,"Authorization");
-            
             var _fn=function(err, data, header, xhr){
                 saveToken(xhr,"Authorization");
                 if(typeof(fn)==="function"){
