@@ -1,19 +1,12 @@
 [TOC]
-###NoBlog -> Not Only Blog
+##KkBloG
 
-NoBlog是一套基于Python的个人博客程序，采用Restful架构，简单易用，高性能，易拓展，界面容易定制。
+KkBloG是一套基于Python的个人博客程序，采用Restful架构，简单易用，高性能，易拓展，你可以轻松定制自己的博客界面。
 
 我的博客 <http://www.kkblog.me>
 
-####安装相关依赖
+###安装相关依赖
 
-	pip install flask
-	pip install flask-restaction
-	pip install markdown
-	pip install pony
-	pip install pyquery
-
-	
 Python2.7
 	
 	apt-get install python2.7
@@ -27,21 +20,49 @@ Python包管理器 pip <https://pip.pypa.io/en/latest/installing.html>
 	wget https://bootstrap.pypa.io/get-pip.py
 	python get-pip.py
 
-Markdown解析器
 
-	pip install markdown
-
-
-
-Web框架 Flask
+用到的Python库
 
 	pip install flask
-	pip install flask-restful
+	pip install flask-restaction
 	pip install flask-cors
+	pip install markdown
+	pip install pony
+	pip install pyquery
+
+###快速上手
+
+文档
+http://127.0.0.1:5000/static/resdocs.html
+
+res.js的用法，调用api要用到
+http://flask-restaction.readthedocs.org/zh/latest/quickstart.html#use-res-js
+
+启动
+
+	python run.py
+
+
+然后访问 http://127.0.0.1:5000/api/githooks ，他会从github上下载我的文章，然后解析，之后就能看到文章了
+
+访问一下这些页面，没问题你就可以开工了
+http://127.0.0.1:5000/
+http://127.0.0.1:5000/api/article/list
+http://127.0.0.1:5000/article/微信页面整合WebApi
+
+
+----------------
+**以下内容请暂时忽略**
+
+以后可能会用到的Python库
+
+	pip install flask-restful
 	pip install PyMongo
 	pip install Flask-PyMongo
+	pip install SQLAlchemy
 
-数据库 mongodb 或者mysql
+
+数据库 mongodb 或者 mysql, 目前是sqlite
 	
 http://docs.mongodb.org/master/tutorial/install-mongodb-on-ubuntu/
 
@@ -58,15 +79,13 @@ http://docs.mongodb.org/master/tutorial/install-mongodb-on-ubuntu/
 	sudo apt-get install  libmysqld-dev
 	pip install MySQL-python
 	
-数据库ORM SQLAlchemy
-	
-	pip install SQLAlchemy
 
 服务器 nginx和uwsgi
 
 	sudo apt-get install nginx
 	sudo apt-get install python-dev
 	pip install uwsgi
+
 
 构建前端代码 Node.js和Grunt
 	

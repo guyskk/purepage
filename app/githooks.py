@@ -24,6 +24,8 @@ def git_dirname(url):
 def git_pull(dest, repo_url, remote_branch_name, encoding="utf-8"):
     ret = []
     dirname = git_dirname(repo_url)
+    if not os.path.exists(dest):
+        os.makedirs(dest)
     cwd = os.path.join(dest, dirname)
     if not os.path.exists(cwd):
         ret_git_clone = subprocess.check_output(
