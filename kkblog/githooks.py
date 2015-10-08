@@ -34,7 +34,6 @@ def _get_mtags(meta):
 def update_db(mddir, user_id, old_commit=None):
 
     # old_commit='' or None, initdb
-    import pdb; pdb.set_trace()  # breakpoint 93be8fb8 //
     if not old_commit:
         _init_db(mddir, user_id)
         return

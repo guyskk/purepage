@@ -31,6 +31,10 @@ def create_app():
     if app.config["DEBUG"]:
         sql_debug(True)
 
+    # create data dir
+    dir_data = os.path.join(app.root_path, "data")
+    if not os.path.exists(dir_data):
+        os.makedirs(dir_data)
     bp_api = Blueprint('api', __name__, static_folder='static')
     api_config = {
         "bootstrap": "/static/lib/bootstrap.css",
