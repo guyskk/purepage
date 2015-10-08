@@ -1,40 +1,29 @@
 # coding:utf-8
 
 from __future__ import unicode_literals
-from flask import Flask, Blueprint
-from flask import render_template, current_app
+from flask import Flask, Blueprint, abort
+from flask import current_app
 from pony.orm import sql_debug, db_session
-import logging
 import re
 import os
 from datetime import datetime
 from validater import add_validater
 from validater.validaters import re_validater
 
-from .extensions import api, db
-from . import model
-from . import article
-from . import githooks
-from . import user
-from . import view
-from . import bloguser
+from kkblog.extensions import api, db
+from kkblog import model
+from kkblog import article
+from kkblog import githooks
+from kkblog import user
+from kkblog import view
+from kkblog import bloguser
 
 __all__ = ["create_app", "api", "db"]
 
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object('kkblog.config.default_config')
-    if 'KKBLOG_CONFIG' in os.environ:
-        app.config.from_envvar('KKBLOG_CONFIG')
-    app.config["ARTICLE_DEST"] = os.path.join(app.root_path, app.config["ARTICLE_DEST"])
-    if app.config["DEBUG"]:
-        sql_debug(True)
-
-    # create data dir
-    dir_data = os.path.join(app.root_path, "data")
-    if not os.path.exists(dir_data):
-        os.makedirs(dir_data)
+    config_app(app)
     bp_api = Blueprint('api', __name__, static_folder='static')
     api_config = {
         "bootstrap": "/static/lib/bootstrap.css",
@@ -52,6 +41,22 @@ def create_app():
 
     app.register_blueprint(bp_api, url_prefix='/api')
     return app
+
+
+def config_app(app):
+    app.config.from_object('kkblog.config.default_config')
+    if 'KKBLOG_CONFIG' in os.environ:
+        app.config.from_envvar('KKBLOG_CONFIG')
+    app.config["ARTICLE_DEST"] = os.path.join(app.root_path, app.config["ARTICLE_DEST"])
+    if app.config["DEBUG"]:
+        sql_debug(True)
+    if app.config["ALLOW_CORS"]:
+        from flask.ext.cors import CORS
+        CORS(app)
+    # create data dir
+    dir_data = os.path.join(app.root_path, "data")
+    if not os.path.exists(dir_data):
+        os.makedirs(dir_data)
 
 
 def config_validater(app):
@@ -99,12 +104,40 @@ def config_validater(app):
 
 
 def config_view(app):
+
+    pattern_article_path = re.compile(ur"(.*)/(.*)/(.*)")
+
+    @app.route('/article/<path:path>')
+    def page_article(path):
+        p = pattern_article_path.findall(path)
+        if not p:
+            abort(404)
+        git_username, subdir, name = p[0]
+        with app.open_resource("static/article.html") as f:
+            art = article.get_article(git_username, subdir, "%s.md" % name)
+            if not art:
+                abort(404)
+            title, cont, toc = art["meta"]["title"], art["content"], art["toc"]
+            contents = f.read()
+            contents = contents.decode("utf-8")
+            contents = contents.replace('{{"article_title"}}', title)
+            contents = contents.replace('{{"article_content"}}', cont)
+            contents = contents.replace('{{"article_toc"}}', toc)
+            return contents
+
     view_urls = (
-        (view.index, '/'),
-        (view.page_article, '/article/<name>'),
+        ("article_list.html", '/article/<git_username>'),
+        ("login.html", '/login'),
+        ("register.html", '/register'),
+        ("index.html", '/'),
     )
-    for v, url in view_urls:
-        app.route(url)(v)
+
+    def make_view(fname):
+        return lambda *args, **kwargs: app.send_static_file(fname)
+
+    for filename, url in view_urls:
+        end = os.path.splitext(filename)[0]
+        app.route(url, endpoint=end)(make_view(filename))
 
 
 def config_api(app):
@@ -123,7 +156,7 @@ def config_error_handler(app):
 
     @app.errorhandler(404)
     def page_not_found(e):
-        return render_template('404.html'), 404
+        return app.send_static_file('404.html'), 404
 
 
 def config_db(app):

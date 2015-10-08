@@ -3,12 +3,12 @@
 from setuptools import setup
 setup(
     name="kkblog",
-    version="0.0.1",
+    version="0.0.2",
     description="kkblog",
     author="kk",
     url="https://github.com/guyskk/kkblog",
     license="MIT",
-    packages=["kkblog"],
+    packages=["kkblog", "kkblog.model", "kkblog.config"],
     install_requires=[
         'flask>=0.1',
         'pyjwt>=1.4',

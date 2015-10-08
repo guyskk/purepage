@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 
 DEBUG = True
+ALLOW_CORS = True
 DATABASE_NAME = 'sqlite'
 DATABASE_PATH = 'data/kkblog.db'
 ARTICLE_DEST = "data/article_repo"

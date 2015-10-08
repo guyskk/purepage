@@ -6,6 +6,31 @@ from pony.orm import select, db_session, count
 from kkblog import model
 
 
+def _out_article(art):
+    return {
+        "content": art.content,
+        "toc": art.toc,
+        "meta": _out_meta(art.meta)
+    }
+
+
+def _out_meta(meta):
+    tags = [t.name for t in meta.tags]
+    git_username = meta.bloguser.git_username
+    return dict(meta.to_dict(), tags=tags, git_username=git_username)
+
+
+def get_article(git_username, subdir, filename):
+    with db_session:
+        user = model.BlogUser.get(git_username=git_username)
+        if not user:
+            return None
+        meta = model.ArticleMeta.get(bloguser=user, subdir=subdir, filename=filename)
+        if not meta:
+            return None
+        return _out_article(meta.article)
+
+
 class Article(Resource):
 
     """文章Article"""
@@ -92,14 +117,11 @@ class Article(Resource):
 
     def get(self, git_username, subdir, filename):
         """获取一篇文章"""
-        with db_session:
-            user = model.BlogUser.get(git_username=git_username)
-            if not user:
-                abort(404)
-            meta = model.ArticleMeta.get(bloguser=user, subdir=subdir, filename=filename)
-            if not meta:
-                abort(404)
-            return _out_article(meta.article)
+        art = get_article()
+        if not art:
+            abort(404)
+        else:
+            return art
 
     def get_by_id(self, id):
         with db_session:
@@ -107,20 +129,6 @@ class Article(Resource):
             if not art:
                 abort(404)
             return _out_article(art)
-
-
-def _out_article(art):
-    return {
-        "content": art.content,
-        "toc": art.toc,
-        "meta": _out_meta(art.meta)
-    }
-
-
-def _out_meta(meta):
-    tags = [t.name for t in meta.tags]
-    git_username = meta.bloguser.git_username
-    return dict(meta.to_dict(), tags=tags, git_username=git_username)
 
 
 class Tag(Resource):
