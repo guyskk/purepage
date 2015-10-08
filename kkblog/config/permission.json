@@ -1,0 +1,28 @@
+{
+    "user.admin": {
+        "*": []
+    }, 
+    "*": {
+        "article": ["get", "get_list"],
+        "tag": ["get", "get_list"],
+        "user": ["get", "post_login", "post_fogot_password",
+            "post_reset_password", "post_register"
+        ],
+        "githooks": ["post"],
+        "bloguser":["get"]
+    },
+    "user.normal": {
+        "user": ["get_me", "delete", "post_logout",
+            "put", "put_password"
+        ],
+        "bloguser*":[]
+    },
+    "bloguser.normal":{
+        "article*": [],
+        "githooks": ["post", "post_update"]
+    },
+    "bloguser.admin":{
+        "article*": [],
+        "githooks*": []
+    }
+}

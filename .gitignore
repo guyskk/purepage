@@ -1,6 +1,8 @@
-app/static/node_modules
-oth
-article_repo
+kkblog/static/node_modules
+kkblog/static/resdocs.html
+kkblog/static/res.js
+kkblog/data/
+__article_repo__
 *.db
 
 # pkg resource
@@ -23,6 +25,8 @@ downloads/
 eggs/
 .eggs/
 lib/
+# kkblog/static/lib/
+!kkblog/static/lib/
 lib64/
 parts/
 sdist/

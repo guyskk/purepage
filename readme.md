@@ -29,6 +29,8 @@ Python包管理器 pip <https://pip.pypa.io/en/latest/installing.html>
 	pip install markdown
 	pip install pony
 	pip install pyquery
+	pip install giturlparse.py
+	pip install gittle
 
 ###快速上手
 
