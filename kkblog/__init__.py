@@ -1,14 +1,14 @@
 # coding:utf-8
 
 from __future__ import unicode_literals
-from flask import Flask, Blueprint, abort
-from flask import current_app
+from __future__ import absolute_import
+
+from flask import Flask, Blueprint, abort, current_app
 from pony.orm import sql_debug, db_session
 import re
 import os
 from datetime import datetime
 from validater import add_validater
-from validater.validaters import re_validater
 
 from kkblog.extensions import api, db
 from kkblog import model
@@ -48,8 +48,10 @@ def config_app(app):
     if 'KKBLOG_CONFIG' in os.environ:
         app.config.from_envvar('KKBLOG_CONFIG')
     app.config["ARTICLE_DEST"] = os.path.join(app.root_path, app.config["ARTICLE_DEST"])
+    # pony_orm debug 信息
     if app.config["DEBUG"]:
         sql_debug(True)
+    # 跨域
     if app.config["ALLOW_CORS"]:
         from flask.ext.cors import CORS
         CORS(app)
@@ -60,14 +62,6 @@ def config_app(app):
 
 
 def config_validater(app):
-
-    def plus_int_validater(v):
-        try:
-            i = int(v)
-            return (i > 0, i)
-        except:
-            pass
-        return (False, None)
 
     def friendly_date(date):
         s = "{}年{}月{}日".format(date.year, date.month, date.day)
@@ -84,9 +78,6 @@ def config_validater(app):
             return (True, friendly_date(v))
         else:
             return (False, None)
-    re_password = re.compile(ur"""^[a-zA-Z0-9~!@#$%^&*(),./;'<>?:"-_=+]{6,16}$""")
-    add_validater("+int", plus_int_validater)
-    add_validater("password", re_validater(re_password))
     add_validater("iso_datetime", iso_datetime_validater)
     add_validater("friendly_date", friendly_date_validater)
 
@@ -105,8 +96,9 @@ def config_validater(app):
 
 def config_view(app):
 
-    pattern_article_path = re.compile(ur"(.*)/(.*)/(.*)")
+    pattern_article_path = re.compile(r"(.*)/(.*)/(.*)")
 
+    # article 页面需要服务端部分渲染
     @app.route('/article/<path:path>')
     def page_article(path):
         p = pattern_article_path.findall(path)
@@ -132,6 +124,7 @@ def config_view(app):
         ("index.html", '/'),
     )
 
+    # 转发 static 文件
     def make_view(fname):
         return lambda *args, **kwargs: app.send_static_file(fname)
 
@@ -175,6 +168,7 @@ def config_before_handler(app):
         email = current_app.config["USER_ADMIN_EMAIL"]
         password = current_app.config["USER_ADMIN_PASSWORD"]
         repo = current_app.config["USER_ADMIN_REPO_URL"]
+        # 添加管理员
         user.add_admin(email, password)
         with db_session:
             u = model.User.get(username=email)

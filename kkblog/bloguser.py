@@ -1,6 +1,7 @@
 # coding:utf-8
 
 from __future__ import unicode_literals
+from __future__ import absolute_import
 from flask import request, url_for
 from flask_restaction import Resource, abort
 from datetime import datetime
@@ -59,7 +60,7 @@ class BlogUser(Resource):
     })
     s_article_repo = ("article_repo", {
         "desc": "文章的git仓库地址",
-        "validate": "re_url",
+        "validate": "url",
         "required": True
     })
     s_git_username = ("git_username", {
@@ -67,7 +68,7 @@ class BlogUser(Resource):
         "validate": "unicode"
     })
     s_website = ("website", {
-        "validate": "re_url",
+        "validate": "url",
     })
     s_latest_commit = ("latest_commit", {
         "validate": "unicode"

@@ -69,7 +69,9 @@ KkBloG是一套基于Python的博客程序，采用Restful架构，简单易拓�
 访问一下这些页面，没问题你就可以开始前端工作了
 
 [http://127.0.0.1:5000/](http://127.0.0.1:5000/)
+
 [http://127.0.0.1:5000/api/article/list](http://127.0.0.1:5000/api/article/list)
+
 [http://127.0.0.1:5000/article/guyskk/article/微信页面整合WebApi](http://127.0.0.1:5000/article/guyskk/article/微信页面整合WebApi)
 
 ### 基本配置
@@ -133,6 +135,8 @@ Python包管理器 pip <https://pip.pypa.io/en/latest/installing.html>
 	wget https://bootstrap.pypa.io/get-pip.py
 	python get-pip.py
 
+	apt-get install libxml2-dev libxslt1-dev python-dev
+	
 用到的Python库
 
 	pip install flask
