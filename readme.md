@@ -233,6 +233,7 @@ Grunt 插件
 	pip install PyMongo
 	pip install Flask-PyMongo
 	pip install SQLAlchemy
+	pip install snownlp
 
 
 数据库 mongodb 或者 mysql, 目前是 sqlite

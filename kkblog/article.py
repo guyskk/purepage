@@ -5,31 +5,32 @@ from __future__ import absolute_import
 from flask_restaction import Resource, abort
 from pony.orm import select, db_session, count
 from kkblog import model
+from kkblog import user
 
 
-def _out_article(art):
+def output_article(art):
     return {
         "content": art.content,
         "toc": art.toc,
-        "meta": _out_meta(art.meta)
+        "meta": output_meta(art.meta)
     }
 
 
-def _out_meta(meta):
+def output_meta(meta):
     tags = [t.name for t in meta.tags]
     git_username = meta.bloguser.git_username
     return dict(meta.to_dict(), tags=tags, git_username=git_username)
 
 
+@db_session
 def get_article(git_username, subdir, filename):
-    with db_session:
-        user = model.BlogUser.get(git_username=git_username)
-        if not user:
-            return None
-        meta = model.ArticleMeta.get(bloguser=user, subdir=subdir, filename=filename)
-        if not meta:
-            return None
-        return _out_article(meta.article)
+    user = model.BlogUser.get(git_username=git_username)
+    if not user:
+        return None
+    meta = model.ArticleMeta.get(bloguser=user, subdir=subdir, filename=filename)
+    if not meta:
+        return None
+    return output_article(meta.article)
 
 
 class Article(Resource):
@@ -41,10 +42,10 @@ class Article(Resource):
         "default": 1,
         "validate": "+int"})
     s_pagesize = ("pagesize", {
-        "desc": "每页的文章数量",
+        "desc": "每页的数量",
         "required": True,
         "default": 10,
-        "validate": "int"})
+        "validate": "+int"})
     s_id = ("id", {
         "desc": "文章ID",
         "required": True,
@@ -102,34 +103,49 @@ class Article(Resource):
         "get": dict([s_git_username, s_subdir, s_filename]),
         "get_by_id": dict([s_id]),
         "get_list": dict([s_pagenum, s_pagesize]),
+        "get_list_by_user": dict([s_git_username, s_pagenum, s_pagesize]),
     }
     schema_outputs = {
         "get": dict([s_meta, s_content, s_toc]),
         "get_by_id": dict([s_meta, s_content, s_toc]),
         "get_list": [dict([s_meta])],
+        "get_list_by_user": [dict([s_meta])],
     }
+
+    @staticmethod
+    def user_role(user_id):
+        return user.user_role(user_id)
 
     def get_list(self, pagenum, pagesize):
         """获取文章列表"""
         with db_session:
             metas = select(m for m in model.ArticleMeta).page(pagenum, pagesize)
-            result = [{"meta": _out_meta(meta)} for meta in metas]
+            result = [{"meta": output_meta(meta)} for meta in metas]
+            return result
+
+    def get_list_by_user(self, git_username, pagenum, pagesize):
+        """获取一个作者的文章列表"""
+        with db_session:
+            metas = select(m for m in model.ArticleMeta
+                           if m.bloguser.git_username == git_username).page(pagenum, pagesize)
+            result = [{"meta": output_meta(meta)} for meta in metas]
             return result
 
     def get(self, git_username, subdir, filename):
         """获取一篇文章"""
-        art = get_article()
-        if not art:
+        art = get_article(git_username, subdir, filename)
+        if art is None:
             abort(404)
         else:
             return art
 
     def get_by_id(self, id):
+        """获取一篇文章"""
         with db_session:
             art = model.Article.get(id=id)
-            if not art:
+            if art is None:
                 abort(404)
-            return _out_article(art)
+            return output_article(art)
 
 
 class Tag(Resource):

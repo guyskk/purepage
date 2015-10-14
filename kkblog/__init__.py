@@ -12,11 +12,12 @@ from validater import add_validater
 
 from kkblog.extensions import api, db
 from kkblog import model
-from kkblog import article
-from kkblog import githooks
 from kkblog import user
-from kkblog import view
 from kkblog import bloguser
+from kkblog import userinfo
+from kkblog import article
+from kkblog import comment
+from kkblog import githooks
 
 __all__ = ["create_app", "api", "db"]
 
@@ -28,7 +29,7 @@ def create_app():
     api_config = {
         "bootstrap": "/static/lib/bootstrap.css",
         "permission_path": "config/permission.json",
-        "auth_secret": "auth_secret",
+        "auth_secret": app.config["API_AUTH_SECRET"],
     }
     api.init_app(bp_api, **api_config)
 
@@ -111,10 +112,10 @@ def config_view(app):
                 abort(404)
             title, cont, toc = art["meta"]["title"], art["content"], art["toc"]
             contents = f.read()
-            contents = contents.decode("utf-8")
-            contents = contents.replace('{{"article_title"}}', title)
-            contents = contents.replace('{{"article_content"}}', cont)
-            contents = contents.replace('{{"article_toc"}}', toc)
+            contents = contents.decode("utf-8")\
+                .replace('{{"article_title"}}', title)\
+                .replace('{{"article_content"}}', cont)\
+                .replace('{{"article_toc"}}', toc)
             return contents
 
     view_urls = (
@@ -140,6 +141,8 @@ def config_api(app):
         githooks.GitHooks,
         user.User,
         bloguser.BlogUser,
+        comment.Comment,
+        userinfo.UserInfo,
     ]
     for res in reslist:
         api.add_resource(res)

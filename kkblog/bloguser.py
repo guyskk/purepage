@@ -7,24 +7,27 @@ from flask_restaction import Resource, abort
 from datetime import datetime
 from pony.orm import select, db_session, count
 from kkblog import model
+from kkblog import user
 import gitutil
 
 
-def _out_user(u):
-    return u.to_dict()
+@db_session
+def user_role(user_id):
+    u = get_bloguser(unicode(user_id))
+    if u is None:
+        return "*"
+    else:
+        return u.role
 
 
-def _get_user(user_id):
-    with db_session:
-        u = model.BlogUser.get(user_id=unicode(user_id))
-        if not u:
-            abort(404)
-        return _out_user(u)
+def get_bloguser(user_id):
+    user_id = unicode(user_id)
+    return model.BlogUser.get(user_id=user_id)
 
 
+@db_session
 def add_admin(user_id, article_repo):
     role = "bloguser.admin"
-    user_id = unicode(user_id)
     return create_or_update_bloguser(user_id, role, article_repo, website="")
 
 
@@ -33,18 +36,17 @@ def create_or_update_bloguser(user_id, role, article_repo, website):
     try:
         __, git_username, __ = gitutil.parse_giturl(article_repo)
     except:
-        abort(400, "invalid article_repo: %s" % article_repo)
+        raise ValueError("invalid article_repo: %s" % article_repo)
     user_id = unicode(user_id)
     config = dict(role=role, article_repo=article_repo,
                   git_username=git_username,
                   website=website, user_system="kkblog", user_id=user_id)
-    with db_session:
-        u = model.BlogUser.get(user_id=user_id)
-        if not u:
-            u = model.BlogUser(date_create=datetime.now(), **config)
-        else:
-            u.set(**config)
-        return _out_user(u)
+    u = get_bloguser(user_id)
+    if not u:
+        u = model.BlogUser(date_create=datetime.now(), **config)
+    else:
+        u.set(**config)
+    return u
 
 
 class BlogUser(Resource):
@@ -101,24 +103,30 @@ class BlogUser(Resource):
 
     @staticmethod
     def user_role(user_id):
-        if user_id is None:
-            return "*"
-        with db_session:
-            u = model.User.get(id=user_id)
-            if u:
-                return u.role
-            else:
-                return "*"
+        return user.user_role(user_id)
 
     def get(self, user_id):
-        return _get_user(user_id)
+        with db_session:
+            u = get_bloguser(user_id)
+            if u is None:
+                abort(404)
+            return u.to_dict()
 
     def get_me(self):
         user_id = request.me["id"]
-        return _get_user(user_id)
+        with db_session:
+            u = get_bloguser(user_id)
+            if u is None:
+                abort(404)
+            return u.to_dict()
 
     def post(self, article_repo, website):
         """开启个人博客或更新资料"""
         role = "bloguser.normal"
         user_id = request.me["id"]
-        return create_or_update_bloguser(user_id, role, article_repo, website)
+        with db_session:
+            try:
+                u = create_or_update_bloguser(user_id, role, article_repo, website)
+                return u.to_dict()
+            except Exception as ex:
+                abort(400, str(ex))

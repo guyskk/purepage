@@ -5,13 +5,11 @@ from __future__ import absolute_import
 import os
 from flask import request, current_app
 from flask_restaction import Resource, abort
-import sys
 from pony.orm import db_session
-from kkblog import db
+import gitutil
 from kkblog.article_util import read_articles, read_modified_articles
 from kkblog import model
-from gitutil import gitutil
-import json
+from kkblog import bloguser
 
 
 def update_local(repo_url, owner):
@@ -120,14 +118,7 @@ class GitHooks(Resource):
 
     @staticmethod
     def user_role(user_id):
-        if user_id is None:
-            return "*"
-        with db_session:
-            u = model.BlogUser.get(user_id=unicode(user_id))
-            if u:
-                return u.role
-            else:
-                return "*"
+        return bloguser.user_role(user_id)
 
     def post(self):
         """响应github webhooks更新数据"""
