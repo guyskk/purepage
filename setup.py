@@ -3,7 +3,7 @@
 from setuptools import setup
 setup(
     name="kkblog",
-    version="0.0.2",
+    version="0.0.3",
     description="kkblog",
     author="kk",
     url="https://github.com/guyskk/kkblog",
@@ -12,7 +12,7 @@ setup(
     install_requires=[
         'flask>=0.10.1',
         'pyjwt>=1.4',
-        "flask-restaction>=0.17.0",
+        "flask-restaction>=0.17.1",
         "flask-cors>=2.0",
         "markdown>=2.6",
         "pony>=0.6.1",
