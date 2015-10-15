@@ -1,2 +1,3 @@
 recursive-include kkblog/templates *
 recursive-include kkblog/static *
+recursive-include kkblog/config *

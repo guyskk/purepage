@@ -9,6 +9,7 @@ setup(
     url="https://github.com/guyskk/kkblog",
     license="MIT",
     packages=["kkblog", "kkblog.model", "kkblog.config"],
+    # py_modules=["manage"],
     install_requires=[
         'flask>=0.10.1',
         'pyjwt>=1.4',

@@ -48,8 +48,9 @@ def update_db(mddir, user_id, old_commit=None):
     for subdir, filename in deleted_files:
         with db_session:
             meta = model.ArticleMeta.get(subdir=subdir, filename=filename)
-            if meta:
+            if meta is not None:
                 meta.article.delete()
+                meta.delete()
 
     # update files
     with db_session:
@@ -75,6 +76,7 @@ def clear_db(user_id):
             abort(404)
         for m in u.article_metas:
             m.article.delete()
+            m.delete()
         u.latest_commit = ""
 
 

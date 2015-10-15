@@ -1,28 +1,28 @@
 {
-    "user.admin": {
-        "*": []
-    }, 
     "*": {
-        "article": ["get", "get_list"],
-        "tag": ["get", "get_list"],
+        "comment": ["get", "get_list_by_article", "get_list_by_article_id"],
+        "githooks": ["post"],
+        "bloguser": ["get"],
+        "tag": ["get_list"],
         "user": ["get", "post_login", "post_fogot_password",
             "post_reset_password", "post_register"
         ],
-        "githooks": ["post"],
-        "bloguser":["get"]
+        "article": ["get", "get_by_id", "get_list", "get_list_by_user"],
+        "userinfo": ["get", "get_by_username"]
+    },
+    "user.admin": {
+        "*": []
     },
     "user.normal": {
-        "user": ["get_me", "delete", "post_logout",
-            "put", "put_password"
-        ],
-        "bloguser*":[]
+        "comment": ["post", "get_list_by_user"],
+        "user": ["get_me", "delete", "post_logout", "put_password"],
+        "bloguser": ["post", "get_me"],
+        "userinfo": ["get_me", "put"]
     },
-    "bloguser.normal":{
-        "article*": [],
+    "bloguser.admin": {
+        "*": []
+    },
+    "bloguser.normal": {
         "githooks": ["post", "post_update"]
-    },
-    "bloguser.admin":{
-        "article*": [],
-        "githooks*": []
     }
 }
