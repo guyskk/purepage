@@ -42,28 +42,30 @@ def update_db(mddir, user_id, old_commit=None):
         fdir, fname = os.path.split(path)
         subdir = os.path.basename(fdir)
         return subdir, fname
-    # delete files
+
     deleted_files = [parse_path(path) for status, path in diff
                      if status == "D"]
-    for subdir, filename in deleted_files:
-        with db_session:
-            meta = model.ArticleMeta.get(subdir=subdir, filename=filename)
-            if meta is not None:
-                meta.article.delete()
-                meta.delete()
-
-    # update files
     with db_session:
         u = model.BlogUser.get(user_id=user_id)
         if not u:
             abort(404)
+        # delete files
+        for subdir, filename in deleted_files:
+            meta = model.ArticleMeta.get(bloguser=u, subdir=subdir, filename=filename)
+            if meta is not None:
+                meta.article.delete()
+                meta.delete()
+
+        # update files
         for content, toc, meta in read_modified_articles(mddir, diff):
             m_tags = _get_mtags(meta)
-            m_meta = model.ArticleMeta.get(subdir=subdir, filename=filename)
-            if m_meta:
+            m_meta = model.ArticleMeta.get(bloguser=u, subdir=subdir, filename=filename)
+            if m_meta is not None:
+                # modified
                 m_meta.set(**dict(meta, tags=m_tags))
                 m_meta.article.set(content=content, toc=toc)
             else:
+                # add new
                 m_meta = model.ArticleMeta(**dict(meta, tags=m_tags, bloguser=u))
                 m_article = model.Article(
                     content=content, toc=toc, meta=m_meta)

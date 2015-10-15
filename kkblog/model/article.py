@@ -15,9 +15,12 @@ class Article(db.Entity):
 
 class ArticleMeta(db.Entity):
     article = Optional("Article")
+
     bloguser = Required("BlogUser")
     subdir = Required(unicode)
     filename = Required(unicode)
+    composite_key(bloguser, subdir, filename)
+
     title = Required(unicode)
     subtitle = Optional(unicode)
     tags = Set("Tag")
@@ -41,6 +44,8 @@ class Comment(db.Entity):
     article_bloguser = Required("BlogUser")
     article_subdir = Required(unicode)
     article_filename = Required(unicode)
+    composite_key(article_bloguser, article_subdir, article_filename)
+
     content = Required(unicode)
     date = Required(datetime)
     nickname = Required(unicode)

@@ -19,7 +19,7 @@ from kkblog import article
 from kkblog import comment
 from kkblog import githooks
 
-__all__ = ["create_app", "api", "db"]
+__all__ = [str("create_app"), str("api"), str("db")]
 
 
 def create_app():
