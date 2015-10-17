@@ -3,8 +3,7 @@
 from __future__ import unicode_literals
 from __future__ import absolute_import
 from flask import request, url_for, current_app
-from flask_restaction import Resource, abort
-
+from flask.ext.restaction import Resource, abort
 import jwt
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -194,7 +193,7 @@ class User(Resource):
     }
 
     def __init__(self):
-        self.auth_secret = current_app.config["FORGOT_PASSWORD_AUTH_SECRET"]
+        self.auth_secret = current_app.config["USER_AUTH_SECRET"]
 
     @staticmethod
     def user_role(user_id):

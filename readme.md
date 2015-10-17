@@ -72,7 +72,7 @@ KkBloG 是一套基于 Python 的博客程序，采用 Restful 架构，简单�
 
 [http://127.0.0.1:5000/api/article/list](http://127.0.0.1:5000/api/article/list)
 
-[http://127.0.0.1:5000/article/guyskk/2015/微信页面整合WebApi](http://127.0.0.1:5000/article/guyskk/article/微信页面整合WebApi)
+[http://127.0.0.1:5000/article/guyskk/2015/微信页面整合WebApi](http://127.0.0.1:5000/article/guyskk/2015/微信页面整合WebApi)
 
 ### 基本配置
 

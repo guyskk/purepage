@@ -3,7 +3,7 @@
 from setuptools import setup
 setup(
     name="kkblog",
-    version="0.0.3",
+    version="0.0.4",
     description="kkblog",
     author="kk",
     url="https://github.com/guyskk/kkblog",
@@ -13,12 +13,13 @@ setup(
     install_requires=[
         'flask>=0.10.1',
         'pyjwt>=1.4',
-        "flask-restaction>=0.17.1",
+        "flask-restaction>=0.17.3",
         "flask-cors>=2.0",
+        "flask-cache>=0.13.0",
         "markdown>=2.6",
         "pony>=0.6.1",
         "pyquery>=1.2",
-        "pygitutil>=0.0.3"
+        "pygitutil>=0.0.3",
     ],
     dependency_links=[
         # "https://github.com/mitsuhiko/flask/tarball/master",

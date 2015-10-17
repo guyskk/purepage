@@ -1,8 +1,9 @@
 kkblog/static/node_modules
 kkblog/static/resdocs.html
 kkblog/static/res.js
+data/
 kkblog/data/
-__article_repo__
+
 *.db
 
 # pkg resource

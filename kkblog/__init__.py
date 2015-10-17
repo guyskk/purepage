@@ -10,7 +10,7 @@ import os
 from datetime import datetime
 from validater import add_validater
 
-from kkblog.extensions import api, db
+from kkblog.extensions import api, db, cache
 from kkblog import model
 from kkblog import user
 from kkblog import bloguser
@@ -25,6 +25,7 @@ __all__ = [str("create_app"), str("api"), str("db")]
 def create_app():
     app = Flask(__name__)
     config_app(app)
+
     bp_api = Blueprint('api', __name__, static_folder='static')
     api_config = {
         "bootstrap": "/static/lib/bootstrap.css",
@@ -32,30 +33,52 @@ def create_app():
         "auth_secret": app.config["API_AUTH_SECRET"],
     }
     api.init_app(bp_api, **api_config)
+    if app.config.get("ALLOW_CORS"):
+        config_cors(app)
 
+    cache.init_app(app, config={'CACHE_TYPE': 'simple'})
     config_validater(app)
     config_view(app)
     config_api(app)
     config_db(app)
     config_error_handler(app)
     config_before_handler(app)
+    config_after_handler(app)
 
     app.register_blueprint(bp_api, url_prefix='/api')
+
     return app
 
 
+def config_cors(app):
+    # 跨域
+    from flask.ext.cors import CORS
+    auth_header = app.config.get("API_AUTH_HEADER") or api.auth_header
+    resources = {
+        r"*": {},
+        r"/api/user/login": {
+            "expose_headers": [auth_header],
+        },
+        r"/api/user/logout": {
+            "expose_headers": [auth_header],
+        }
+    }
+    CORS(app, resources=resources)
+
+
 def config_app(app):
+
     app.config.from_object('kkblog.config.default_config')
     if 'KKBLOG_CONFIG' in os.environ:
         app.config.from_envvar('KKBLOG_CONFIG')
-    app.config["ARTICLE_DEST"] = os.path.join(app.root_path, app.config["ARTICLE_DEST"])
     # pony_orm debug 信息
-    if app.config["DEBUG"]:
+    if app.config.get("SQL_DEBUG"):
         sql_debug(True)
-    # 跨域
-    if app.config["ALLOW_CORS"]:
-        from flask.ext.cors import CORS
-        CORS(app)
+    # 设置 debug_level
+    if app.config.get("DEBUG_LEVEL"):
+        import logging
+        level = getattr(logging, app.config.get("DEBUG_LEVEL"))
+        logging.basicConfig(level=level)
     # create data dir
     dir_data = os.path.join(app.root_path, "data")
     if not os.path.exists(dir_data):
@@ -176,3 +199,11 @@ def config_before_handler(app):
         with db_session:
             u = model.User.get(username=email)
             bloguser.add_admin(u.id, repo)
+
+
+def config_after_handler(app):
+
+    @app.after_request
+    def add_cors_header(resp):
+        # resp.headers.add("Access-Control-Allow-Headers", "accept, content-type, Authorization")
+        return resp

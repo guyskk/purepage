@@ -1,11 +1,12 @@
 # coding:utf-8
 
-from __future__ import unicode_literals
 from __future__ import absolute_import
 
-from flask_restaction import Api
+from flask.ext.restaction import Api
 from pony.orm import Database
+from flask.ext.cache import Cache
 
-__all__ = ['api', 'db']
+__all__ = ['api', 'db', 'cache']
 api = Api()
 db = Database()
+cache = Cache()

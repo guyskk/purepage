@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 from __future__ import absolute_import
 from flask import request, url_for
-from flask_restaction import Resource, abort
+from flask.ext.restaction import Resource, abort
 from datetime import datetime
 from pony.orm import select, db_session, count
 from kkblog import model

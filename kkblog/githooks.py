@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from __future__ import absolute_import
 import os
 from flask import request, current_app
-from flask_restaction import Resource, abort
+from flask.ext.restaction import Resource, abort
 from pony.orm import db_session
 import gitutil
 from kkblog.article_util import read_articles, read_modified_articles

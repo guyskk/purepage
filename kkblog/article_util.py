@@ -91,7 +91,7 @@ def read_articles(mddir):
     for subdir in os.listdir(mddir):
         dir_path = os.path.join(mddir, subdir)
         if not p_subdir.match(subdir) or not os.path.isdir(dir_path):
-            app.logger.info("skip subdir: %s" % subdir)
+            app.logger.info("skip: %s" % subdir)
             continue
         for fname in os.listdir(dir_path):
             if os.path.splitext(fname)[1] != ".md":
