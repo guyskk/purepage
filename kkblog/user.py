@@ -73,7 +73,7 @@ def reset_password(token, new_password, auth_secret, auth_alg="HS256"):
     if user is None:
         raise ValueError("user id=%s not exists" % tk["id"])
 
-    if user.modify_date != tk["modify_date"]:
+    if user.date_modify.isoformat() != tk["date_modify"]:
         raise InvalidTokenError("password has been changed yet, this token is invalid")
 
     pwdhash = gen_pwdhash(new_password)
@@ -89,7 +89,7 @@ def fogot_password(username, auth_secret, auth_alg="HS256", auth_exp=1800):
     token = {
         "id": user.id,
         "exp": exp,
-        "date_modify": user.date_modify,
+        "date_modify": user.date_modify.isoformat(),
     }
     return jwt.encode(token, auth_secret, algorithm=auth_alg), user
 

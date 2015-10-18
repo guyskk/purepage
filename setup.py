@@ -19,7 +19,7 @@ setup(
         "markdown>=2.6",
         "pony>=0.6.1",
         "pyquery>=1.2",
-        "pygitutil>=0.0.3",
+        "pygitutil>=0.0.5",
     ],
     dependency_links=[
         # "https://github.com/mitsuhiko/flask/tarball/master",
