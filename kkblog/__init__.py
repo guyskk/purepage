@@ -10,7 +10,7 @@ import os
 from datetime import datetime
 from validater import add_validater
 
-from kkblog.extensions import api, db, cache
+from kkblog.extensions import api, db, cache, mail
 from kkblog import model
 from kkblog import user
 from kkblog import bloguser
@@ -19,6 +19,7 @@ from kkblog import article
 from kkblog import comment
 from kkblog import githooks
 
+# __all__ must be str, can't be unicode
 __all__ = [str("create_app"), str("api"), str("db")]
 
 
@@ -27,16 +28,14 @@ def create_app():
     config_app(app)
 
     bp_api = Blueprint('api', __name__, static_folder='static')
-    api_config = {
-        "bootstrap": "/static/lib/bootstrap.css",
-        "permission_path": "config/permission.json",
-        "auth_secret": app.config["API_AUTH_SECRET"],
-    }
-    api.init_app(bp_api, **api_config)
+    api.init_app(bp_api)
+    api.config(app.config)
     if app.config.get("ALLOW_CORS"):
         config_cors(app)
 
-    cache.init_app(app, config={'CACHE_TYPE': 'simple'})
+    cache.init_app(app)
+    mail.init_app(app)
+
     config_validater(app)
     config_view(app)
     config_api(app)
@@ -69,8 +68,7 @@ def config_cors(app):
 def config_app(app):
 
     app.config.from_object('kkblog.config.default_config')
-    if 'KKBLOG_CONFIG' in os.environ:
-        app.config.from_envvar('KKBLOG_CONFIG')
+    app.config.from_envvar('KKBLOG_CONFIG', silent=True)
     # pony_orm debug 信息
     if app.config.get("SQL_DEBUG"):
         sql_debug(True)
@@ -79,10 +77,12 @@ def config_app(app):
         import logging
         level = getattr(logging, app.config.get("DEBUG_LEVEL"))
         logging.basicConfig(level=level)
-    # create data dir
-    dir_data = os.path.join(app.root_path, "data")
-    if not os.path.exists(dir_data):
-        os.makedirs(dir_data)
+    # create dir_article
+    dir_article = app.config["ARTICLE_DEST"]
+    if not os.path.isabs(dir_article):
+        dir_article = os.path.join(app.root_path, dir_article)
+    if not os.path.exists(dir_article):
+        os.makedirs(dir_article)
 
 
 def config_validater(app):
@@ -122,6 +122,13 @@ def config_view(app):
 
     pattern_article_path = re.compile(r"(.*)/(.*)/(.*)")
 
+    def render_mark(text, **kwargs):
+        """将标记替换成具体内容"""
+        for k, v in kwargs.items():
+            mark = '{{"%s"}}' % k
+            text = text.replace(mark, v)
+        return text
+
     # article 页面需要服务端部分渲染
     @app.route('/article/<path:path>')
     def page_article(path):
@@ -134,11 +141,9 @@ def config_view(app):
             if not art:
                 abort(404)
             title, cont, toc = art["meta"]["title"], art["content"], art["toc"]
-            contents = f.read()
-            contents = contents.decode("utf-8")\
-                .replace('{{"article_title"}}', title)\
-                .replace('{{"article_content"}}', cont)\
-                .replace('{{"article_toc"}}', toc)
+            contents = f.read().decode("utf-8")
+            contents = render_mark(contents, article_title=title,
+                                   article_content=cont, article_toc=toc)
             return contents
 
     view_urls = (
@@ -179,9 +184,14 @@ def config_error_handler(app):
 
 
 def config_db(app):
-    db.bind(app.config["DATABASE_NAME"],
-            app.config["DATABASE_PATH"],
-            create_db=True)
+    # 让sqlite数据库文件位置相对于应用程序根目录
+    params = app.config["DATABASE_PARAMS"]
+    if "filename" in params and not os.path.isabs(params["filename"]):
+        params["filename"] = os.path.join(app.root_path, params["filename"])
+    db_dir = os.path.dirname(params["filename"])
+    if not os.path.exists(db_dir):
+        os.makedirs(db_dir)
+    db.bind(app.config["DATABASE_NAME"], create_db=True, **params)
     db.generate_mapping(create_tables=True)
 
 
@@ -202,8 +212,4 @@ def config_before_handler(app):
 
 
 def config_after_handler(app):
-
-    @app.after_request
-    def add_cors_header(resp):
-        # resp.headers.add("Access-Control-Allow-Headers", "accept, content-type, Authorization")
-        return resp
+    pass

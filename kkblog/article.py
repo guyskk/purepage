@@ -6,6 +6,7 @@ from flask.ext.restaction import Resource, abort
 from pony.orm import select, db_session, count
 from kkblog import model
 from kkblog import user
+from kkblog import cache
 
 
 def output_article(art):
@@ -116,6 +117,7 @@ class Article(Resource):
     def user_role(user_id):
         return user.user_role(user_id)
 
+    @cache.cached(timeout=3)
     def get_list(self, pagenum, pagesize):
         """获取文章列表"""
         with db_session:
@@ -123,6 +125,7 @@ class Article(Resource):
             result = [{"meta": output_meta(meta)} for meta in metas]
             return result
 
+    @cache.cached(timeout=3)
     def get_list_by_user(self, git_username, pagenum, pagesize):
         """获取一个作者的文章列表"""
         with db_session:
@@ -131,6 +134,7 @@ class Article(Resource):
             result = [{"meta": output_meta(meta)} for meta in metas]
             return result
 
+    @cache.cached(timeout=3)
     def get(self, git_username, subdir, filename):
         """获取一篇文章"""
         art = get_article(git_username, subdir, filename)
@@ -139,6 +143,7 @@ class Article(Resource):
         else:
             return art
 
+    @cache.cached(timeout=3)
     def get_by_id(self, id):
         """获取一篇文章"""
         with db_session:

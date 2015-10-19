@@ -5,11 +5,10 @@ setup(
     name="kkblog",
     version="0.0.4",
     description="kkblog",
-    author="kk",
+    author="guyskk",
     url="https://github.com/guyskk/kkblog",
     license="MIT",
     packages=["kkblog", "kkblog.model", "kkblog.config"],
-    # py_modules=["manage"],
     install_requires=[
         'flask>=0.10.1',
         'pyjwt>=1.4',
@@ -20,6 +19,7 @@ setup(
         "pony>=0.6.1",
         "pyquery>=1.2",
         "pygitutil>=0.0.5",
+        "flask-mail>=0.9.1",
     ],
     dependency_links=[
         # "https://github.com/mitsuhiko/flask/tarball/master",

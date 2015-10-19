@@ -4,7 +4,7 @@
         "githooks": ["post"],
         "bloguser": ["get"],
         "tag": ["get_list"],
-        "user": ["get", "post_login", "post_fogot_password",
+        "user": ["get", "post_login", "post_forgot_password",
             "post_reset_password", "post_register"
         ],
         "article": ["get", "get_by_id", "get_list", "get_list_by_user"],

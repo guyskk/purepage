@@ -74,12 +74,25 @@ KkBloG 是一套基于 Python 的博客程序，采用 Restful 架构，简单�
 
 [http://127.0.0.1:5000/article/guyskk/2015/微信页面整合WebApi](http://127.0.0.1:5000/article/guyskk/2015/微信页面整合WebApi)
 
+注意：找回密码功能需要配置Mail账号密码
+
 ### 基本配置
 
-配置文件在 `kkblog/kkblog/config/` 目录里面
+#### 配置Mail账号密码（必须）
+
+在 manage.py 文件同级目录下新建 kkblog_config.py，填写你的信息
+
+	MAIL_SERVER = "例如smtp.qq.com"
+	MAIL_USERNAME = "you_email@email.com"
+	MAIL_DEFAULT_SENDER = "you_email@email.com"
+	MAIL_PASSWORD = "you_email_password"
+
+kkblog_config.py 文件是部署到生产环境的配置，修改后需要重启程序才能生效。
+
+
+#### 其他配置文件在 `kkblog/kkblog/config/` 目录里面
 
 - default_config.py 默认配置
-- kkblog_config.cfg 部署到生产环境的配置
 - permission.json 权限配置
 
 default_config.py
@@ -88,7 +101,7 @@ default_config.py
 	USER_ADMIN_PASSWORD 管理员密码
 	USER_ADMIN_REPO_URL 管理员github博客仓库的url(要https开头的)
 
-博客仓库
+#### 博客仓库
 	
 	/ 仓库根目录
 	/subdir 子目录

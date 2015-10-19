@@ -9,8 +9,8 @@ env.passwords = {
 }
 # 执行命令的服务器
 env.hosts = [
-    # "kk@127.0.0.1:2333",
-    "guyskk@222.204.27.1:22"
+    "kk@127.0.0.1:2333",
+    # "guyskk@222.204.27.1:22"
 ]
 
 DIST_DIR = "/tmp/kkblog/dist"

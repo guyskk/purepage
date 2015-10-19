@@ -8,9 +8,8 @@ import jwt
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 from pony.orm import select, db_session, count
-
-from kkblog import api
-from kkblog import model
+from kkblog import api, model, mail
+from flask.ext.mail import Message
 
 
 class InvalidTokenError(Exception):
@@ -81,7 +80,7 @@ def reset_password(token, new_password, auth_secret, auth_alg="HS256"):
     return user
 
 
-def fogot_password(username, auth_secret, auth_alg="HS256", auth_exp=1800):
+def forgot_password(username, auth_secret, auth_alg="HS256", auth_exp=1800):
     user = model.User.get(username=username)
     if user is None:
         raise ValueError("user %s not registered" % username)
@@ -174,7 +173,7 @@ class User(Resource):
         "post_register": dict([s_email, s_password, s_role]),
         "post_login": dict([s_username, s_password]),
         "post_logout": None,
-        "post_fogot_password": dict([s_username]),
+        "post_forgot_password": dict([s_username]),
         "post_reset_password": dict([s_token, s_password]),
         "put_password": dict([s_password, s_new_password]),
         "delete": None,
@@ -186,7 +185,7 @@ class User(Resource):
         "post_register": s_out,
         "post_login": s_out,
         "post_logout": dict([s_message]),
-        "post_fogot_password": dict([s_message]),
+        "post_forgot_password": dict([s_message]),
         "post_reset_password": s_out,
         "put_password": s_out,
         "delete": dict([s_message]),
@@ -235,14 +234,32 @@ class User(Resource):
         """退出登录"""
         return {"message": url_for("api.user@login")}
 
-    def post_fogot_password(self, username):
+    def post_forgot_password(self, username):
         """忘记密码/申请重新设置密码"""
+        email = None
         with db_session:
             try:
-                token = fogot_password(username, auth_secret=self.auth_secret)
-            except Exception as ex:
+                token, user = forgot_password(username, auth_secret=self.auth_secret)
+                email = user.userinfo.email
+            except ValueError as ex:
                 abort(400, str(ex))
+
         # 发送邮件
+        tmpl = """
+        <p><b>亲爱的{username}，你好，</b></p>
+        <p>重置密码链接如下：</p>
+        <a href="{link}">{link}</a>
+        <p>请在30分钟内点击此链接，并进入下一步重新设置密码。</p>
+        <p>如果你并未发出此请求，请忽略此邮件，无需采取进一步操作。</p>
+        <p>本邮件由 <a href="http://www.kkblog.me">http://www.kkblog.me</a>
+        发送，请勿直接回复。</p>
+        """
+        msg = Message("重新设置密码", recipients=[email])
+        link = "%s?token=%s" % (url_for("api.user@reset_password", _external=True), token)
+        html = tmpl.format(username=username, link=link)
+        msg.html = html
+        mail.send(msg)
+
         return {"message": "重置密码链接已发送到您的邮箱，请查看邮件"}
 
     def post_reset_password(self, token, password):
@@ -251,7 +268,7 @@ class User(Resource):
             try:
                 user = reset_password(token, password, auth_secret=self.auth_secret)
                 return user.to_dict()
-            except Exception as ex:
+            except (InvalidTokenError, ValueError) as ex:
                 abort(400, str(ex))
 
     def put_password(self, password, new_password):

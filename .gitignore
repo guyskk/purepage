@@ -3,6 +3,8 @@ kkblog/static/resdocs.html
 kkblog/static/res.js
 data/
 kkblog/data/
+kkblog_config.py
+fab_settings.py
 
 *.db
 
