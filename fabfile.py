@@ -1,44 +1,36 @@
 # coding:utf-8
+import sys
+from fabric.api import env, cd, local, put, run
+from fabric.api import sudo
+from fabric.contrib.files import exists
+try:
+    import fab_settings as settings
+except ImportError:
+    print "You must provide a valid fab_settings.py module in this directory"
+    sys.exit(1)
 
-from fabric.api import *
-
-# 使用远程命令的用户名
-
-env.passwords = {
-    # "kk@127.0.0.1:2333": "kk",
-}
-# 执行命令的服务器
-env.hosts = [
-    "kk@127.0.0.1:2333",
-    # "guyskk@222.204.27.1:22"
-]
-
-DIST_DIR = "/tmp/kkblog/dist"
-
-files = [
-    "kkblog_nginx.conf",
-    "kkblog_uwsgi.ini",
-    "deploy.sh",
-    "manage.sh",
-    "manage.py",
-    "requires.txt"
-]
+env.hosts = settings.hosts
+repo_url = "https://github.com/guyskk/kkblog.git"
+tmp_dir = "/tmp/kkblog-dist"
 
 
-def pack():
-    # 创建一个新的分发源，格式为 tar 压缩包
-    local('python setup.py sdist --formats=gztar', capture=False)
+def deploy(from_git=False):
 
+    # 清理临时目录
+    if exists(tmp_dir):
+        sudo("rm -R %s/*" % tmp_dir)
+    else:
+        run("mkdir %s" % tmp_dir)
 
-def deploy():
-    print("Executing on %(host)s as %(user)s" % env)
-    # 定义分发版本的名称和版本号
-    dist = local('python setup.py --fullname', capture=True).strip()
-    # 创建发布目录
-    run("test -d %s || mkdir -p %s" % (DIST_DIR, DIST_DIR))
-    # 把 tar 压缩包格式的源代码上传到服务器
-    put("dist/%s.tar.gz" % dist, "%s/kkblog.tar.gz" % DIST_DIR)
-    for f in files:
-        put(f, DIST_DIR)
-    with cd(DIST_DIR):
-        sudo("bash deploy.sh")
+    # 更新代码
+    if from_git:
+        with cd(tmp_dir):
+            run("git clone %s" % repo_url)
+    else:
+        local("git archive master --output ./kkblog.zip")
+        put("./kkblog.zip", tmp_dir)
+        run("unzip {0}/kkblog.zip -d {0}/kkblog".format(tmp_dir))
+
+    # 部署
+    with cd("%s/kkblog" % tmp_dir):
+        sudo("bash manage.sh")

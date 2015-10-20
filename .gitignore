@@ -5,6 +5,7 @@ data/
 kkblog/data/
 kkblog_config.py
 fab_settings.py
+kkblog.zip
 
 *.db
 

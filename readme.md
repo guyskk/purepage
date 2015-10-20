@@ -163,15 +163,11 @@ default_config.py
 
 #### 本地
 
-修改 fabfile.py
+在 fabfile.py 同级目录下，新建 fab_settings.py，填写服务器信息
 	
-	# 服务器：密码
-	env.passwords = {
-	    "kk@127.0.0.1:2333": "kk",
-	}
-	# 执行命令的服务器
-	env.hosts = [
-	    "kk@127.0.0.1:2333",
+	hosts = [
+	    "username@host_ip:port",
+	    #例如"guyskk@127.0.0.1:22"
 	]
 
 部署
