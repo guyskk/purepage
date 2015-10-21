@@ -13,7 +13,7 @@ from kkblog import user
 def update_userinfo(id, **info):
     u = model.User.get(id=id)
     if u:
-        u.info.set(info)
+        u.userinfo.set(info)
         return u
     else:
         return None
@@ -77,7 +77,7 @@ class UserInfo(Resource):
             u = user.get_user_by_id(id)
             if u is None:
                 abort(404)
-            return u.info.to_dict()
+            return u.userinfo.to_dict()
 
     def get_by_username(self, username):
         """获取用户的公开信息"""
@@ -85,7 +85,7 @@ class UserInfo(Resource):
             u = model.User.get(username=username)
             if u is None:
                 abort(404)
-            return u.info.to_dict()
+            return u.userinfo.to_dict()
 
     def get_me(self):
         """获取用户的个人信息"""
@@ -94,7 +94,7 @@ class UserInfo(Resource):
             u = user.get_user_by_id(id)
             if u is None:
                 abort(404)
-            return u.info.to_dict()
+            return u.userinfo.to_dict()
 
     def put(self, **info):
         """修改个人信息"""
@@ -103,4 +103,4 @@ class UserInfo(Resource):
             u = update_userinfo(id, **info)
             if u is None:
                 abort(404)
-            return u.info.to_dict()
+            return u.userinfo.to_dict()

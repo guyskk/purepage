@@ -1,3 +1,9 @@
 recursive-include kkblog/templates *
 recursive-include kkblog/static *
+prune kkblog/static/node_modules
 recursive-include kkblog/config *
+include kkblog_config.py
+include kkblog_nginx.conf
+include kkblog_uwsgi.ini
+include deploy.sh
+include readme.md

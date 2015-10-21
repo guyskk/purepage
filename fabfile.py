@@ -14,23 +14,20 @@ repo_url = "https://github.com/guyskk/kkblog.git"
 tmp_dir = "/tmp/kkblog-dist"
 
 
-def deploy(from_git=False):
+def deploy():
 
     # 清理临时目录
     if exists(tmp_dir):
         sudo("rm -R %s" % tmp_dir)
     run("mkdir %s" % tmp_dir)
 
-    # 更新代码
-    if from_git:
-        with cd(tmp_dir):
-            run("git clone %s" % repo_url)
-    else:
-        local("git archive HEAD --output ./kkblog.zip")
-        put("./kkblog.zip", tmp_dir)
-        run("unzip {0}/kkblog.zip -d {0}/kkblog".format(tmp_dir))
-        put("./kkblog_config.py", "%s/kkblog" % tmp_dir)
+    # 打包
+    local("python setup.py sdist --formats gztar")
+    put("dist/kkblog-1.0.tar.gz", tmp_dir)
+    with cd(tmp_dir):
+        run("tar -xzf kkblog-1.0.tar.gz && mv kkblog-1.0 kkblog")
 
     # 部署
     with cd("%s/kkblog" % tmp_dir):
-        sudo("bash manage.sh")
+        run("dos2unix deploy.sh")
+        sudo("bash deploy.sh")

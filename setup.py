@@ -3,13 +3,15 @@
 from setuptools import setup
 setup(
     name="kkblog",
-    version="0.0.4",
+    version="1.0",  # don't change this, the version used when deploy by sdist
     description="kkblog",
     author="guyskk",
+    author_email="1316792450@qq.com",
     url="https://github.com/guyskk/kkblog",
     license="MIT",
     packages=["kkblog", "kkblog.model", "kkblog.config"],
     py_modules=["manage"],
+    scripts=['manage.py'],
     install_requires=[
         'flask>=0.10.1',
         'pyjwt>=1.4',
