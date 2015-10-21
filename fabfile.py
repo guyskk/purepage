@@ -18,18 +18,18 @@ def deploy(from_git=False):
 
     # 清理临时目录
     if exists(tmp_dir):
-        sudo("rm -R %s/*" % tmp_dir)
-    else:
-        run("mkdir %s" % tmp_dir)
+        sudo("rm -R %s" % tmp_dir)
+    run("mkdir %s" % tmp_dir)
 
     # 更新代码
     if from_git:
         with cd(tmp_dir):
             run("git clone %s" % repo_url)
     else:
-        local("git archive master --output ./kkblog.zip")
+        local("git archive HEAD --output ./kkblog.zip")
         put("./kkblog.zip", tmp_dir)
         run("unzip {0}/kkblog.zip -d {0}/kkblog".format(tmp_dir))
+        put("./kkblog_config.py", "%s/kkblog" % tmp_dir)
 
     # 部署
     with cd("%s/kkblog" % tmp_dir):
