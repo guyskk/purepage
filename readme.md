@@ -126,6 +126,10 @@ default_config.py
 
 #### 服务器上
 
+安装 git
+
+	sudo apt-get install git
+
 安装 python2.7
 
 	sudo apt-get install python2.7
@@ -143,6 +147,10 @@ default_config.py
 
 	sudo pip install virtualenv
 
+安装 uwsgi
+
+	sudo pip install uwsgi
+
 安装 nginx
 
 	sudo apt-get install nginx
@@ -153,17 +161,26 @@ default_config.py
 	sudo vim nginx.conf
 
 	修改日志文件路径
-	access_log /var/www/nginx/log/nginx_access.log;
-    error_log /var/www/nginx/log/nginx_error.log;
+	access_log /var/www/log/nginx_access.log;
+    error_log /var/www/log/nginx_error.log;
 
 	添加配置文件
     # include /etc/nginx/conf.d/*.conf;
     # include /etc/nginx/sites-enabled/*;
-    include /var/www/nginx/config/*.conf;
+    include /var/www/config/nginx/*.conf;
+
+配置 uwsgi 开机启动
+
+在 `/etc/init/` 目录下新建 `uwsgi.conf`，内容如下
+
+	description "start uwsgi on startup"
+	start on runlevel [2345]
+	stop on runlevel [06]
+	exec uwsgi --emperor /var/www/config/uwsgi --daemonize /var/www/log/uwsgi_emperor.log
 
 #### 本地
 
-在 fabfile.py 同级目录下，新建 fab_settings.py，填写服务器信息
+在 `fabfile.py` 同级目录下，新建 `fab_settings.py`，填写服务器信息
 	
 	hosts = [
 	    "username@host_ip:port",
@@ -172,18 +189,20 @@ default_config.py
 
 部署
 
-	fab pack deploy
+	fab deploy
+
 
 部署好之后会自动启动
 
 如果要手动启动或重启，在服务器上执行
 	
-	cd /var/www/nginx/kkblog
-	sudo bash manage.sh
+	cd /var/www/kkblog
+	sudo bash deploy.sh
+
 
 ### 前端
 
-前端最好是用 angular.js 框架来做
+前端最好是用 angular.js 框架结合 res.js 来做
 
 我只做了文章内容页面，用了定制的 bootstrap ，样式用的是 less 语法，使用 grunt 自动化构建。
 
@@ -236,6 +255,8 @@ Grunt 插件
 	pip install pony
 	pip install pyquery
 	pip install pygitutil
+	pip install flask-mail
+	pip install flask-cache
 
 以后可能会用到的 Python 库
 

@@ -10,7 +10,7 @@ uwsgi_config_dir=${config_dir}/uwsgi
 env_dir=${app_dir}/venv
 
 test -d $app_dir || mkdir $app_dir
-cp -r ${tmp_dir}/kkblog ${app_dir}/../
+test -d ${tmp_dir}/kkblog && cp -r ${tmp_dir}/kkblog ${app_dir}/../
 
 test -d $log_dir || mkdir $log_dir
 test -d $config_dir || mkdir $config_dir

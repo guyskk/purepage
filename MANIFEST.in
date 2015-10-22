@@ -1,6 +1,8 @@
 recursive-include kkblog/templates *
 recursive-include kkblog/static *
 prune kkblog/static/node_modules
+exclude kkblog/static/res.js
+exclude kkblog/static/resdocs.html
 recursive-include kkblog/config *
 include kkblog_config.py
 include kkblog_nginx.conf
