@@ -9,15 +9,11 @@ import re
 import os
 from datetime import datetime
 from validater import add_validater
+import logging
+from logging.handlers import RotatingFileHandler
 
 from kkblog.extensions import api, db, cache, mail
-from kkblog import model
-from kkblog import user
-from kkblog import bloguser
-from kkblog import userinfo
-from kkblog import article
-from kkblog import comment
-from kkblog import githooks
+from kkblog import model, user, bloguser, userinfo, article, comment, githooks
 
 # __all__ must be str, can't be unicode
 __all__ = [str("create_app"), str("api"), str("db")]
@@ -26,6 +22,7 @@ __all__ = [str("create_app"), str("api"), str("db")]
 def create_app():
     app = Flask(__name__)
     config_app(app)
+    config_logging(app)
 
     bp_api = Blueprint('api', __name__, static_folder='static')
     api.init_app(bp_api)
@@ -69,14 +66,7 @@ def config_app(app):
 
     app.config.from_object('kkblog.config.default_config')
     app.config.from_envvar('KKBLOG_CONFIG', silent=True)
-    # pony_orm debug 信息
-    if app.config.get("SQL_DEBUG"):
-        sql_debug(True)
-    # 设置 debug_level
-    if app.config.get("DEBUG_LEVEL"):
-        import logging
-        level = getattr(logging, app.config.get("DEBUG_LEVEL"))
-        logging.basicConfig(level=level)
+
     # create dir_article
     dir_article = app.config["ARTICLE_DEST"]
     if not os.path.isabs(dir_article):
@@ -150,6 +140,7 @@ def config_view(app):
         ("article_list.html", '/article/<git_username>'),
         ("login.html", '/login'),
         ("register.html", '/register'),
+        ("forgot_password.html", "/forgot_password"),
         ("index.html", '/'),
     )
 
@@ -213,3 +204,30 @@ def config_before_handler(app):
 
 def config_after_handler(app):
     pass
+
+
+def config_logging(app):
+    # pony_orm debug 信息
+    if app.config.get("SQL_DEBUG"):
+        sql_debug(True)
+    # 设置 debug_level
+    if app.config.get("DEBUG_LEVEL"):
+        level = getattr(logging, app.config.get("DEBUG_LEVEL"))
+        logging.basicConfig(level=level)
+
+    formatter = logging.Formatter(
+        '%(asctime)s %(levelname)s: %(message)s '
+        '[in %(pathname)s:%(lineno)d]')
+    debug_log = os.path.join(app.root_path, app.config['DEBUG_LOG'])
+    debug_file_handler = RotatingFileHandler(debug_log, maxBytes=100000,
+                                             backupCount=10)
+    debug_file_handler.setLevel(logging.DEBUG)
+    debug_file_handler.setFormatter(formatter)
+    app.logger.addHandler(debug_file_handler)
+
+    error_log = os.path.join(app.root_path, app.config['ERROR_LOG'])
+    error_file_handler = RotatingFileHandler(error_log, maxBytes=100000,
+                                             backupCount=10)
+    error_file_handler.setLevel(logging.ERROR)
+    error_file_handler.setFormatter(formatter)
+    app.logger.addHandler(error_file_handler)

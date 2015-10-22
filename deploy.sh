@@ -23,8 +23,9 @@ cp kkblog_nginx.conf $nginx_config_dir
 cp kkblog_uwsgi.ini $uwsgi_config_dir
 
 echo install kkblog
-${env_dir}/bin/pip install -e $app_dir
-                                                                                                 
+# ${env_dir}/bin/pip install -e $app_dir
+${env_dir}/bin/pip install -r requires.txt
+
 echo reload uwsgi
 if test $(pgrep -f uwsgi | wc -l) -eq 0; then
     uwsgi --emperor ${uwsgi_config_dir} --daemonize ${log_dir}/uwsgi_emperor.log
@@ -38,6 +39,10 @@ if test $(pgrep -f nginx | wc -l) -eq 0; then
 else
     nginx -s reload
 fi
+
+chown -R www-data:www-data $app_dir
+chmod 755 $log_dir
+chmod 766 $log_dir/*
 
 pgrep -a uwsgi
 pgrep -a nginx

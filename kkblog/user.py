@@ -55,7 +55,7 @@ def change_password(username, new_password):
     if user is None:
         raise ValueError("user %s not exists" % username)
     pwdhash = gen_pwdhash(new_password)
-    user.set(pwdhash=pwdhash)
+    user.set(pwdhash=pwdhash, date_modify=datetime.now())
     return user
 
 
@@ -63,6 +63,8 @@ def reset_password(token, new_password, auth_secret, auth_alg="HS256"):
     options = {
         'require_exp': True,
     }
+    if token is None:
+        raise InvalidTokenError("token is None")
     try:
         tk = jwt.decode(token, auth_secret, algorithms=[auth_alg], options=options)
     except jwt.InvalidTokenError as ex:
@@ -76,7 +78,7 @@ def reset_password(token, new_password, auth_secret, auth_alg="HS256"):
         raise InvalidTokenError("password has been changed yet, this token is invalid")
 
     pwdhash = gen_pwdhash(new_password)
-    user.set(pwdhash=pwdhash)
+    user.set(pwdhash=pwdhash, date_modify=datetime.now())
     return user
 
 
@@ -164,6 +166,7 @@ class User(Resource):
     })
     s_token = ("token", {
         "validate": "unicode",
+        "required": True
     })
     s_message = ("message", {"validate": "unicode"})
 
@@ -216,8 +219,11 @@ class User(Resource):
         if role != "user.normal":
             abort_if_not_admin("role can't be %s" % role)
         with db_session:
-            user = add_user(email, password, role, email)
-            return user.to_dict()
+            try:
+                user = add_user(email, password, role, email)
+                return user.to_dict()
+            except ValueError as ex:
+                abort(400, str(ex))
 
     def post_login(self, username, password):
         """登录"""
@@ -255,11 +261,11 @@ class User(Resource):
         发送，请勿直接回复。</p>
         """
         msg = Message("重新设置密码", recipients=[email])
-        link = "%s?token=%s" % (url_for("api.user@reset_password", _external=True), token)
+        link = "%s?token=%s" % ("/forgot_password", token)
         html = tmpl.format(username=username, link=link)
         msg.html = html
         mail.send(msg)
-
+        current_app.logger.info("Send Mail:\n" + html)
         return {"message": "重置密码链接已发送到您的邮箱，请查看邮件"}
 
     def post_reset_password(self, token, password):

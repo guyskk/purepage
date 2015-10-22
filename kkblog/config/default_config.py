@@ -7,8 +7,11 @@ SQL_DEBUG = False
 DEBUG_LEVEL = None  # "INFO"
 ALLOW_CORS = True
 MAIL_DEBUG = True
+DEBUG_LOG = "data/kkblog_debug.log"
+ERROR_LOG = "data/kkblog_error.log"
 
-SERVER_NAME = "127.0.0.1:5000"
+# don't set SERVER_NAME, it will cause all page 404
+# SERVER_NAME = "127.0.0.1:5000"
 
 DATABASE_NAME = 'sqlite'
 DATABASE_PARAMS = {

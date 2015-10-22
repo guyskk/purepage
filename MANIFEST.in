@@ -9,3 +9,4 @@ include kkblog_nginx.conf
 include kkblog_uwsgi.ini
 include deploy.sh
 include readme.md
+include requires.txt
