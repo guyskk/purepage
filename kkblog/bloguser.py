@@ -25,7 +25,7 @@ def get_bloguser(user_id):
 
 @db_session
 def add_admin(user_id, article_repo):
-    role = "bloguser.admin"
+    role = "admin"
     return create_or_update_bloguser(user_id, role, article_repo, website="")
 
 
@@ -54,9 +54,9 @@ class BlogUser(Resource):
         "required": True
     })
     s_role = ("role", {
-        "validate": "bloguser_role",
+        "validate": "role_bloguser",
         "required": True,
-        "default": "bloguser.normal"
+        "default": "normal"
     })
     s_article_repo = ("article_repo", {
         "desc": "文章的git仓库地址",
@@ -120,7 +120,7 @@ class BlogUser(Resource):
 
     def post(self, article_repo, website):
         """开启个人博客或更新资料"""
-        role = "bloguser.normal"
+        role = "normal"
         user_id = request.me["id"]
         with db_session:
             try:

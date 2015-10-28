@@ -102,7 +102,7 @@ def get_user_by_id(id):
 @db_session
 def add_admin(email, password):
     user = model.User.get(username=email)
-    role = "user.admin"
+    role = "admin"
     pwdhash = gen_pwdhash(password)
     date_modify = datetime.now()
     user_config = {
@@ -120,12 +120,6 @@ def add_admin(email, password):
     else:
         info = model.UserInfo(**info_config)
         user = model.User(username=email, userinfo=info, **user_config)
-
-
-def abort_if_not_admin(msg):
-    role = request.me["role"]
-    if role != "user.admin":
-        abort(403, msg)
 
 
 class User(Resource):
@@ -148,9 +142,9 @@ class User(Resource):
         "required": True
     })
     s_role = ("role", {
-        "validate": "userrole",
+        "validate": "role_user",
         "required": True,
-        "default": "user.normal"
+        "default": "normal"
     })
     s_email = ("email", {
         "validate": "email",
@@ -169,7 +163,8 @@ class User(Resource):
     schema_inputs = {
         "get": dict([s_id]),
         "get_me": None,
-        "post_register": dict([s_email, s_password, s_role]),
+        "post_register": dict([s_email, s_password]),
+        "post_admin_register": dict([s_email, s_password, s_role]),
         "post_login": dict([s_username, s_password]),
         "post_logout": None,
         "post_forgot_password": dict([s_username]),
@@ -182,6 +177,7 @@ class User(Resource):
         "get": s_out,
         "get_me": s_out,
         "post_register": s_out,
+        "post_admin_register": s_out,
         "post_login": s_out,
         "post_logout": dict([s_message]),
         "post_forgot_password": dict([s_message]),
@@ -210,10 +206,12 @@ class User(Resource):
         id = request.me["id"]
         return self.get(id)
 
-    def post_register(self, email, password, role):
+    def post_register(self, email, password):
         """注册，邮箱作为用户名"""
-        if role != "user.normal":
-            abort_if_not_admin("role can't be %s" % role)
+        return self.post_admin_register(email, password, role="normal")
+
+    def post_admin_register(self, email, password, role):
+        """注册，邮箱作为用户名，限管理员使用"""
         with db_session:
             try:
                 user = add_user(email, password, role, email)

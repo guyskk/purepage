@@ -14,6 +14,7 @@ from logging.handlers import RotatingFileHandler
 
 from kkblog.extensions import api, db, cache, mail
 from kkblog import model, user, bloguser, userinfo, article, comment, githooks
+from kkblog import roles
 
 # __all__ must be str, can't be unicode
 __all__ = [str("create_app"), str("api"), str("db")]
@@ -95,17 +96,9 @@ def config_validater(app):
     add_validater("iso_datetime", iso_datetime_validater)
     add_validater("friendly_date", friendly_date_validater)
 
-    user_roles = ["user.admin", "user.normal"]
-
-    def userrole_validater(v):
-        return (True, v) if v in user_roles else (False, None)
-    add_validater("userrole", userrole_validater)
-
-    bloguser_roles = ["bloguser.admin", "bloguser.normal"]
-
-    def bloguser_role_validater(v):
-        return (True, v) if v in bloguser_roles else (False, None)
-    add_validater("bloguser_role", bloguser_role_validater)
+    # add role validater
+    for u, v in roles.role_validaters.items():
+        add_validater(u, v)
 
 
 def config_view(app):
