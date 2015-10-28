@@ -18,13 +18,9 @@ class InvalidTokenError(Exception):
 
 @db_session
 def user_role(user_id):
-    try:
-        user = get_user_by_id(user_id)
-        if user:
-            return user.role
-    except:
-        pass
-    return "*"
+    user = get_user_by_id(user_id)
+    if user is not None:
+        return user.role
 
 
 def gen_pwdhash(password):
@@ -63,10 +59,10 @@ def reset_password(token, new_password, auth_secret, auth_alg="HS256"):
     options = {
         'require_exp': True,
     }
-    if token is None:
-        raise InvalidTokenError("token is None")
     try:
         tk = jwt.decode(token, auth_secret, algorithms=[auth_alg], options=options)
+    except AttributeError as ex:
+        raise InvalidTokenError("Invalid token: %s" % str(ex))
     except jwt.InvalidTokenError as ex:
         raise InvalidTokenError(str(ex))
 
@@ -238,11 +234,11 @@ class User(Resource):
 
     def post_logout(self):
         """退出登录"""
-        return {"message": url_for("api.user@login")}
+        # s = unicode(url_for("api.user@login"))
+        return {"message": "退出登录成功"}
 
     def post_forgot_password(self, username):
         """忘记密码/申请重新设置密码"""
-        email = None
         with db_session:
             try:
                 token, user = forgot_password(username, auth_secret=self.auth_secret)
@@ -261,7 +257,7 @@ class User(Resource):
         发送，请勿直接回复。</p>
         """
         msg = Message("重新设置密码", recipients=[email])
-        link = "%s?token=%s" % ("/forgot_password", token)
+        link = "%s?token=%s" % ("/reset_password", token)
         html = tmpl.format(username=username, link=link)
         msg.html = html
         mail.send(msg)

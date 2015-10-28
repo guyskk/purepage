@@ -123,62 +123,53 @@ default_config.py
 ### 部署到服务器
 
 在 ubuntu v14.0 上测试通过
-
-#### 服务器上
-
-安装 git
-
-	sudo apt-get install git
-
-安装 python2.7
-
-	sudo apt-get install python2.7
-	sudo apt-get install libxml2-dev libxslt1-dev python-dev
 	
-
-安装 pip
-
-	sudo apt-get install python-pip
-	or
-	wget https://bootstrap.pypa.io/get-pip.py
-	sudo python get-pip.py
-
-安装 virtualenv
-
-	sudo pip install virtualenv
-
-安装 uwsgi
-
-	sudo pip install uwsgi
-
-安装 nginx
+#### 服务器上安装 Nginx
 
 	sudo apt-get install nginx
 
 配置 Nginx
 
-	cd /etc/nginx
-	sudo vim nginx.conf
+	sudo vim /etc/nginx/nginx.conf
 
-	修改日志文件路径
+	# 修改日志文件路径
 	access_log /var/www/log/nginx_access.log;
     error_log /var/www/log/nginx_error.log;
 
-	添加配置文件
+	# 添加配置文件
     # include /etc/nginx/conf.d/*.conf;
     # include /etc/nginx/sites-enabled/*;
     include /var/www/config/nginx/*.conf;
 
-配置 uwsgi 开机启动
+#### 直接到服务器上部署
 
-在 `/etc/init/` 目录下新建 `uwsgi.conf`，内容如下
+	cd /tmp
+	git clone https://github.com/guyskk/kkblog.git
+	cd kkblog
+	
+	# 新建 kkblog_config.py
+	vim kkblog_config.py
 
-	description "start uwsgi on startup"
-	start on runlevel [2345]
-	stop on runlevel [06]
-	exec uwsgi --emperor /var/www/config/uwsgi --daemonize /var/www/log/uwsgi_emperor.log
+	# 配置Mail账号密码
+	# MAIL_SERVER = "例如smtp.qq.com"
+	# MAIL_USERNAME = "you_email@email.com"
+	# MAIL_DEFAULT_SENDER = "you_email@email.com"
+	# MAIL_PASSWORD = "you_email_password"
+	
+	# 部署
+	sudo bash deploy.sh
 
-#### 本地
+#### 或者远程部署
+
+本地需要安装 python 2 和 fabric
+
+	pip install fabric
+
+获取代码
+
+	git clone https://github.com/guyskk/kkblog.git
+
+[配置Mail账号密码（必须）](#mail)
 
 在 `fabfile.py` 同级目录下，新建 `fab_settings.py`，填写服务器信息
 	
@@ -192,7 +183,7 @@ default_config.py
 	fab deploy
 
 
-部署好之后会自动启动
+#### 部署好之后会自动启动，默认端口是 5000
 
 如果要手动启动或重启，在服务器上执行
 	
@@ -264,8 +255,43 @@ Grunt 插件
 	pip install Flask-PyMongo
 	pip install SQLAlchemy
 	pip install snownlp
+安装 git
 
+	sudo apt-get install git
 
+安装 python2.7
+
+	sudo apt-get install python2.7
+
+安装 python-dev
+
+	sudo apt-get install python-dev
+
+	
+安装 pip
+
+	sudo apt-get install python-pip
+	or
+	wget https://bootstrap.pypa.io/get-pip.py
+	sudo python get-pip.py
+
+安装 virtualenv
+
+	sudo pip install virtualenv
+
+安装 uwsgi
+
+	sudo pip install uwsgi
+
+安装 nginx
+
+	sudo apt-get install nginx
+
+安装 lxml
+
+	sudo apt-get install libxml2-dev libxslt1-dev
+	sudo apt-get install python-lxml
+	
 数据库 mongodb 或者 mysql, 目前是 sqlite
 	
 http://docs.mongodb.org/master/tutorial/install-mongodb-on-ubuntu/

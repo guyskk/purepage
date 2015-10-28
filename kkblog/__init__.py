@@ -140,7 +140,7 @@ def config_view(app):
         ("article_list.html", '/article/<git_username>'),
         ("login.html", '/login'),
         ("register.html", '/register'),
-        ("forgot_password.html", "/forgot_password"),
+        ("reset_password.html", "/reset_password"),
         ("index.html", '/'),
     )
 

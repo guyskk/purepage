@@ -1,4 +1,5 @@
 flask>=0.10.1
+markupsafe>=0.23
 pyjwt>=1.4
 flask-restaction>=0.17.3
 flask-cors>=2.0

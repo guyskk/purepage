@@ -2,7 +2,7 @@
 
 from __future__ import unicode_literals
 from __future__ import absolute_import
-from flask import request, url_for
+from flask import request
 from flask.ext.restaction import Resource, abort
 from datetime import datetime
 from pony.orm import select, db_session, count
@@ -14,9 +14,7 @@ import gitutil
 @db_session
 def user_role(user_id):
     u = get_bloguser(unicode(user_id))
-    if u is None:
-        return "*"
-    else:
+    if u is not None:
         return u.role
 
 

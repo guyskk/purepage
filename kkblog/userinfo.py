@@ -13,7 +13,7 @@ from kkblog import user
 def update_userinfo(id, **info):
     u = model.User.get(id=id)
     if u:
-        u.userinfo.set(info)
+        u.userinfo.set(**info)
         return u
     else:
         return None

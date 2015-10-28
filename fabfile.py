@@ -29,5 +29,5 @@ def deploy():
 
     # 部署
     with cd("%s/kkblog" % tmp_dir):
-        run("dos2unix deploy.sh")
+        # run("dos2unix deploy.sh")
         sudo("bash deploy.sh")
