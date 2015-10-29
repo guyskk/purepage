@@ -118,7 +118,7 @@ class BlogUser(Resource):
                 abort(404)
             return u.to_dict()
 
-    def post(self, article_repo, website):
+    def post(self, role, article_repo, website):
         """开启个人博客或更新资料"""
         role = "normal"
         user_id = request.me["id"]
