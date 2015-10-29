@@ -289,8 +289,16 @@ Grunt 插件
 
 安装 lxml
 
-	sudo apt-get install libxml2-dev libxslt1-dev
-	sudo apt-get install python-lxml
+	# 用下面这两句不能通过 pip install lxml
+	# sudo apt-get install libxml2-dev libxslt1-dev
+	# sudo apt-get install python-lxml
+	# 直接 pip install lxml 会报错
+	# pip install pyquery -U 会重新安装 lxml, 也会导致报错
+
+	# 正确方式
+	sudo apt-get install build-essential libxml2-dev libxslt-dev lib32z1-dev python-dev
+	sudo pip install lxml
+	
 	
 数据库 mongodb 或者 mysql, 目前是 sqlite
 	
@@ -316,5 +324,11 @@ http://docs.mongodb.org/master/tutorial/install-mongodb-on-ubuntu/
 	sudo apt-get install python-dev
 	sudo pip install uwsgi
 
-
-
+	# centos
+	# nginx
+	# https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-centos-7
+	#
+	# pip
+	# curl https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py
+	# python /tmp/get-pip.py
+	# 

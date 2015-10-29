@@ -52,13 +52,7 @@ def config_cors(app):
     from flask.ext.cors import CORS
     auth_header = app.config.get("API_AUTH_HEADER") or api.auth_header
     resources = {
-        r"*": {},
-        r"/api/user/login": {
-            "expose_headers": [auth_header],
-        },
-        r"/api/user/logout": {
-            "expose_headers": [auth_header],
-        }
+        r"*": {"expose_headers": [auth_header]},
     }
     CORS(app, resources=resources)
 

@@ -29,5 +29,6 @@ def deploy():
 
     # 部署
     with cd("%s/kkblog" % tmp_dir):
-        # run("dos2unix deploy.sh")
+        sudo("apt-get install -y --force-yes dos2unix")
+        run("dos2unix deploy.sh")
         sudo("bash deploy.sh")

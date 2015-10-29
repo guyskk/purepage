@@ -9,6 +9,6 @@ from flask.ext.mail import Mail
 
 __all__ = ['api', 'db', 'cache', 'mail']
 api = Api()
-db = Database()
 cache = Cache()
 mail = Mail()
+db = Database()

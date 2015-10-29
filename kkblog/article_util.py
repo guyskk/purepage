@@ -94,6 +94,11 @@ def read_articles(mddir):
             app.logger.info("skip: %s" % subdir)
             continue
         for fname in os.listdir(dir_path):
+            app.logger.debug("join: %s & %s" % (type(dir_path), type(fname)))
+            if not isinstance(fname, unicode):
+                app.logger.debug("fname not unicode")
+                app.logger.debug(fname)
+                continue
             if os.path.splitext(fname)[1] != ".md":
                 continue
             path = os.path.join(dir_path, fname)

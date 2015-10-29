@@ -10,6 +10,24 @@ nginx_config_dir=${config_dir}/nginx
 uwsgi_config_dir=${config_dir}/uwsgi
 env_dir=${app_dir}/venv
 
+echo install gcc,pip,virtualenv,uwsgi
+if test $(gcc --version|wc -l) -eq 0
+then
+    apt-get install -y --force-yes build-essential
+fi
+if test $(pip --version|wc -l) -eq 0
+then
+    apt-get install -y --force-yes python-pip
+fi
+if test $(virtualenv --version|wc -l) -eq 0
+then
+    pip install virtualenv
+fi
+if test $(uwsgi --version|wc -l) -eq 0
+then
+    pip install uwsgi
+fi
+
 echo create app_dir
 test -d $app_dir || mkdir $app_dir
 test -d ${tmp_dir}/kkblog && cp -r ${tmp_dir}/kkblog ${app_dir}/../
@@ -21,40 +39,17 @@ test -d $nginx_config_dir || mkdir $nginx_config_dir
 test -d $uwsgi_config_dir || mkdir $uwsgi_config_dir
 test -d $env_dir || virtualenv $env_dir
 
-echo install pip,virtualenv,uwsgi
-if test $(pip --version|wc -l) -eq 0
-then
-    apt-get install -y python-pip
-fi
-
-if test $(virtualenv --version|wc -l) -eq 0
-then
-    pip install virtualenv -y
-fi
-
-if test $(uwsgi --version|wc -l) -eq 0
-then
-    pip install uwsgi -y
-fi
-
 cd $app_dir
 cp kkblog_nginx.conf $nginx_config_dir
 cp kkblog_uwsgi.ini $uwsgi_config_dir
 
-echo start uwsgi on startup
-cp uwsgi.conf /etc/init
-initctl reload-configuration
-
-
-
 echo install kkblog
 # insall lxml
-apt-get install -y libxml2-dev libxslt1-dev python-dev && pip install lxml
-${env_dir}/bin/pip install lxml
+apt-get install -y --force-yes libxml2-dev libxslt-dev lib32z1-dev python-dev
 ${env_dir}/bin/pip install -r requires.txt
 
 echo reload uwsgi
-if test $(pgrep -f uwsgi | wc -l) -eq 0
+if test $(pgrep uwsgi|wc -l) -eq 0
 then
     uwsgi --emperor ${uwsgi_config_dir} --daemonize ${log_dir}/uwsgi_emperor.log
 else
@@ -62,12 +57,16 @@ else
 fi
 
 echo reload nginx
-if test $(pgrep -f nginx | wc -l) -eq 0
+if test $(pgrep nginx|wc -l) -eq 0
 then
     nginx
 else
     nginx -s reload
 fi
+
+echo start uwsgi on startup
+cp uwsgi.conf /etc/init
+initctl reload-configuration
 
 chown -R www-data:www-data $app_dir
 chown -R www-data:www-data $socket_dir
@@ -77,11 +76,3 @@ pstree -apsAl
 
 exit 0
 
-# centos
-# nginx
-# https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-centos-7
-#
-# pip
-# curl https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py
-# python /tmp/get-pip.py
-# 

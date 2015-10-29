@@ -147,7 +147,7 @@ class GitHooks(Resource):
         if not local:
             __, owner, __ = gitutil.parse_giturl(repo_url)
             err, ret = update_local(repo_url, owner)
-            msg = err.message if err else ret
+            msg = unicode(err) if err else ret
         if not err:
             mddir = get_mddir(repo_url)
             update_db(mddir, user_id, old_commit)
