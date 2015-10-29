@@ -102,7 +102,7 @@ def get_user_by_id(id):
 @db_session
 def add_admin(email, password):
     user = model.User.get(username=email)
-    role = "admin"
+    role = "user.admin"
     pwdhash = gen_pwdhash(password)
     date_modify = datetime.now()
     user_config = {
@@ -144,7 +144,7 @@ class User(Resource):
     s_role = ("role", {
         "validate": "role_user",
         "required": True,
-        "default": "normal"
+        "default": "user.normal"
     })
     s_email = ("email", {
         "validate": "email",
@@ -208,7 +208,7 @@ class User(Resource):
 
     def post_register(self, email, password):
         """注册，邮箱作为用户名"""
-        return self.post_admin_register(email, password, role="normal")
+        return self.post_admin_register(email, password, role="user.normal")
 
     def post_admin_register(self, email, password, role):
         """注册，邮箱作为用户名，限管理员使用"""

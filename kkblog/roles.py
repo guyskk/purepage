@@ -4,8 +4,8 @@ from __future__ import unicode_literals
 from __future__ import absolute_import
 
 roles = {
-    "user": ["admin", "normal"],
-    "bloguser": ["admin", "normal"]
+    "user": ["user.admin", "user.normal"],
+    "bloguser": ["bloguser.admin", "bloguser.normal"]
 }
 
 
