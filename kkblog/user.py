@@ -99,6 +99,16 @@ def get_user_by_id(id):
         return None
 
 
+def get_auth_exp(remember_me=False):
+    if remember_me:
+        # 一周内不用重新登录
+        auth_exp = 7 * 24 * 60 * 60
+    else:
+        # 60分钟内不用重新登录
+        auth_exp = 60 * 60
+    return auth_exp
+
+
 @db_session
 def add_admin(email, password):
     user = model.User.get(username=email)
@@ -158,6 +168,10 @@ class User(Resource):
         "validate": "unicode",
         "required": True
     })
+    s_remember_me = ("remember_me", {
+        "validate": "bool",
+        "default": False
+    })
     s_message = ("message", {"validate": "unicode"})
 
     schema_inputs = {
@@ -165,7 +179,7 @@ class User(Resource):
         "get_me": None,
         "post_register": dict([s_email, s_password]),
         "post_admin_register": dict([s_email, s_password, s_role]),
-        "post_login": dict([s_username, s_password]),
+        "post_login": dict([s_username, s_password, s_remember_me]),
         "post_logout": None,
         "post_forgot_password": dict([s_username]),
         "post_reset_password": dict([s_token, s_password]),
@@ -204,7 +218,9 @@ class User(Resource):
     def get_me(self):
         """获取用户的个人信息"""
         id = request.me["id"]
-        return self.get(id)
+        me = {"id": id}
+        header = api.gen_auth_header(me, auth_exp=get_auth_exp())
+        return self.get(id), header
 
     def post_register(self, email, password):
         """注册，邮箱作为用户名"""
@@ -219,13 +235,13 @@ class User(Resource):
             except ValueError as ex:
                 abort(400, str(ex))
 
-    def post_login(self, username, password):
+    def post_login(self, username, password, remember_me):
         """登录"""
         with db_session:
             ok, user = login(username, password)
             if ok:
                 me = {"id": user.id}
-                header = api.gen_auth_header(me, auth_exp=3600)
+                header = api.gen_auth_header(me, auth_exp=get_auth_exp(remember_me))
                 return user.to_dict(), header
             else:
                 abort(403)
