@@ -11,6 +11,7 @@ from kkblog import cache
 
 def output_article(art):
     return {
+        "id": art.id,
         "content": art.content,
         "toc": art.toc,
         "meta": output_meta(art.meta)
@@ -98,7 +99,7 @@ class Article(Resource):
     s_meta = ("meta", dict([s_git_username, s_subdir, s_filename,
                             s_title, s_subtitle, s_tags,
                             s_date_create, s_date_modify, s_author]))
-    s_out = dict([s_meta, s_content, s_toc])
+    s_out = dict([s_id, s_meta, s_content, s_toc])
 
     schema_inputs = {
         "get": dict([s_git_username, s_subdir, s_filename]),
@@ -107,10 +108,10 @@ class Article(Resource):
         "get_list_by_user": dict([s_git_username, s_pagenum, s_pagesize]),
     }
     schema_outputs = {
-        "get": dict([s_meta, s_content, s_toc]),
-        "get_by_id": dict([s_meta, s_content, s_toc]),
-        "get_list": [dict([s_meta])],
-        "get_list_by_user": [dict([s_meta])],
+        "get": s_out,
+        "get_by_id": s_out,
+        "get_list": [dict([s_id, s_meta])],
+        "get_list_by_user": [dict([s_id, s_meta])],
     }
 
     @staticmethod
@@ -122,7 +123,7 @@ class Article(Resource):
         """获取文章列表"""
         with db_session:
             metas = select(m for m in model.ArticleMeta).page(pagenum, pagesize)
-            result = [{"meta": output_meta(meta)} for meta in metas]
+            result = [{"meta": output_meta(meta), "id": meta.article.id} for meta in metas]
             return result
 
     @cache.cached(timeout=3)
@@ -131,7 +132,7 @@ class Article(Resource):
         with db_session:
             metas = select(m for m in model.ArticleMeta
                            if m.bloguser.git_username == git_username).page(pagenum, pagesize)
-            result = [{"meta": output_meta(meta)} for meta in metas]
+            result = [{"meta": output_meta(meta), "id": meta.article.id} for meta in metas]
             return result
 
     @cache.cached(timeout=3)
