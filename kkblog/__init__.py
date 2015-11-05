@@ -17,8 +17,6 @@ from kkblog import (model, user, bloguser, userinfo, article,
                     tag, comment, githooks)
 from kkblog import roles
 
-import flask_profiler
-
 # __all__ must be str, can't be unicode
 __all__ = [str("create_app"), str("api"), str("db")]
 
@@ -34,7 +32,6 @@ def create_app():
     if app.config.get("ALLOW_CORS"):
         config_cors(app)
 
-    flask_profiler.init_app(app)
     cache.init_app(app)
     mail.init_app(app)
 
@@ -121,7 +118,6 @@ def config_view(app):
 
     # article 页面需要服务端部分渲染
     @app.route('/article/<path:path>')
-    @flask_profiler.profile()
     def page_article(path):
         p = pattern_article_path.findall(path)
         if not p:
@@ -131,7 +127,9 @@ def config_view(app):
             art = article.get_article(git_username, subdir, "%s.md" % name)
             if not art:
                 abort(404)
-            title, cont, toc = art["meta"]["title"], art["content"], art["toc"]
+            title = art["title"]
+            cont = art["content"]["html"]
+            toc = art["content"]["toc"]
             contents = f.read().decode("utf-8")
             contents = render_mark(contents, article_title=title,
                                    article_content=cont, article_toc=toc)
@@ -152,7 +150,7 @@ def config_view(app):
 
     for filename, url in view_urls:
         end = os.path.splitext(filename)[0]
-        app.route(url, endpoint=end)(flask_profiler.profile()(make_view(filename)))
+        app.route(url, endpoint=end)(make_view(filename))
 
 
 def config_api(app):

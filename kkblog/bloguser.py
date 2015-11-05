@@ -54,7 +54,7 @@ def update_bloguser(user_id, **config):
 
 class BlogUser(Resource):
     """"""
-    user_id = "unicode&required",
+    user_id = "int&required",
     role = "role_bloguser&required", "bloguser.normal"
     gitname = "unicode&required", None, "github 用户名"
     article_repo = "url&required", None, "文章的git仓库地址",
