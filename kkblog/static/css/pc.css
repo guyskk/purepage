@@ -1,0 +1,11 @@
+.panel_body div {
+	border-right: 1px solid gray;
+	text-align: center;
+}
+.panel_body p {
+	margin: 0 auto !important;
+}
+/*.am-u-sm-11 span {
+	display: inline-block;
+	margin: 0.5rem 0.5rem 0 auto;
+}*/

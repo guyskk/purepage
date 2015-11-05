@@ -73,9 +73,9 @@ def read_modified_articles(mddir, diff):
             app.logger.warning("File not exists: %s" % path)
             continue
         try:
-            content, toc, meta = parse_article(path)
+            html, toc, meta = parse_article(path)
             m = parse_meta(meta, path)
-            yield (content, toc, m)
+            yield (html, toc, m)
         except Exception as e:
             app.logger.warning("Can't read %s: %s" % (path, e))
 
@@ -103,8 +103,8 @@ def read_articles(mddir):
                 continue
             path = os.path.join(dir_path, fname)
             try:
-                content, toc, meta = parse_article(path)
+                html, toc, meta = parse_article(path)
                 m = parse_meta(meta, path)
-                yield (content, toc, m)
+                yield (html, toc, m)
             except Exception as e:
                 app.logger.warning("Can't read %s: %s" % (path, e))

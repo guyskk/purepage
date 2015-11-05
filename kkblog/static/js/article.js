@@ -1,0 +1,3 @@
+$(window).ready(function () {
+	
+})

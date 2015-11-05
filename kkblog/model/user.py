@@ -8,17 +8,17 @@ from datetime import datetime
 
 
 class User(db.Entity):
-
+    """只包含必要信息"""
     username = Required(unicode, unique=True)
     pwdhash = Required(unicode)
     date_modify = Required(datetime)
     role = Required(unicode)
-    userinfo = Required("UserInfo")
+    userinfo = Optional("UserInfo", cascade_delete=True)
 
 
 class UserInfo(db.Entity):
-
-    user = Optional("User")
+    """用户信息"""
+    user = Required("User")
     email = Optional(unicode)
     nickname = Optional(unicode)
     birthday = Optional(datetime)

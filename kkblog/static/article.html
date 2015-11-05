@@ -1,113 +1,44 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="renderer" content="webkit">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <meta name="description" content="分享前端,Python,linux,单片机知识。">
-    <title>{{"article_title"}}</title>
-    <link rel="shortcut icon" type="image/ico" href="/static/favicon.ico" />
-    <link rel="stylesheet" type="text/css" href="/static/lib/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/kkblog.css">
-    <link rel="stylesheet" type="text/css" href="/static/lib/pygments-github.css">
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="Cache-Control" content="no-siteapp" />
+	<title>{{"article_title"}}</title>
+	<link rel="shortcut icon" href="/static/img/favicon.ico" />
+	<link rel="stylesheet" href="/static/css/amazeui.css"/>
+	<link rel="stylesheet" type="text/css" href="/static/css/lxxyx.css"/>
 </head>
-
 <body>
-    <div class="wrap container-fluid">
-        <div class="head row">
-            <h1 class="head-title"><span>KkBloG</span><span class="hidden-sm hidden-xs head-title-subtitle">全栈工程师笔记</span></h1>
-            <div id="head-bar" class="head-bar">
-                <ul class="head-nav">
-                    <li><a href="/">首页</a></li>
-                    <li><a href="#">归档</a></li>
-                    <li><a href="#">收藏夹</a></li>
-                    <li><a href="#">工具箱</a></li>
-                    <li><a href="#">关于我</a></li>
-                </ul>
-                <span class="head-nav-toggle" aria-label="导航">
-                            <span class="glyphicon glyphicon-menu-hamburger"></span>
-                </span>
-                <div class="head-search">
-                    <input class="search-box" type="text" placeholder="文章/收藏/标签">
-                    <button id="search-btn" class="search-btn" aria-label="Left Align"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
-                </div>
-            </div>
-        </div>
+<!-- 导航部分 -->
+<div id="header" data-name = "article"></div>
+<!--弹出の框-->
+<div id="popUp"></div>
 
-        <div class="center row">
-            <div class="side-toggle">目录</div>
-            <div class="side side-nofoot">
-                <div class="side-outline">
-                    <!-- 文章目录 -->
-                    {{"article_toc"}}
-                </div>
-            </div>
-            <div class="content">
-                <div class="article">
-                    <p class="article-info bottom-line">
-                        <span class="article-info-item">
-                        分类：
-                        
-                        <a href="tag.url" ng-repeat="tag in meta.tags">{{tag.name}}</a>
-                        </span>
-                        <span class="article-info-item"> <span class="glyphicon glyphicon-time"></span>{{meta.date}}</span>
-                        
-                    </p>
-                    <div class="article-content markdown-body">
-                        <!-- 文章内容 -->
-                        {{"article_content"}}
-                        <div class="article-foot">
-                            <p>版权声明：自由转载-非商用-非衍生-保持署名（创意共享3.0许可证）</p>
-                        </div>
-                    </div>
-                    <div class="comment">
-                        <h3>留言<span class="comment-count">（23条）</span></h3>
-                        <ul class="comment-list">
-                            <!-- 留言 -->
-                            <li class="comment-item">
-                                <h3 class="comment-title">
-                                <a href="#">Trinity</a><span>说：</span>
-                            </h3>
-                                <div class="comment-content">
-                                    <p>monad 意思就是单阶的，跟UNIX管道意义上一样，只是在具体上更抽象。 前文的 chaining operations 这个词解释的很到位。 实际中，请把 monad 当作 Interger,String 之类的，每个 chaining operation 是一个 instance 就对了。</p>
-                                </div>
-                                <p class="comment-info">2015年7月23日 11:59</p>
-                            </li>
-                        </ul>
-                        <div class="comment-add">
-                            <h3>我要发表看法</h3>
-                            <div class="input-row">
-                                <label>您的留言（部分Markdown语法可用）</label>
-                                <textarea class="comment-content" rows="6"></textarea>
-                            </div>
-                            <div class="input-row">
-                                <label>您的大名：<span>«-必填</span></label>
-                                <input class="comment-name" type="text">
-                            </div>
-                            <div class="input-row">
-                                <label>电子邮箱：<span>«-必填，不公开</span></label>
-                                <input class="comment-email " type="text">
-                            </div>
-                            <div class="input-row">
-                                <label>个人网站：<span>«-可选</span><span> </span></label>
-                                <input class="comment-website " type="text">
-                            </div>
-                            <div class="input-row">
-                                <button class="comment-submit">发表</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="foot text-center">
-                <p><a href="http://www.kkblog.me">kkblog.me</a><span>2015 - 2015</span></p>
-            </div>
-        </div>
-        <script type="text/javascript" src="/static/lib/jquery-2.1.4.js"></script>
-        <script type="text/javascript" src="/static/js/kkblog.js"></script>
-        <script type="text/javascript" src="/static/lib/angular.js"></script>
+<!-- 网页文章 -->
+<div class="am-container">
+	<div class="am-u-sm-12 article_title">
+		<div class="am-padding">
+			<div class="am-fl am-cf">
+				<strong class="am-text-primary am-text-lg">文章导航</strong>
+			</div>
+		</div>
+		<hr />
+			{{"article_toc"}}
+		<hr />
+		{{"article_content"}}
+	</div>
+</div>
+
+<!-- 底栏，绝对定位 -->
+<div id="footer"></div>
+
+<!-- JS调用 -->
+<script src="/static/js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/js/amazeui.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/js/login.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/res.js" type="text/javascript" charset="utf-8"></script>
 </body>
-
 </html>

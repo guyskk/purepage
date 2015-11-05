@@ -1,0 +1,59 @@
+<!-- 遮罩 -->
+<div id="mask"></div>
+
+<!-- 登录部分 -->
+
+<div class="login am-u-sm-12 am-u-md-8 am-u-lg-5">
+	<h1 class="am-text-center am-u-sm-centered">登录
+		<button class="am-btn am-fr am-btn-danger am-btn-sm" id="close_login">X</button>
+	</h1>
+	<div class="am-input-group am-input-group-secondary am-u-sm-centered">
+		<span class="am-input-group-label"><i class="am-icon-user am-icon-fw"></i></span>
+		<input type="email" class="am-form-field" placeholder="用户名"/>
+	</div>
+	<div class="am-input-group am-input-group-secondary am-u-sm-centered">
+		<span class="am-input-group-label"><i class="am-icon-lock am-icon-fw"></i></span>
+		<input type="password" class="am-form-field" placeholder="密码"/>
+	</div>
+	<p class="am-u-sm-centered">
+		<button type="submit" class="am-btn am-btn-success am-radius am-u-md-5 am-u-sm-12" id="login-button">登录</button>
+		<button type="submit" class="am-btn am-btn-danger am-radius am-u-md-5 am-u-sm-12" id="forget_password">忘记密码</button>
+	</p>
+</div>
+
+<!--找回密码-->
+<div class="forgetPassword am-u-sm-12 am-u-md-8 am-u-lg-5">
+	<h1 class="am-text-center am-u-sm-centered">找回密码
+		<button class="am-btn am-fr am-btn-danger am-btn-sm" id="close_forgetPassword">X</button>
+	</h1>
+	<div class="am-input-group am-input-group-secondary am-u-sm-centered">
+		<span class="am-input-group-label"><i class="am-icon-user am-icon-fw"></i></span>
+		<input type="email" class="am-form-field" placeholder="请输入您注册时候的用户名"/>
+	</div>
+	<p class="am-u-sm-centered" >
+		<button type="submit" class="am-btn am-btn-success am-radius am-u-sm-12" id="button_forgetPassword">找回密码</button>
+	</p>
+</div>
+
+<!-- 注册部分 -->
+<div class="register am-u-sm-12 am-u-md-8 am-u-lg-4">
+	<h1 class="am-text-center am-u-sm-centered">注册新用户
+		<button class="am-btn am-fr am-btn-danger am-btn-sm" id="close_register">X</button>
+	</h1>
+	<div>
+		<span class="am-input-group-label"><i class="am-icon-user am-icon-fw"></i></span>
+		<input type="email" class="am-form-field" placeholder="请输入邮箱" />
+	</div>
+	<div >
+		<span class="am-input-group-label"><i class="am-icon-lock am-icon-fw"></i></span>
+		<input type="password" class="am-form-field" placeholder="请输入密码" pattern="^\d{6}$" required/>
+	</div>
+	<div >
+		<span class="am-input-group-label"><i class="am-icon-lock am-icon-fw"></i></span>
+		<input type="password" class="am-form-field" placeholder="请再输入一次密码" pattern="^\d{6}$" required/>
+	</div>
+	<p class="am-u-sm-centered">
+		<button type="submit" class="am-btn am-btn-success am-radius am-u-sm-12" id="register_button">注册</button>
+		<button type="submit" class="am-btn am-btn-danger am-radius am-u-sm-12" id="register_To_login">已有账户，现在登录</button>
+	</p>
+</div>

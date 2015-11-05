@@ -2,116 +2,70 @@
 
 from __future__ import unicode_literals
 from __future__ import absolute_import
-from flask.ext.restaction import Resource, abort
+from flask.ext.restaction import Resource, abort, schema
 from pony.orm import select, db_session, count
 from kkblog import model
 from kkblog import user
 from kkblog import cache
 
 
-def output_article(art):
-    return {
-        "id": art.id,
-        "content": art.content,
-        "toc": art.toc,
-        "meta": output_meta(art.meta)
-    }
-
-
-def output_meta(meta):
-    tags = [t.name for t in meta.tags]
-    git_username = meta.bloguser.git_username
-    return dict(meta.to_dict(), tags=tags, git_username=git_username)
+def output_article(art, with_content=False):
+    tags = [t.name for t in art.tags]
+    if with_content:
+        cont = art.content.to_dict(only="html, toc")
+        return dict(art.to_dict(), tags=tags, content=cont)
+    else:
+        return dict(art.to_dict(), tags=tags)
 
 
 @db_session
-def get_article(git_username, subdir, filename):
-    user = model.BlogUser.get(git_username=git_username)
-    if not user:
-        return None
-    meta = model.ArticleMeta.get(bloguser=user, subdir=subdir, filename=filename)
-    if not meta:
-        return None
-    return output_article(meta.article)
+def get_article(gitname, subdir, filename):
+    art = model.Article.get(gitname=gitname, subdir=subdir, filename=filename)
+    if not art:
+        abort(404)
+    return output_article(art, with_content=True)
 
 
 class Article(Resource):
 
-    """文章Article"""
-    s_pagenum = ("pagenum", {
-        "desc": "第几页，从1开始计算",
-        "required": True,
-        "default": 1,
-        "validate": "+int"})
-    s_pagesize = ("pagesize", {
-        "desc": "每页的数量",
-        "required": True,
-        "default": 10,
-        "validate": "+int"})
-    s_id = ("id", {
-        "desc": "文章ID",
-        "required": True,
-        "validate": "int"})
-    s_git_username = ("git_username", {
-        "required": True,
-        "validate": "unicode"
-    })
-    s_subdir = ("subdir", {
-        "required": True,
-        "validate": "unicode"
-    })
-    s_filename = ("filename", {
-        "desc": "markdown file name",
-        "required": True,
-        "validate": "unicode"
-    })
-    s_content = ("content", {
-        "desc": "article content",
-        "required": True,
-        "validate": "unicode"
-    })
-    s_toc = ("toc", {
-        "desc": "article table of content",
-        "required": True,
-        "validate": "unicode"
-    })
-    s_title = ("title", {
-        "desc": "markdown file name",
-        "required": True,
-        "validate": "unicode"
-    })
-    s_subtitle = ("subtitle", {
-        "validate": "unicode"
-    })
-    s_tags = ("tags", [{
-        "validate": "unicode"
-    }])
+    """文章Article
 
-    s_date_create = ("date_create", {
-        "validate": "iso_datetime"
-    })
-    s_date_modify = ("date_modify", {
-        "validate": "iso_datetime"
-    })
-    s_author = ("author", {
-        "validate": "unicode"
-    })
-    s_meta = ("meta", dict([s_git_username, s_subdir, s_filename,
-                            s_title, s_subtitle, s_tags,
-                            s_date_create, s_date_modify, s_author]))
-    s_out = dict([s_id, s_meta, s_content, s_toc])
-
+    gitname, subdir, filename 可以唯一确定一篇文章
+    """
+    user_id = "+int&required"
+    pagenum = "+int&required", 1, "第几页，从1开始计算",
+    pagesize = "+int&required", 10, "每页的数量"
+    id = "int&required", None, "文章ID",
+    gitname = "unicode&required"
+    subdir = "unicode&required"
+    filename = "unicode&required", None, "markdown file name",
+    html = "unicode&required", None, "article content html",
+    toc = "unicode&required", None, "article table of content",
+    title = "unicode&required", None, "markdown file name",
+    subtitle = "unicode"
+    tag = "unicode"
+    tags = schema(["tag"])
+    date_create = "iso_datetime"
+    date_modify = "iso_datetime"
+    author = "unicode"
+    content = schema("html", "toc")
+    article_items = ["id", "gitname", "subdir", "filename", "title", "subtitle",
+                     "tags", "date_create", "date_modify", "author"]
+    article = schema(*article_items)
+    article_with_content = schema("content", *article_items)
     schema_inputs = {
-        "get": dict([s_git_username, s_subdir, s_filename]),
-        "get_by_id": dict([s_id]),
-        "get_list": dict([s_pagenum, s_pagesize]),
-        "get_list_by_user": dict([s_git_username, s_pagenum, s_pagesize]),
+        "get": schema("gitname", "subdir", "filename"),
+        "get_by_id": schema("id"),
+        "get_list": schema("pagenum", "pagesize"),
+        "get_list_by_user": schema("gitname", "pagenum", "pagesize"),
+        "get_list_by_user_id": schema("user_id", "pagenum", "pagesize"),
     }
     schema_outputs = {
-        "get": s_out,
-        "get_by_id": s_out,
-        "get_list": [dict([s_id, s_meta])],
-        "get_list_by_user": [dict([s_id, s_meta])],
+        "get": article_with_content,
+        "get_by_id": article_with_content,
+        "get_list": schema(["article"]),
+        "get_list_by_user": schema(["article"]),
+        "get_list_by_user_id": schema(["article"]),
     }
 
     @staticmethod
@@ -119,30 +73,9 @@ class Article(Resource):
         return user.user_role(user_id)
 
     @cache.cached(timeout=3)
-    def get_list(self, pagenum, pagesize):
-        """获取文章列表"""
-        with db_session:
-            metas = select(m for m in model.ArticleMeta).page(pagenum, pagesize)
-            result = [{"meta": output_meta(meta), "id": meta.article.id} for meta in metas]
-            return result
-
-    @cache.cached(timeout=3)
-    def get_list_by_user(self, git_username, pagenum, pagesize):
-        """获取一个作者的文章列表"""
-        with db_session:
-            metas = select(m for m in model.ArticleMeta
-                           if m.bloguser.git_username == git_username).page(pagenum, pagesize)
-            result = [{"meta": output_meta(meta), "id": meta.article.id} for meta in metas]
-            return result
-
-    @cache.cached(timeout=3)
-    def get(self, git_username, subdir, filename):
+    def get(self, gitname, subdir, filename):
         """获取一篇文章"""
-        art = get_article(git_username, subdir, filename)
-        if art is None:
-            abort(404)
-        else:
-            return art
+        return get_article(gitname, subdir, filename)
 
     @cache.cached(timeout=3)
     def get_by_id(self, id):
@@ -151,29 +84,29 @@ class Article(Resource):
             art = model.Article.get(id=id)
             if art is None:
                 abort(404)
-            return output_article(art)
+            return output_article(art, with_content=True)
 
-
-class Tag(Resource):
-
-    """文章标签"""
-    s_name = ("name", {
-        "desc": "标签名称",
-        "validate": "unicode",
-        "required": True
-    })
-    s_count = ("count", {
-        "desc": "文章数量",
-        "validate": "int",
-        "required": True
-    })
-    schema_outputs = {
-        "get_list": [dict([s_name, s_count])]
-    }
-
-    def get_list(self):
-        """获取所有标签"""
+    @cache.cached(timeout=3)
+    def get_list(self, pagenum, pagesize):
+        """获取文章列表"""
         with db_session:
-            out_tag = lambda t: {"name": t.name, "count": count(t.article_metas)}
-            tags = [out_tag(t) for t in model.Tag.select()]
-            return tags
+            arts = model.Article.select().page(pagenum, pagesize)
+            result = [output_article(art) for art in arts]
+            return result
+
+    @cache.cached(timeout=3)
+    def get_list_by_user(self, gitname, pagenum, pagesize):
+        """获取一个作者的文章列表"""
+        with db_session:
+            arts = model.Article.select(lambda x: x.gitname == gitname).page(pagenum, pagesize)
+            result = [output_article(art) for art in arts]
+            return result
+
+    @cache.cached(timeout=3)
+    def get_list_by_user_id(self, user_id, pagenum, pagesize):
+        """获取一个作者的文章列表"""
+        with db_session:
+            bloguser = model.BlogUser.get(user_id=user_id)
+            arts = bloguser.articles.page(pagenum, pagesize)
+            result = [output_article(art) for art in arts]
+            return result

@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from __future__ import absolute_import
 import os
 from flask import request, current_app
-from flask.ext.restaction import Resource, abort
+from flask.ext.restaction import Resource, abort, schema
 from pony.orm import db_session
 import gitutil
 from kkblog.article_util import read_articles, read_modified_articles
@@ -30,11 +30,11 @@ def _get_mtags(meta):
     return m_tags
 
 
-def update_db(mddir, user_id, old_commit=None):
+def update_db(mddir, gitname, old_commit=None):
 
     # old_commit='' or None, initdb
     if not old_commit:
-        _init_db(mddir, user_id)
+        _init_db(mddir, gitname)
         return
     diff = gitutil.modified_files(mddir, old_commit)
 
@@ -46,52 +46,49 @@ def update_db(mddir, user_id, old_commit=None):
     deleted_files = [parse_path(path) for status, path in diff
                      if status == "D"]
     with db_session:
-        u = model.BlogUser.get(user_id=user_id)
+        u = model.BlogUser.get(gitname=gitname)
         if not u:
-            abort(404)
+            abort(404, "bloguser gitname=%s not exists" % gitname)
         # delete files
-        for subdir, filename in deleted_files:
-            meta = model.ArticleMeta.get(bloguser=u, subdir=subdir, filename=filename)
-            if meta is not None:
-                meta.article.delete()
-                meta.delete()
+        for subdir, fname in deleted_files:
+            art = model.Article.get(gitname=gitname, subdir=subdir, filename=fname)
+            if art is not None:
+                art.delete()
 
         # update files
-        for content, toc, meta in read_modified_articles(mddir, diff):
+        for html, toc, meta in read_modified_articles(mddir, diff):
             m_tags = _get_mtags(meta)
-            m_meta = model.ArticleMeta.get(bloguser=u, subdir=subdir, filename=filename)
-            if m_meta is not None:
+            art = model.Article.get(gitname=gitname, subdir=meta["subdir"],
+                                    filename=meta["filename"])
+            if art is not None:
                 # modified
-                m_meta.set(**dict(meta, tags=m_tags))
-                m_meta.article.set(content=content, toc=toc)
+                art.set(**dict(meta, tags=m_tags, bloguser=u))
+                art.content.set(html=html, toc=toc)
             else:
                 # add new
-                m_meta = model.ArticleMeta(**dict(meta, tags=m_tags, bloguser=u))
-                m_article = model.Article(
-                    content=content, toc=toc, meta=m_meta)
+                art = model.Article(**dict(meta, tags=m_tags, gitname=gitname, bloguser=u))
+                cont = model.ArticleContent(article=art, html=html, toc=toc)
 
 
-def clear_db(user_id):
+def clear_db(gitname):
     with db_session:
-        u = model.BlogUser.get(user_id=unicode(user_id))
-        if not u:
-            abort(404)
-        for m in u.article_metas:
-            m.article.delete()
-            m.delete()
-        u.latest_commit = ""
+        arts = model.Article.select(lambda x: x.gitname == gitname)
+        for art in arts:
+            art.delete()
+        u = model.BlogUser.get(gitname=gitname)
+        if u:
+            u.latest_commit = ""
 
 
-def _init_db(mddir, user_id):
+def _init_db(mddir, gitname):
     with db_session:
-        u = model.BlogUser.get(user_id=user_id)
+        u = model.BlogUser.get(gitname=gitname)
         if not u:
-            abort(404)
-        for content, toc, meta in read_articles(mddir):
+            abort(404, "bloguser gitname=%s not exists" % gitname)
+        for html, toc, meta in read_articles(mddir):
             m_tags = _get_mtags(meta)
-            m_meta = model.ArticleMeta(**dict(meta, tags=m_tags, bloguser=u))
-            m_article = model.Article(
-                content=content, toc=toc, meta=m_meta)
+            art = model.Article(**dict(meta, tags=m_tags, gitname=gitname, bloguser=u))
+            cont = model.ArticleContent(article=art, html=html, toc=toc)
 
 
 def get_mddir(repo_url, dest=None):
@@ -101,23 +98,48 @@ def get_mddir(repo_url, dest=None):
     return os.path.join(dest, owner, repo)
 
 
-class GitHooks(Resource):
+def update(user_id, local=False, rebuild=False):
+    with db_session:
+        u = model.BlogUser.get(user_id=user_id)
+        if not u:
+            abort(404, "bloguser %s not exists" % user_id)
+        repo_url = u.article_repo
+        old_commit = u.latest_commit
+        gitname = u.gitname
+    if rebuild:
+        clear_db(gitname)
+        old_commit = ""
+    msg = "local"
+    err = None
+    if not local:
+        __, owner, __ = gitutil.parse_giturl(repo_url)
+        err, ret = update_local(repo_url, owner)
+        msg = unicode(err) if err else ret
+    if not err:
+        mddir = get_mddir(repo_url)
+        update_db(mddir, gitname, old_commit)
+        logs = gitutil.git_log(mddir)
+        if logs:
+            latest_commit = logs[0][0]
+            with db_session:
+                u = model.BlogUser.get(user_id=user_id)
+                u.latest_commit = latest_commit
+    return err, msg
 
+
+class GitHooks(Resource):
     """GitHooks"""
 
-    s_local = ("local", {
-        "default": False,
-        "desc": "是否从本地仓库更新",
-        "validate": "bool"
-    })
-    s_rebuild = ("rebuild", {
-        "default": False,
-        "desc": "是否重新生成数据库信息",
-        "validate": "bool"
-    })
+    local = "bool", False, "是否从本地仓库更新"
+    rebuild = "bool", False, "是否重新生成数据库信息"
+    message = "unicode"
     schema_inputs = {
         "post": None,
-        "post_update": dict([s_local, s_rebuild]),
+        "post_update": schema("local", "rebuild"),
+    }
+    schema_outputs = {
+        "post": schema("message"),
+        "post_update": schema("message"),
     }
 
     @staticmethod
@@ -129,32 +151,12 @@ class GitHooks(Resource):
         # data = request.get_json(force=False, silent=True, cache=True)
         return self.post_update()
 
-    def post_update(self, local=False, rebuild=False):
+    def post_update(self, local, rebuild):
         """强制更新数据库数据
         """
-        user_id = unicode(request.me["id"])
-        with db_session:
-            u = model.BlogUser.get(user_id=user_id)
-            if not u:
-                abort(404)
-            repo_url = u.article_repo
-            old_commit = u.latest_commit
-        if rebuild:
-            clear_db(user_id)
-            old_commit = ""
-        msg = "local"
-        err = None
-        if not local:
-            __, owner, __ = gitutil.parse_giturl(repo_url)
-            err, ret = update_local(repo_url, owner)
-            msg = unicode(err) if err else ret
-        if not err:
-            mddir = get_mddir(repo_url)
-            update_db(mddir, user_id, old_commit)
-            logs = gitutil.git_log(mddir)
-            if logs:
-                latest_commit = logs[0][0]
-                with db_session:
-                    u = model.BlogUser.get(user_id=user_id)
-                    u.latest_commit = latest_commit
-        return {"message": msg, "success": bool(not err)}
+        user_id = request.me["id"]
+        err, msg = update(user_id, local, rebuild)
+        if err:
+            abort(400, str(err))
+        else:
+            return {"message": msg}

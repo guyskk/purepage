@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 from __future__ import absolute_import
 from flask import request, url_for, current_app
-from flask.ext.restaction import Resource, abort
+from flask.ext.restaction import Resource, abort, schema
 import jwt
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -23,19 +23,41 @@ def user_role(user_id):
         return user.role
 
 
-def gen_pwdhash(password):
-    return generate_password_hash(password, method='pbkdf2:sha1', salt_length=8)
-
-
-def add_user(username, password, role, email):
+@db_session
+def add_admin(email, password):
+    user = model.User.get(username=email)
+    role = "user.admin"
     pwdhash = gen_pwdhash(password)
-    date_modify = datetime.now()
-    user = model.User.get(username=username)
+    now = datetime.now()
+    user_config = {
+        "date_modify": now,
+        "role": role,
+        "pwdhash": pwdhash,
+    }
+    info_config = {
+        "date_create": now,
+        "email": email,
+    }
+    if user:
+        user.set(**user_config)
+        user.userinfo.set(**info_config)
+    else:
+        user = model.User(username=email, **user_config)
+        userinfo = model.UserInfo(user=user, **info_config)
+
+
+def gen_pwdhash(password):
+    return generate_password_hash(password, method='pbkdf2:sha256', salt_length=16)
+
+
+def add_user(email, password, role):
+    user = model.User.get(username=email)
     if user is not None:
-        raise ValueError("user %s already exists" % username)
-    uinfo = model.UserInfo(user=user, date_create=date_modify, email=email)
-    user = model.User(userinfo=uinfo, username=username, pwdhash=pwdhash,
-                      date_modify=date_modify, role=role)
+        raise ValueError("user %s already exists" % email)
+    pwdhash = gen_pwdhash(password)
+    now = datetime.now()
+    user = model.User(username=email, pwdhash=pwdhash, date_modify=now, role=role)
+    userinfo = model.UserInfo(user=user, date_create=now, email=email)
     return user
 
 
@@ -55,7 +77,9 @@ def change_password(username, new_password):
     return user
 
 
-def reset_password(token, new_password, auth_secret, auth_alg="HS256"):
+def reset_password(token, new_password):
+    auth_secret = current_app.config["USER_AUTH_SECRET"]
+    auth_alg = current_app.config["USER_AUTH_ALG"]
     options = {
         'require_exp': True,
     }
@@ -66,22 +90,25 @@ def reset_password(token, new_password, auth_secret, auth_alg="HS256"):
     except jwt.InvalidTokenError as ex:
         raise InvalidTokenError(str(ex))
 
-    user = model.User.get(id=tk["id"])
+    user = get_user_by_id(tk["id"])
     if user is None:
         raise ValueError("user id=%s not exists" % tk["id"])
 
     if user.date_modify.isoformat() != tk["date_modify"]:
-        raise InvalidTokenError("password has been changed yet, this token is invalid")
+        raise InvalidTokenError("The token is invalid")
 
     pwdhash = gen_pwdhash(new_password)
     user.set(pwdhash=pwdhash, date_modify=datetime.now())
     return user
 
 
-def forgot_password(username, auth_secret, auth_alg="HS256", auth_exp=1800):
+def forgot_password(username):
+    auth_secret = current_app.config["USER_AUTH_SECRET"]
+    auth_alg = current_app.config["USER_AUTH_ALG"]
+    auth_exp = current_app.config["USER_AUTH_EXP"]
     user = model.User.get(username=username)
     if user is None:
-        raise ValueError("user %s not registered" % username)
+        raise ValueError("user %s not exists" % username)
     exp = datetime.utcnow() + timedelta(seconds=auth_exp)
     token = {
         "id": user.id,
@@ -101,107 +128,49 @@ def get_user_by_id(id):
 
 def get_auth_exp(remember_me=False):
     if remember_me:
-        # 一周内不用重新登录
-        auth_exp = 7 * 24 * 60 * 60
+        return current_app.config["USER_REMEMBER_ME_EXP"]
     else:
-        # 60分钟内不用重新登录
-        auth_exp = 60 * 60
-    return auth_exp
-
-
-@db_session
-def add_admin(email, password):
-    user = model.User.get(username=email)
-    role = "user.admin"
-    pwdhash = gen_pwdhash(password)
-    date_modify = datetime.now()
-    user_config = {
-        "date_modify": date_modify,
-        "role": role,
-        "pwdhash": pwdhash,
-    }
-    info_config = {
-        "date_create": date_modify,
-        "email": email,
-    }
-    if user:
-        user.userinfo.set(**info_config)
-        user.set(**user_config)
-    else:
-        info = model.UserInfo(**info_config)
-        user = model.User(username=email, userinfo=info, **user_config)
+        return current_app.config["USER_LOGIN_EXP"]
 
 
 class User(Resource):
 
     """docstring for User"""
-    s_id = ("id", {
-        "validate": "int",
-        "required": True
-    })
-    s_username = ("username", {
-        "validate": "email",
-        "required": True
-    })
-    s_password = ("password", {
-        "validate": "password",
-        "required": True
-    })
-    s_new_password = ("new_password", {
-        "validate": "password",
-        "required": True
-    })
-    s_role = ("role", {
-        "validate": "role_user",
-        "required": True,
-        "default": "user.normal"
-    })
-    s_email = ("email", {
-        "validate": "email",
-        "required": True
-    })
-    s_date_modify = ("date_modify", {
-        "validate": "iso_datetime",
-        "required": True
-    })
-    s_token = ("token", {
-        "validate": "unicode",
-        "required": True
-    })
-    s_remember_me = ("remember_me", {
-        "validate": "bool",
-        "default": False
-    })
-    s_message = ("message", {"validate": "unicode"})
+
+    id = "int&required"
+    username = "email&required"
+    password = "password&required"
+    new_password = "password&required"
+    role = "role_user&required", "user.normal"
+    email = "email&required"
+    date_modify = "iso_datetime&required"
+    token = "unicode&required"
+    remember_me = "bool", False
+    message = "unicode"
 
     schema_inputs = {
-        "get": dict([s_id]),
+        "get": schema("id"),
         "get_me": None,
-        "post_register": dict([s_email, s_password]),
-        "post_admin_register": dict([s_email, s_password, s_role]),
-        "post_login": dict([s_username, s_password, s_remember_me]),
-        "post_logout": None,
-        "post_forgot_password": dict([s_username]),
-        "post_reset_password": dict([s_token, s_password]),
-        "put_password": dict([s_password, s_new_password]),
+        "post_register": schema("email", "password"),
+        "post_admin_register": schema("email", "password", "role"),
+        "post_login": schema("username", "password", "remember_me"),
+        "post_forgot_password": schema("username"),
+        "post_reset_password": schema("token", "password"),
+        "put_password": schema("password", "new_password"),
         "delete": None,
     }
-    s_out = dict([s_id, s_username, s_role, s_date_modify])
+    out = schema("id", "username", "role", "date_modify")
     schema_outputs = {
-        "get": s_out,
-        "get_me": s_out,
-        "post_register": s_out,
-        "post_admin_register": s_out,
-        "post_login": s_out,
-        "post_logout": dict([s_message]),
-        "post_forgot_password": dict([s_message]),
-        "post_reset_password": s_out,
-        "put_password": s_out,
-        "delete": dict([s_message]),
+        "get": out,
+        "get_me": out,
+        "post_register": out,
+        "post_admin_register": out,
+        "post_login": out,
+        "post_forgot_password": schema("message"),
+        "post_reset_password": out,
+        "put_password": out,
+        "delete": schema("message"),
     }
-
-    def __init__(self):
-        self.auth_secret = current_app.config["USER_AUTH_SECRET"]
 
     @staticmethod
     def user_role(user_id):
@@ -216,11 +185,11 @@ class User(Resource):
             return user.to_dict()
 
     def get_me(self):
-        """获取用户的个人信息"""
-        id = request.me["id"]
-        me = {"id": id}
-        header = api.gen_auth_header(me, auth_exp=get_auth_exp())
-        return self.get(id), header
+        """获取用户的个人信息，调用此接口可以延长token过期时间"""
+        me = dict(request.me)
+        auth_exp = get_auth_exp(me.get("remember_me"))
+        header = api.gen_auth_header(me, auth_exp=auth_exp)
+        return self.get(me["id"]), header
 
     def post_register(self, email, password):
         """注册，邮箱作为用户名"""
@@ -230,7 +199,7 @@ class User(Resource):
         """注册，邮箱作为用户名，限管理员使用"""
         with db_session:
             try:
-                user = add_user(email, password, role, email)
+                user = add_user(email, password, role)
                 return user.to_dict()
             except ValueError as ex:
                 abort(400, str(ex))
@@ -240,22 +209,21 @@ class User(Resource):
         with db_session:
             ok, user = login(username, password)
             if ok:
-                me = {"id": user.id}
-                header = api.gen_auth_header(me, auth_exp=get_auth_exp(remember_me))
+                me = {
+                    "id": user.id,
+                    "remember_me": remember_me
+                }
+                auth_exp = get_auth_exp(remember_me)
+                header = api.gen_auth_header(me, auth_exp=auth_exp)
                 return user.to_dict(), header
             else:
-                abort(403)
-
-    def post_logout(self):
-        """退出登录"""
-        # s = unicode(url_for("api.user@login"))
-        return {"message": "退出登录成功"}
+                abort(403, "用户名或密码错误")
 
     def post_forgot_password(self, username):
         """忘记密码/申请重新设置密码"""
         with db_session:
             try:
-                token, user = forgot_password(username, auth_secret=self.auth_secret)
+                token, user = forgot_password(username)
                 email = user.userinfo.email
             except ValueError as ex:
                 abort(400, str(ex))
@@ -282,31 +250,28 @@ class User(Resource):
         """重新设置密码"""
         with db_session:
             try:
-                user = reset_password(token, password, auth_secret=self.auth_secret)
+                user = reset_password(token, password)
                 return user.to_dict()
             except (InvalidTokenError, ValueError) as ex:
                 abort(400, str(ex))
 
     def put_password(self, password, new_password):
         """修改密码"""
-        id = request.me["id"]
         with db_session:
-            user = get_user_by_id(id)
+            user = get_user_by_id(request.me["id"])
             if user is None:
                 abort(404)
             ok, user = login(user.username, password)
             if ok:
                 change_password(user.username, new_password)
-                header = {api.auth_header: ""}
-                return user.to_dict(), header
+                return user.to_dict()
             else:
                 abort(403)
 
     def delete(self, password):
         """删除此账号"""
-        id = request.me["id"]
         with db_session:
-            user = get_user_by_id(id)
+            user = get_user_by_id(request.me["id"])
             if user is None:
                 abort(404)
             ok, user = login(user.username, password)

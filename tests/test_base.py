@@ -1,11 +1,11 @@
 # coding:utf-8
 
 from __future__ import unicode_literals
+from kkblog import create_app
+import json
 
 
 def test_app():
-    from kkblog import create_app
-    import json
     app = create_app()
     with app.test_client() as c:
         assert 200 == c.get("/").status_code

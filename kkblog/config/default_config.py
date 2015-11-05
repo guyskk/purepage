@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 DEBUG = True
-SQL_DEBUG = False
+SQL_DEBUG = True
 DEBUG_LEVEL = None  # "INFO"
 ALLOW_CORS = True
 MAIL_DEBUG = True
@@ -19,11 +19,20 @@ DATABASE_PARAMS = {
 }
 
 ARTICLE_DEST = "data/article_repo"
-USER_AUTH_SECRET = "USER_AUTH_SECRET"
 
-API_PERMISSION_PATH = "config/permission.json"
+# 用于找回密码功能处理token
+USER_AUTH_SECRET = "USER_AUTH_SECRET"
+USER_AUTH_ALG = "HS256"
+# 找回密码token过期时间，30分钟
+USER_AUTH_EXP = 30 * 60
+# 登录token过期时间，60分钟
+USER_LOGIN_EXP = 60 * 60
+# 记住我token过期时间，7天
+USER_REMEMBER_ME_EXP = 7 * 24 * 60 * 60
+
 API_AUTH_SECRET = "API_AUTH_SECRET"
-API_BOOTSTRAP = "/static/lib/bootstrap.css"
+API_PERMISSION_PATH = "config/permission.json"
+API_BOOTSTRAP = "/static/css/bootstrap.min.css"
 
 USER_ADMIN_EMAIL = "admin@admin.com"
 USER_ADMIN_PASSWORD = "123456"

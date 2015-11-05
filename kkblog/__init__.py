@@ -8,13 +8,16 @@ from pony.orm import sql_debug, db_session
 import re
 import os
 from datetime import datetime
-from validater import add_validater
+from validater import add_validater, validaters
 import logging
 from logging.handlers import RotatingFileHandler
 
 from kkblog.extensions import api, db, cache, mail
-from kkblog import model, user, bloguser, userinfo, article, comment, githooks
+from kkblog import (model, user, bloguser, userinfo, article,
+                    tag, comment, githooks)
 from kkblog import roles
+
+import flask_profiler
 
 # __all__ must be str, can't be unicode
 __all__ = [str("create_app"), str("api"), str("db")]
@@ -31,6 +34,7 @@ def create_app():
     if app.config.get("ALLOW_CORS"):
         config_cors(app)
 
+    flask_profiler.init_app(app)
     cache.init_app(app)
     mail.init_app(app)
 
@@ -62,12 +66,20 @@ def config_app(app):
     app.config.from_object('kkblog.config.default_config')
     app.config.from_envvar('KKBLOG_CONFIG', silent=True)
 
-    # create dir_article
+    # create dir_data and dir_article
     dir_article = app.config["ARTICLE_DEST"]
     if not os.path.isabs(dir_article):
         dir_article = os.path.join(app.root_path, dir_article)
+        app.config["ARTICLE_DEST"] = dir_article
     if not os.path.exists(dir_article):
         os.makedirs(dir_article)
+
+    app.config["flask_profiler"] = {
+        "enabled": app.config["DEBUG"],
+        "storage": {
+            "engine": "sqlite"
+        }
+    }
 
 
 def config_validater(app):
@@ -77,10 +89,11 @@ def config_validater(app):
         return s
 
     def iso_datetime_validater(v):
+        """iso_str -> datetime or datetime -> iso_str"""
         if isinstance(v, datetime):
             return (True, v.isoformat())
         else:
-            return (False, None)
+            return validaters["datetime"](v)
 
     def friendly_date_validater(v):
         if isinstance(v, datetime):
@@ -108,6 +121,7 @@ def config_view(app):
 
     # article 页面需要服务端部分渲染
     @app.route('/article/<path:path>')
+    @flask_profiler.profile()
     def page_article(path):
         p = pattern_article_path.findall(path)
         if not p:
@@ -129,6 +143,7 @@ def config_view(app):
         ("register.html", '/register'),
         ("reset_password.html", "/reset_password"),
         ("index.html", '/'),
+        ("favicon.ico", '/favicon.ico'),
     )
 
     # 转发 static 文件
@@ -137,13 +152,13 @@ def config_view(app):
 
     for filename, url in view_urls:
         end = os.path.splitext(filename)[0]
-        app.route(url, endpoint=end)(make_view(filename))
+        app.route(url, endpoint=end)(flask_profiler.profile()(make_view(filename)))
 
 
 def config_api(app):
     reslist = [
         article.Article,
-        article.Tag,
+        tag.Tag,
         githooks.GitHooks,
         user.User,
         bloguser.BlogUser,
@@ -169,8 +184,15 @@ def config_db(app):
     db_dir = os.path.dirname(params["filename"])
     if not os.path.exists(db_dir):
         os.makedirs(db_dir)
-    db.bind(app.config["DATABASE_NAME"], create_db=True, **params)
-    db.generate_mapping(create_tables=True)
+
+    # 测试时会多次执行db.bind
+    try:
+        db.bind(app.config["DATABASE_NAME"], create_db=True, **params)
+        db.generate_mapping(create_tables=True)
+    except TypeError as ex:
+        app.logger.warn("can't bind db: " + str(ex))
+    # 多次执行 create_tables 不会报错
+    db.create_tables()
 
 
 def config_before_handler(app):
@@ -187,6 +209,10 @@ def config_before_handler(app):
         with db_session:
             u = model.User.get(username=email)
             bloguser.add_admin(u.id, repo)
+
+    @app.after_request
+    def after_request(resp):
+        return resp
 
 
 def config_after_handler(app):

@@ -1,13 +1,25 @@
 # coding:utf-8
 from __future__ import unicode_literals
-from kkblog import create_app
+from kkblog import create_app, db
+from pony.orm import db_session
 import json
 import pytest
 
 
 @pytest.fixture()
 def app():
-    return create_app()
+    db.drop_all_tables(with_all_data=True)
+    app = create_app()
+    return app
+
+
+
+def test_create_app():
+    for i in range(10):
+        db.drop_all_tables(with_all_data=True)
+        with db_session:
+            assert True
+        app = create_app()
 
 
 def login(app, username, password):
@@ -36,7 +48,7 @@ def register(app, email, password):
 def getme(app, token):
     with app.test_client() as c:
         headers = {"Authorization": token}
-        resp = c.post("/api/user/me", headers=headers)
+        resp = c.get("/api/user/me", headers=headers)
         assert resp.status_code == 200
         return resp.data
 

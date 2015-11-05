@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 from __future__ import absolute_import
 from flask import request
-from flask.ext.restaction import Resource, abort
+from flask.ext.restaction import Resource, abort, schema
 from datetime import datetime
 from pony.orm import select, db_session, count
 from kkblog import model
@@ -13,90 +13,67 @@ import gitutil
 
 @db_session
 def user_role(user_id):
-    u = get_bloguser(unicode(user_id))
+    u = model.BlogUser.get(user_id=user_id)
     if u is not None:
         return u.role
-
-
-def get_bloguser(user_id):
-    user_id = unicode(user_id)
-    return model.BlogUser.get(user_id=user_id)
 
 
 @db_session
 def add_admin(user_id, article_repo):
     role = "bloguser.admin"
-    return create_or_update_bloguser(user_id, role, article_repo, website="")
+    u = model.BlogUser.get(user_id=user_id)
+    if not u:
+        return add_bloguser(user_id, role=role, article_repo=article_repo)
+    else:
+        return update_bloguser(user_id, role=role, article_repo=article_repo)
 
 
-def create_or_update_bloguser(user_id, role, article_repo, website):
-    website = website or ""
+def add_bloguser(user_id, role, article_repo=None):
+    u = model.BlogUser.get(user_id=user_id)
+    if u:
+        raise ValueError("bloguser user_id=%s already exists" % user_id)
     try:
-        __, git_username, __ = gitutil.parse_giturl(article_repo)
+        __, gitname, __ = gitutil.parse_giturl(article_repo)
     except:
         raise ValueError("invalid article_repo: %s" % article_repo)
-    user_id = unicode(user_id)
-    config = dict(role=role, article_repo=article_repo,
-                  git_username=git_username,
-                  website=website, user_system="kkblog", user_id=user_id)
-    u = get_bloguser(user_id)
+
+    now = datetime.now()
+    config = dict(user_id=user_id, role=role, article_repo=article_repo,
+                  gitname=gitname, date_modify=now)
+    u = model.BlogUser(date_create=now, **config)
+
+
+def update_bloguser(user_id, **config):
+    u = model.BlogUser.get(user_id=user_id)
     if not u:
-        u = model.BlogUser(date_create=datetime.now(), **config)
+        raise ValueError("bloguser user_id=%s not exists" % user_id)
     else:
-        u.set(**config)
+        u.set(date_modify=datetime.now(), **config)
     return u
 
 
 class BlogUser(Resource):
     """"""
-    s_user_id = ("user_id", {
-        "validate": "unicode",
-        "required": True
-    })
-    s_role = ("role", {
-        "validate": "role_bloguser",
-        "required": True,
-        "default": "bloguser.normal"
-    })
-    s_article_repo = ("article_repo", {
-        "desc": "文章的git仓库地址",
-        "validate": "url",
-        "required": True
-    })
-    s_git_username = ("git_username", {
-        "required": True,
-        "validate": "unicode"
-    })
-    s_website = ("website", {
-        "validate": "url",
-    })
-    s_latest_commit = ("latest_commit", {
-        "validate": "unicode"
-    })
-    s_git_username = ("git_username", {
-        "required": True,
-        "validate": "unicode"
-    })
-    s_date_create = ("date_create", {
-        "required": True,
-        "validate": "iso_datetime"
-    })
-    s_user_system = ("user_system", {
-        "required": True,
-        "validate": "unicode"
-    })
+    user_id = "unicode&required",
+    role = "role_bloguser&required", "bloguser.normal"
+    gitname = "unicode&required", None, "github 用户名"
+    article_repo = "url&required", None, "文章的git仓库地址",
+    latest_commit = "unicode", None, "最新一次提交的hash码"
+    date_create = "iso_datetime&required"
+    date_modify = "iso_datetime&required"
     schema_inputs = {
-        "get": dict([s_user_id]),
+        "get": schema("user_id"),
         "get_me": None,
-        "post": dict([s_role, s_article_repo, s_website]),
+        "post": schema("article_repo"),
+        "put": schema("article_repo"),
     }
-    s_out = dict([s_user_system, s_user_id, s_git_username,
-                  s_article_repo, s_role, s_latest_commit,
-                  s_website, s_date_create])
+    out = schema("user_id", "gitname", "article_repo", "role",
+                 "latest_commit", "date_create", "date_modify")
     schema_outputs = {
-        "get": s_out,
-        "get_me": s_out,
-        "post": s_out,
+        "get": out,
+        "get_me": out,
+        "post": out,
+        "put": out,
     }
 
     @staticmethod
@@ -105,7 +82,7 @@ class BlogUser(Resource):
 
     def get(self, user_id):
         with db_session:
-            u = get_bloguser(user_id)
+            u = model.BlogUser.get(user_id=user_id)
             if u is None:
                 abort(404)
             return u.to_dict()
@@ -113,18 +90,28 @@ class BlogUser(Resource):
     def get_me(self):
         user_id = request.me["id"]
         with db_session:
-            u = get_bloguser(user_id)
+            u = model.BlogUser.get(user_id=user_id)
             if u is None:
                 abort(404)
             return u.to_dict()
 
-    def post(self, role, article_repo, website):
-        """开启个人博客或更新资料"""
+    def post(self, article_repo):
+        """创建BlogUser(开启个人博客)"""
         role = "bloguser.normal"
         user_id = request.me["id"]
         with db_session:
             try:
-                u = create_or_update_bloguser(user_id, role, article_repo, website)
+                u = add_bloguser(user_id, role, article_repo)
+                return u.to_dict()
+            except Exception as ex:
+                abort(400, str(ex))
+
+    def put(self, article_repo):
+        """更新信息"""
+        user_id = request.me["id"]
+        with db_session:
+            try:
+                u = update_bloguser(user_id, article_repo)
                 return u.to_dict()
             except Exception as ex:
                 abort(400, str(ex))

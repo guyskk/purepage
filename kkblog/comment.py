@@ -2,80 +2,59 @@
 
 from __future__ import unicode_literals
 from __future__ import absolute_import
-from flask.ext.restaction import Resource, abort
+from flask import request
+from flask.ext.restaction import Resource, abort, schema
 from pony.orm import select, db_session, count
 from kkblog import model
 from kkblog import user
+from datetime import datetime
+
+
+def output_comments(comments):
+    def output(x):
+        user = model.User.get(id=x.user_id)
+        return dict(x.to_dict(), userinfo=user.userinfo.to_dict())
+    return [output(x) for x in comments]
 
 
 class Comment(Resource):
     """文章评论"""
-    s_id = ("id", {
-        "validate": "int",
-        "required": True
-    })
-    s_username = ("username", {
-        "validate": "re_email",
-        "required": True
-    })
-    s_pagenum = ("pagenum", {
-        "desc": "第几页，从1开始计算",
-        "required": True,
-        "default": 1,
-        "validate": "+int"})
-    s_pagesize = ("pagesize", {
-        "desc": "每页的数量",
-        "required": True,
-        "default": 10,
-        "validate": "+int"})
-    s_git_username = ("git_username", {
-        "required": True,
-        "validate": "unicode"
-    })
-    s_subdir = ("subdir", {
-        "required": True,
-        "validate": "unicode"
-    })
-    s_filename = ("filename", {
-        "desc": "markdown file name",
-        "required": True,
-        "validate": "unicode"
-    })
+    id = "int&required", None
+    user_id = "int&required", None, "评论者id"
+    pagenum = "+int&required", 1, "第几页，从1开始计算"
+    pagesize = "+int&required", 10, "每页的数量"
+    gitname = "unicode&required"
+    subdir = "unicode&required"
+    filename = "unicode&required", None, "markdown file name"
+    content = "unicode&required", None, "评论内容"
+    date_create = "iso_datetime&required", None, "评论时间"
+    date_modify = "iso_datetime&required", None, "评论修改时间"
 
-    s_content = ("content", {
-        "desc": "评论内容",
-        "required": True,
-        "validate": "unicode"
-    })
-    s_date = ("date", {
-        "desc": "评论时间",
-        "required": True,
-        "validate": "iso_datetime"
-    })
-    s_nickname = ("nickname", {
-        "desc": "评论者昵称",
-        "required": True,
-        "validate": "unicode"
-    })
-    s_photo_url = ("photo_url", {
-        "desc": "评论者头像url",
-        "required": True,
-        "validate": "url"
-    })
+    photo_url = "url"
+    nickname = "unicode"
 
-    s_out = dict([s_content, s_date, s_nickname, s_photo_url])
-
+    comment = schema("id", "gitname", "subdir", "filename", "content",
+                     "user_id", "date_create", "date_modify")
+    userinfo = schema("photo_url", "nickname")
+    comment_of_list = schema("id", "content", "user_id", "userinfo",
+                             "date_create", "date_modify")
     schema_inputs = {
-        "get": dict([s_id]),
-        "get_list_by_user": dict([s_git_username, s_pagenum, s_pagesize]),
-        "get_list_by_article": dict([s_git_username, s_subdir, s_filename, s_pagenum, s_pagesize]),
-        "get_list_by_article_id": dict([s_id, s_pagenum, s_pagesize]),
+        "get": schema("id"),
+        "get_list": schema("id", "pagenum", "pagesize"),
+        "get_list_of_me": schema("pagenum", "pagesize"),
+        "get_list_to_me": schema("pagenum", "pagesize"),
+        "get_list_by_article": schema("gitname", "subdir", "filename", "pagenum", "pagesize"),
+        "post": schema("id", "content"),
+        "put": schema("id", "content")
     }
     schema_outputs = {
-        "get": s_out,
-        "get_list_by_user": [s_out],
-        "get_list_by_article": [s_out],
-        "get_list_by_article_id": [s_out],
+        "get": comment,
+        "get_list": schema(["comment_of_list"]),
+        "get_list_of_me": schema(["comment_of_list"]),
+        "get_list_to_me": schema(["comment_of_list"]),
+        "get_list_by_article": schema(["comment_of_list"]),
+        "post": comment,
+        "put": comment
     }
 
     @staticmethod
@@ -90,35 +69,70 @@ class Comment(Resource):
                 abort(404)
             return cmt.to_dict()
 
-    def get_list_by_user(self, git_username, pagenum, pagesize):
-        """获取一个用户的评论"""
-        with db_session:
-            user = model.BlogUser.get(git_username=git_username)
-            if user is None:
-                abort(404)
-            cmt_list = select(x for x in model.Comment if x.article_bloguser == user).page(pagenum, pagesize)
-            return [x.to_dict() for x in cmt_list]
-
-    def get_list_by_article(self, git_username, subdir, filename, pagenum, pagesize):
-        """通过文章名称获取一篇文章的评论"""
-        with db_session:
-            user = model.BlogUser.get(git_username=git_username)
-            if user is None:
-                abort(404)
-            cmt_list = select(x for x in model.Comment
-                              if x.article_bloguser == user
-                              and x.article_subdir == subdir
-                              and x.article_filename == filename).page(pagenum, pagesize)
-            return [x.to_dict() for x in cmt_list]
-
-    def get_list_by_article_id(self, id, pagenum, pagesize):
+    def get_list(self, id, pagenum, pagesize):
         """通过文章id获取一篇文章的评论"""
         with db_session:
-            user = model.BlogUser.get(user_id=unicode(id))
+            art = model.Article.get(id=id)
+            if art is None:
+                abort(404)
+            comments = art.comments.page(pagenum, pagesize)
+            return output_comments(comments)
+
+    def get_list_of_me(self, pagenum, pagesize):
+        """获取我发表的评论"""
+        user_id = request.me["id"]
+        with db_session:
+            comments = model.Comment.select(lambda x: x.user_id == user_id)\
+                .page(pagenum, pagesize)
+            return output_comments(comments)
+
+    def get_list_to_me(self, pagenum, pagesize):
+        """获取别人对我文章的评论"""
+        user_id = request.me["id"]
+        with db_session:
+            user = model.BlogUser.get(user_id=user_id)
             if user is None:
                 abort(404)
-            cmt_list = select(x for x in model.Comment
-                              if x.article_bloguser == user
-                              and x.article_subdir == subdir
-                              and x.article_filename == filename).page(pagenum, pagesize)
-            return [x.to_dict() for x in cmt_list]
+            comments = user.comments.page(pagenum, pagesize)
+            return output_comments(comments)
+
+    def get_list_by_article(self, gitname, subdir, filename, pagenum, pagesize):
+        """通过gitname, subdir, filename获取一篇文章的评论"""
+        with db_session:
+            art = model.Article.get(gitname=gitname, subdir=subdir, filename=filename)
+            if art is None:
+                abort(404)
+            comments = art.comments.page(pagenum, pagesize)
+            return output_comments(comments)
+
+    def post(self, id, content):
+        """添加评论, id 是 article_id"""
+        with db_session:
+            art = model.Article.get(id=id)
+            if art is None:
+                abort(404, "article not exists")
+            now = datetime.now()
+            info = {
+                "gitname": art.gitname,
+                "subdir": art.subdir,
+                "filename": art.filename,
+                "content": content,
+                "user_id": request.me["id"],
+                "date_create": now,
+                "date_modify": now,
+            }
+            model.Comment(**info)
+
+    def put(self, id, content):
+        """修改评论, id 是 comment_id"""
+        with db_session:
+            cmt = model.Comment.get(id=id)
+            if cmt is None:
+                abort(404)
+            now = datetime.now()
+            info = {
+                "content": content,
+                "date_modify": now,
+            }
+            cmt.set(**info)
+            return cmt.to_dict()
