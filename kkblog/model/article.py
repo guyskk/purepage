@@ -59,7 +59,7 @@ class Comment(db.Entity):
     gitname = Required(unicode)
     subdir = Required(unicode)
     filename = Required(unicode)
-    composite_key(gitname, subdir, filename)
+    composite_index(gitname, subdir, filename)
 
     # 评论者
     user_id = Optional(int)
@@ -68,6 +68,6 @@ class Comment(db.Entity):
     # 所属博客主人
     bloguser = Optional("BlogUser")
 
-    content = Required(LongUnicode)
+    content = Required(unicode)
     date_create = Required(datetime)
     date_modify = Required(datetime)

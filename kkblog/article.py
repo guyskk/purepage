@@ -30,7 +30,7 @@ class Article(Resource):
 
     """文章Article
 
-    gitname, subdir, filename 可以唯一确定一篇文章
+    gitname, subdir, filename 这三个参数可以唯一确定一篇文章
     """
     user_id = "+int&required"
     pagenum = "+int&required", 1, "第几页，从1开始计算",

@@ -1,6 +1,6 @@
 {
     "*": {
-        "comment": ["get", "get_list", "get_list_by_article"],
+        "comment": ["get", "get_list", "get_list_by3"],
         "githooks": ["post"],
         "bloguser": ["get"],
         "tag": ["get_list"],
@@ -14,7 +14,7 @@
         "*": []
     },
     "user.normal": {
-        "comment": ["post", "put", "get_list_of_me", "get_list_to_me"],
+        "comment": ["post", "post_by3", "put", "get_list_of_me", "get_list_to_me"],
         "user": ["get_me", "delete", "put_password"],
         "bloguser": ["post", "put", "get_me"],
         "userinfo": ["get_me", "put"]

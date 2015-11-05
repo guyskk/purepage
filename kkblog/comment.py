@@ -17,8 +17,28 @@ def output_comments(comments):
     return [output(x) for x in comments]
 
 
+def add_comment(art, content):
+    if art is None:
+        abort(404, "article not exists")
+    now = datetime.now()
+    info = {
+        "gitname": art.gitname,
+        "subdir": art.subdir,
+        "filename": art.filename,
+        "content": content,
+        "user_id": request.me["id"],
+        "date_create": now,
+        "date_modify": now,
+    }
+    cmt = model.Comment(article=art, bloguser=art.bloguser, **info)
+    return cmt
+
+
 class Comment(Resource):
-    """文章评论"""
+    """文章评论
+
+    gitname, subdir, filename 这三个参数可以唯一确定一篇文章
+    """
     id = "int&required", None
     user_id = "int&required", None, "评论者id"
     pagenum = "+int&required", 1, "第几页，从1开始计算"
@@ -41,19 +61,21 @@ class Comment(Resource):
     schema_inputs = {
         "get": schema("id"),
         "get_list": schema("id", "pagenum", "pagesize"),
+        "get_list_by3": schema("gitname", "subdir", "filename", "pagenum", "pagesize"),
         "get_list_of_me": schema("pagenum", "pagesize"),
         "get_list_to_me": schema("pagenum", "pagesize"),
-        "get_list_by_article": schema("gitname", "subdir", "filename", "pagenum", "pagesize"),
         "post": schema("id", "content"),
+        "post_by3": schema("gitname", "subdir", "filename", "content"),
         "put": schema("id", "content")
     }
     schema_outputs = {
         "get": comment,
         "get_list": schema(["comment_of_list"]),
+        "get_list_by3": schema(["comment_of_list"]),
         "get_list_of_me": schema(["comment_of_list"]),
         "get_list_to_me": schema(["comment_of_list"]),
-        "get_list_by_article": schema(["comment_of_list"]),
         "post": comment,
+        "post3": comment,
         "put": comment
     }
 
@@ -78,6 +100,15 @@ class Comment(Resource):
             comments = art.comments.page(pagenum, pagesize)
             return output_comments(comments)
 
+    def get_list_by3(self, gitname, subdir, filename, pagenum, pagesize):
+        """通过gitname, subdir, filename获取一篇文章的评论"""
+        with db_session:
+            art = model.Article.get(gitname=gitname, subdir=subdir, filename=filename)
+            if art is None:
+                abort(404)
+            comments = art.comments.page(pagenum, pagesize)
+            return output_comments(comments)
+
     def get_list_of_me(self, pagenum, pagesize):
         """获取我发表的评论"""
         user_id = request.me["id"]
@@ -96,32 +127,19 @@ class Comment(Resource):
             comments = user.comments.page(pagenum, pagesize)
             return output_comments(comments)
 
-    def get_list_by_article(self, gitname, subdir, filename, pagenum, pagesize):
-        """通过gitname, subdir, filename获取一篇文章的评论"""
-        with db_session:
-            art = model.Article.get(gitname=gitname, subdir=subdir, filename=filename)
-            if art is None:
-                abort(404)
-            comments = art.comments.page(pagenum, pagesize)
-            return output_comments(comments)
-
     def post(self, id, content):
         """添加评论, id 是 article_id"""
         with db_session:
             art = model.Article.get(id=id)
-            if art is None:
-                abort(404, "article not exists")
-            now = datetime.now()
-            info = {
-                "gitname": art.gitname,
-                "subdir": art.subdir,
-                "filename": art.filename,
-                "content": content,
-                "user_id": request.me["id"],
-                "date_create": now,
-                "date_modify": now,
-            }
-            model.Comment(**info)
+            cmt = add_comment(art, content)
+            return cmt.to_dict()
+
+    def post_by3(self, gitname, subdir, filename, content):
+        """添加评论, 由gitname, subdir, filename这3个参数确定哪篇文章"""
+        with db_session:
+            art = model.Article.get(gitname=gitname, subdir=subdir, filename=filename)
+            cmt = add_comment(art, content)
+            return cmt.to_dict()
 
     def put(self, id, content):
         """修改评论, id 是 comment_id"""
