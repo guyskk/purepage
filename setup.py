@@ -16,11 +16,11 @@ setup(
         'flask>=0.10.1',
         'markupsafe>=0.23',
         'pyjwt>=1.4',
-        "flask-restaction>=0.18.0",
+        "flask-restaction>=0.18.1",
         "flask-cors>=2.0",
         "flask-cache>=0.13.0",
         "markdown>=2.6",
-        "pony>=0.6.1",
+        "pony>=0.6.1",  # should use the latest version
         "pyquery>=1.2",
         "pygitutil>=0.0.5",
         "flask-mail>=0.9.1",

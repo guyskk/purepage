@@ -11,21 +11,21 @@ class BlogUser(db.Entity):
     """博客主人"""
     # 绑定到User
     user_id = PrimaryKey(int)
-    gitname = Required(unicode, unique=True)
-    role = Required(unicode)
+    gitname = Required(str, unique=True)
+    role = Required(str)
     date_create = Required(datetime)
     date_modify = Required(datetime)
-    article_repo = Optional(unicode)
-    latest_commit = Optional(unicode)
+    article_repo = Optional(str)
+    latest_commit = Optional(str)
     articles = Set("Article")
     comments = Set("Comment")
 
 
 class Article(db.Entity):
     """gitname, subdir, filename 唯一确定一篇文章"""
-    gitname = Required(unicode)
-    subdir = Required(unicode)
-    filename = Required(unicode)
+    gitname = Required(str)
+    subdir = Required(str)
+    filename = Required(str)
     composite_key(gitname, subdir, filename)
 
     bloguser = Optional("BlogUser")
@@ -33,9 +33,9 @@ class Article(db.Entity):
     content = Optional("ArticleContent", cascade_delete=True)
     tags = Set("Tag")
 
-    title = Required(unicode)
-    subtitle = Optional(unicode)
-    author = Optional(unicode)
+    title = Required(str)
+    subtitle = Optional(str)
+    author = Optional(str)
     date_create = Required(datetime)
     date_modify = Required(datetime)
 
@@ -43,22 +43,22 @@ class Article(db.Entity):
 class ArticleContent(db.Entity):
     """文章内容和目录"""
     article = Required("Article")
-    html = Required(LongUnicode)
-    toc = Required(LongUnicode)
+    html = Required(LongStr)
+    toc = Required(LongStr)
 
 
 class Tag(db.Entity):
     article = Set("Article")
-    name = Required(unicode)
+    name = Required(str)
 
 
 class Comment(db.Entity):
     """评论"""
 
     # 唯一确定属于哪篇文章
-    gitname = Required(unicode)
-    subdir = Required(unicode)
-    filename = Required(unicode)
+    gitname = Required(str)
+    subdir = Required(str)
+    filename = Required(str)
     composite_index(gitname, subdir, filename)
 
     # 评论者
@@ -68,6 +68,6 @@ class Comment(db.Entity):
     # 所属博客主人
     bloguser = Optional("BlogUser")
 
-    content = Required(unicode)
+    content = Required(str)
     date_create = Required(datetime)
     date_modify = Required(datetime)
