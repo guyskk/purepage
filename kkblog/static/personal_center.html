@@ -7,121 +7,123 @@
 	<meta name="renderer" content="webkit">
 	<meta http-equiv="Cache-Control" content="no-siteapp" />
 	<title>个人中心</title>
-	<link rel="shortcut icon" href="img/favicon.ico" />
-	<link rel="stylesheet" href="css/amazeui.css"/>
-	<link rel="stylesheet" type="text/css" href="css/lxxyx.css"/>
-	<link rel="stylesheet" type="text/css" href="css/pc.css"/>
+	<link rel="shortcut icon" href="/static/img/favicon.ico" />
+	<link rel="stylesheet" href="/static/css/amazeui.css" />
+	<link rel="stylesheet" type="text/css" href="/static/css/lxxyx.css" />
 </head>
 <body>
-<!-- 导航部分 -->
-<div id="header" data-name = "pc"></div>
+<div id="main-container">
+	<!-- 导航部分 -->
+	<header data-name="pc"></header>
 
-<!--未填写信息警告-->
-<div class="am-g am-hide" style="color: white;background: #d74b28;" id="user_alert">
-	<div class="am-u-sm-8 am-u-sm-centered am-text-center">
-		<p style="margin: 0.6rem auto;">信息不全！<a href="" style="color: white;text-decoration:underline ;" id="user_completeMessage">点击此处完善信息</a></p>
+	<!--未填写信息警告-->
+	<div class="am-g am-hide" style="color: white;background: #d74b28;" id="user_alert">
+		<div class="am-u-sm-8 am-u-sm-centered am-text-center">
+			<p style="margin: 0.6rem auto;">信息不全！<a href="" style="color: white;text-decoration:underline ;" id="user_completeMessage">点击此处完善信息</a></p>
+		</div>
 	</div>
-</div>
 
-<!--弹出の框-->
-<div id="popUp"></div>
+	<!--弹出の框-->
+	<div id="popUp"></div>
 
-<!-- 个人资料主体 -->
-<div class="am-container">
-	<div class="am-u-sm-12 article_title">
-		<!--个人资料展示-->
-		<div id="user_showInfo">
-			<div class="am-padding">
-				<div class="am-fl am-cf">
-					<strong class="am-text-primary am-text-lg">
+	<!-- 个人资料主体 -->
+	<div class="am-container">
+		<div class="am-u-sm-12 article_title">
+			<!--个人资料展示-->
+			<div id="user_showInfo">
+				<div class="am-padding">
+					<div class="am-fl am-cf">
+						<strong class="am-text-primary am-text-lg">
 						<span class="user_name"></span>
-						的个人资料</strong> 
-						/ <small>Personal Information</small>
+						的个人资料</strong> / <small>Personal Information</small>
+					</div>
+					<img src="" id="user_photo" class="am-fr" style="width: 96px;height: 96px;border-radius: 48px;" />
 				</div>
-				<img src="" id="user_photo" class="am-fr" style="width: 96px;height: 96px;border-radius: 48px;"/>
-			</div>	
-			<hr />
-			<p class="am-u-sm-push-1 am-u-sm-11 am-text-xl am-cf">
-				<span style="margin: 0.5rem 0.5rem 0 auto;display: block;">ID：<span class="user_id am-text-primary"></span></span>
-				<span style="margin: 0.5rem 0.5rem 0 auto;display: block;">用户名：<span class="user_name am-text-primary"></span></span>
-				<span style="margin: 0.5rem 0.5rem 0 auto;display: block;">手机号码：<span class="user_phone am-text-primary"></span></span>
-				<span style="margin: 0.5rem 0.5rem 0 auto;display: block;">邮箱：<span class="user_email am-text-primary"></span></span>
-				<span style="margin: 0.5rem 0.5rem 0 auto;display: block;">帐号建立时间：<span class="user_date_create am-text-primary"></span></span>
-			</p>
-			<div class="am-u-sm-12" style="margin-top: 1rem;">
-				<button class="am-btn am-btn-danger am-round am-u-sm-12 am-u-md-6"
-					 style="margin-bottom: 1rem;" id="user_change">修改个人信息</button>
-				<button class="am-btn am-btn-success am-round am-u-sm-12 am-u-md-6" id="user_pcblog">开通个人博客</button>
+				<hr />
+				<p class="am-u-sm-push-1 am-u-sm-11 am-text-xl am-cf">
+					<span style="margin: 0.5rem 0.5rem 0 auto;display: block;">ID：<span class="user_id am-text-primary"></span></span>
+					<span style="margin: 0.5rem 0.5rem 0 auto;display: block;">用户名：<span class="user_name am-text-primary"></span></span>
+					<span style="margin: 0.5rem 0.5rem 0 auto;display: block;">手机号码：<span class="user_phone am-text-primary"></span></span>
+					<span style="margin: 0.5rem 0.5rem 0 auto;display: block;">邮箱：<span class="user_email am-text-primary"></span></span>
+					<span style="margin: 0.5rem 0.5rem 0 auto;display: block;">帐号建立时间：<span class="user_date_create am-text-primary"></span></span>
+				</p>
+				<div class="am-u-sm-12" style="margin-top: 1rem;">
+					<button class="am-btn am-btn-danger am-round am-u-sm-12 am-u-md-6" style="margin-bottom: 1rem;" id="user_change">修改个人信息</button>
+					<button class="am-btn am-btn-success am-round am-u-sm-12 am-u-md-6" id="user_pcblog">开通个人博客</button>
+					<button class="am-btn am-btn-success am-round am-u-sm-12 am-u-md-6 am-hide" id="user_blog_update">更新个人博客</button>
+					<button class="am-btn am-btn-primary am-round am-u-sm-12 am-hide" id="user_watch" style="margin-top: 1rem;">查看个人所有文章</button>
+				</div>
+				<div class="am-modal am-modal-prompt" tabindex="-1" id="user_gitUrl">
+					<div class="am-modal-dialog">
+						<div class="am-modal-hd">KKblog</div>
+						<div class="am-modal-bd">
+							请输入你的github文章仓库地址！
+							<input type="text" class="am-modal-prompt-input" />
+						</div>
+						<div class="am-modal-footer">
+							<span class="am-modal-btn" data-am-modal-cancel>取消</span>
+							<span class="am-modal-btn" data-am-modal-confirm>提交</span>
+						</div>
+					</div>
+				</div>
 			</div>
-			<div class="am-modal am-modal-prompt" tabindex="-1" id="user_gitUrl">
-				<div class="am-modal-dialog">
-					<div class="am-modal-hd">KKblog</div>
-					<div class="am-modal-bd">
-						请输入你的github文章仓库地址！
-						<input type="text" class="am-modal-prompt-input" />
-					</div>
-					<div class="am-modal-footer">
-						<span class="am-modal-btn" data-am-modal-cancel>取消</span>
-						<span class="am-modal-btn" data-am-modal-confirm>提交</span>
-					</div>
+			<!--修改用户信息-->
+			<div id="user_changeInfo" class="am-hide">
+				<div class="am-cf am-padding">
+					<div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">个人资料</strong> / <small>Personal information</small></div>
+				</div>
+				<hr/>
+				<div class="am-u-sm-12">
+					<form class="am-form am-form-horizontal">
+						<div class="am-form-group">
+							<label for="user_nickname" class="am-u-sm-3 am-form-label">昵称/nickname</label>
+							<div class="am-u-sm-9">
+								<input type="text" id="user_nickname" placeholder="昵称/nickname">
+							</div>
+						</div>
+
+						<div class="am-form-group">
+							<label for="user_email" class="am-u-sm-3 am-form-label">电子邮件 / Email</label>
+							<div class="am-u-sm-9">
+								<input type="email" id="user_email" placeholder="输入你的电子邮件 / Email">
+							</div>
+						</div>
+
+						<div class="am-form-group">
+							<label for="user_phone" class="am-u-sm-3 am-form-label">电话 / Telephone</label>
+							<div class="am-u-sm-9">
+								<input type="text" id="user_phone" placeholder="输入你的电话号码 / Telephone">
+							</div>
+						</div>
+
+						<div class="am-form-group">
+							<label for="user_photourl" class="am-u-sm-3 am-form-label">头像地址 / Photo</label>
+							<div class="am-u-sm-9">
+								<input type="url" id="user_photourl" placeholder="输入你的头像地址 / Photo">
+							</div>
+						</div>
+						<div class="am-form-group">
+							<div class="am-u-sm-9 am-u-sm-push-3">
+								<button type="button" class="am-btn am-btn-success" id="user_saveinfo">保存修改</button>
+								<button type="button" class="am-btn am-btn-primary am-fr" id="user_cancelChange">取消修改</button>
+							</div>
+						</div>
+					</form>
 				</div>
 			</div>
 		</div>
-		<div id="user_changeInfo" class="am-hide">
-			<div class="am-cf am-padding">
-				<div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">个人资料</strong> / <small>Personal information</small></div>
-			</div>
-			<hr/>
-			<div class="am-u-sm-12">
-				<form class="am-form am-form-horizontal">
-					<div class="am-form-group">
-						<label for="user_nickname" class="am-u-sm-3 am-form-label">昵称/nickname</label>
-						<div class="am-u-sm-9">
-							<input type="text" id="user_nickname" placeholder="昵称/nickname">
-						</div>
-					</div>
 
-					<div class="am-form-group">
-						<label for="user_email" class="am-u-sm-3 am-form-label">电子邮件 / Email</label>
-						<div class="am-u-sm-9">
-							<input type="email" id="user_email" placeholder="输入你的电子邮件 / Email">
-						</div>
-					</div>
-
-					<div class="am-form-group">
-						<label for="user_phone" class="am-u-sm-3 am-form-label">电话 / Telephone</label>
-						<div class="am-u-sm-9">
-							<input type="text" id="user_phone" placeholder="输入你的电话号码 / Telephone">
-						</div>
-					</div>
-
-					<div class="am-form-group">
-						<label for="user_photourl" class="am-u-sm-3 am-form-label">头像地址 / Photo</label>
-						<div class="am-u-sm-9">
-							<input type="url" id="user_photourl" placeholder="输入你的头像地址 / Photo">
-						</div>
-					</div>
-					<div class="am-form-group">
-						<div class="am-u-sm-9 am-u-sm-push-3">
-							<button type="button" class="am-btn am-btn-success" id="user_saveinfo">保存修改</button>
-							<button type="button" class="am-btn am-btn-primary am-fr" id="user_cancelChange">取消修改</button>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
 	</div>
 
+	<!-- 底栏，绝对定位 -->
+	<footer></footer>
+
 </div>
-
-<!-- 底栏，绝对定位 -->
-<div id="footer"></div>
-
 <!-- JS调用 -->
-<script src="js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
-<script src="js/amazeui.js" type="text/javascript" charset="utf-8"></script>
-<script src="js/login.js" type="text/javascript" charset="utf-8"></script>
-<script src="js/pc.js" type="text/javascript" charset="utf-8"></script>
-<script src="res.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/js/jquery-2.1.0.js"></script>
+<script src="/static/js/amazeui.js"></script>
+<script src="/static/js/login.js"></script>
+<script src="/static/js/pc.js"></script>
+<script src="/static/res.js"></script>
 </body>
 </html>

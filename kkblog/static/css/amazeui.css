@@ -17,7 +17,10 @@
 /* Set <html> and <body> to inherit the height of the viewport */
 html,
 body {
-  min-height: 100%;
+	margin: 0;
+	padding: 0;
+	height: 100%;
+  	min-height: 100%;
 }
 /**
  * 1. Prevent iOS text size adjust after orientation change, without disabling

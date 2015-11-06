@@ -55,7 +55,7 @@ $(document).ready(function () {
 		
 		)
 	});
-	
+	//开始完善信息。
 	$("#user_completeMessage").click(function (e) {
 		e.preventDefault();
 		$("#user_alert").addClass("am-hide");
@@ -71,7 +71,7 @@ $(document).ready(function () {
 	$("#user_cancelChange").click(function () {
 		$("#user_changeInfo").addClass("am-hide");
 		$("#user_showInfo").removeClass("am-hide");
-	})
+	});
 	
 	//github地址弹出框
 	$("#user_pcblog").on("click",function () {
@@ -94,9 +94,40 @@ $(document).ready(function () {
 					}
 				)
 			},
-			onCancel:function (e) {
-				
-			}
+			onCancel:function (e) {}
 		})
+	});
+	
+	//当检测到已登录且github仓库已开启，则自动显示更新文章的按钮。
+	res.api.bloguser.get_me(null,function (error,data) {
+		if (data) {
+			$("#user_pcblog").addClass("am-hide");
+			$("#user_blog_update").removeClass("am-hide");
+			$("#user_watch").removeClass("am-hide");
+			//保存gituser的名字，用于查看个人文章。
+			localStorage.setItem('git_username',data.git_username);
+		}
+	});
+	//更新文章。
+	$("#user_blog_update").click(function () {
+		$("#user_blog_update").addClass("am-disabled");
+		res.api.githooks.post_update(
+			{
+				local:false,rebuild:true
+			},function (error,data) {
+				if (data) {
+					alert("更新成功");
+					$("#user_blog_update").removeClass("am-disabled");
+				} else {
+					alert("出错！");
+					console.log(error);
+					$("#user_blog_update").removeClass("am-disabled");
+				}
+			}
+		);
+	});
+	
+	$("#user_watch").click(function () {
+		location.href = '/static/pc_article.html'
 	})
 })

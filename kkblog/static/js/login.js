@@ -1,5 +1,4 @@
 $(document).ready(function() {
-	var local_Storage = window.localStorage;
 	/*
 	 先传入header和footer，保证页面视图优先加载。
 	 之后加载popUp弹出页面，同时把函数放置在内。
@@ -14,9 +13,9 @@ $(document).ready(function() {
 		url: "/static/header.html",
 		async: true,
 		success: function(header) {
-			$("#header").append(header);
+			$("header").append(header);
 			//根据页面中#header的data-name属性，从而把相应的class："am-active"加上
-			var div_data = $("#header").data("name")
+			var div_data = $("header").data("name")
 			if (div_data === "home") {
 				$("#nav_homepage").addClass("am-active");
 			} else if (div_data === "article") {
@@ -37,7 +36,7 @@ $(document).ready(function() {
 		url: "/static/footer.html",
 		async: true,
 		success: function(footer) {
-			$("#footer").append(footer);
+			$("footer").append(footer);
 		},
 		error: function(e) {
 			alert("Ajax失败，请检查文件是否存在或者是否设置为post！");
@@ -153,9 +152,6 @@ $(document).ready(function() {
 						console.log(data);
 						alert(data.username + "登陆成功！")
 							//保存这些数据是为了个人中心的调用，和全网页别的部分的调用。
-						local_Storage.setItem("id", data.id);
-						local_Storage.setItem("username", data.username);
-						local_Storage.setItem("date_modify", data.date_modify);
 						popUp_close(".login");
 					}
 				)
@@ -184,7 +180,6 @@ $(document).ready(function() {
 					alert("两次输入密码不一致")
 				}
 			});
-
 			//打开找回密码的弹出框
 			$("#forget_password").click(function() {
 				popUp_close(".login");
@@ -253,16 +248,9 @@ $(document).ready(function() {
 			//登出
 			$("#log_out").click(function(e) {
 				e.preventDefault();
-				res.api.user.post_logout(null, function(error, data) {
-					console.log(data)
-					if (data) {
-						console.log(data)
-					} else {
-						alert("系统错误，请稍后再试！");
-					}
-					local_Storage.clear();
-					location.href = "http://127.0.0.1:5001/";
-				})
+				alert("登出成功！");
+				localStorage.clear();
+				location.href = "http://127.0.0.1:5001/";
 			});
 
 			/*网页Ajax主体部分*/

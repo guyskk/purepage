@@ -1,14 +1,15 @@
 body {
-	background: url(../img/body.gif) repeat;
+	background: url(/static/img/body.gif) repeat;
 }
 .article_title {
 	background: white;
 	height: auto;
-	min-height: 40rem;
+	min-height: 30rem;
 	margin-top: 1.5rem;
 	border-radius: 0.7rem;
 	/*visibility: hidden;*/
 	margin-bottom: 1.5rem;
+	padding-bottom: 2.5rem;
 }
 .main_article {
 	margin-top:2rem;
@@ -28,7 +29,7 @@ body {
 	background: linear-gradient(top,#eaeaeb,#b8c4cb);
 	background: -moz-linear-gradient(top,#eaeaeb,#b8c4cb);
 	background: -ms-linear-gradient(top,#eaeaeb,#b8c4cb);
-	box-shadow: 0 0 37px;
+	/*box-shadow: 0 0 37px;*/
 }
 .login h1 {
 	margin-top: 2.5rem;
@@ -68,7 +69,7 @@ body {
 	background: -moz-linear-gradient(top,#eaeaeb,#b8c4cb);
 	background: -ms-linear-gradient(top,#eaeaeb,#b8c4cb);
 	visibility: hidden;
-	box-shadow: 0 0 37px;
+	/*box-shadow: 0 0 37px;*/
 }
 
 .register h1 {
@@ -97,7 +98,7 @@ body {
 	background: -moz-linear-gradient(top,#eaeaeb,#b8c4cb);
 	background: -ms-linear-gradient(top,#eaeaeb,#b8c4cb);
 	visibility: hidden;
-	box-shadow: 0 0 37px;
+	/*box-shadow: 0 0 37px;*/
 }
 .forgetPassword h1 {
 	margin-top: 2.5rem;
@@ -109,4 +110,11 @@ body {
 
 .forgetPassword p button {
 	margin: 0.3rem auto;
+}
+
+#main-container {
+	min-height: 100%;
+	height: auto!important;
+	height: 100%;
+	position: relative;
 }
