@@ -26,6 +26,16 @@ def get_article(gitname, subdir, filename):
     return output_article(art, with_content=True)
 
 
+@db_session
+def get_article_list(lamb, pagenum, pagesize):
+    if lamb is not None:
+        arts = model.Article.select(lamb).page(pagenum, pagesize)
+    else:
+        arts = model.Article.select().page(pagenum, pagesize)
+    result = [output_article(art) for art in arts]
+    return result
+
+
 class Article(Resource):
 
     """文章Article
@@ -37,13 +47,15 @@ class Article(Resource):
     pagesize = "+int&required", 10, "每页的数量"
     id = "int&required", None, "文章ID",
     gitname = "unicode&required"
+    gitname2 = "gitname", ("unicode",)
     subdir = "unicode&required"
     filename = "unicode&required", None, "markdown file name",
     html = "unicode&required", None, "article content html",
     toc = "unicode&required", None, "article table of content",
     title = "unicode&required", None, "markdown file name",
     subtitle = "unicode"
-    tag = "unicode"
+    tag = "unicode&required"
+    keywords = "unicode&required"
     tags = schema(["tag"])
     date_create = "iso_datetime"
     date_modify = "iso_datetime"
@@ -59,6 +71,9 @@ class Article(Resource):
         "get_list": schema("pagenum", "pagesize"),
         "get_list_by_user": schema("gitname", "pagenum", "pagesize"),
         "get_list_by_user_id": schema("user_id", "pagenum", "pagesize"),
+        "get_list_by_subdir": schema("gitname", "subdir", "pagenum", "pagesize"),
+        "get_list_by_tag": schema("gitname2", "tag", "pagenum", "pagesize"),
+        "get_list_by_keywords": schema("gitname2", "keywords", "pagenum", "pagesize"),
     }
     schema_outputs = {
         "get": article_with_content,
@@ -66,6 +81,9 @@ class Article(Resource):
         "get_list": schema(["article"]),
         "get_list_by_user": schema(["article"]),
         "get_list_by_user_id": schema(["article"]),
+        "get_list_by_subdir": schema(["article"]),
+        "get_list_by_tag": schema(["article"]),
+        "get_list_by_keywords": schema(["article"]),
     }
 
     @staticmethod
@@ -89,18 +107,12 @@ class Article(Resource):
     @cache.cached(timeout=3)
     def get_list(self, pagenum, pagesize):
         """获取文章列表"""
-        with db_session:
-            arts = model.Article.select().page(pagenum, pagesize)
-            result = [output_article(art) for art in arts]
-            return result
+        return get_article_list(None, pagenum, pagesize)
 
     @cache.cached(timeout=3)
     def get_list_by_user(self, gitname, pagenum, pagesize):
         """获取一个作者的文章列表"""
-        with db_session:
-            arts = model.Article.select(lambda x: x.gitname == gitname).page(pagenum, pagesize)
-            result = [output_article(art) for art in arts]
-            return result
+        return get_article_list(lambda x: x.gitname == gitname, pagenum, pagesize)
 
     @cache.cached(timeout=3)
     def get_list_by_user_id(self, user_id, pagenum, pagesize):
@@ -110,3 +122,29 @@ class Article(Resource):
             arts = bloguser.articles.page(pagenum, pagesize)
             result = [output_article(art) for art in arts]
             return result
+
+    @cache.cached(timeout=3)
+    def get_list_by_subdir(self, gitname, subdir, pagenum, pagesize):
+        """获取一个作者的文章归档"""
+        return get_article_list(lambda x: x.gitname == gitname and x.subdir == subdir,
+                                pagenum, pagesize)
+
+    @cache.cached(timeout=3)
+    def get_list_by_tag(self, gitname, tag, pagenum, pagesize):
+        """按标签和作者查找文章，不指定 gitname 或者 gitname 为空字符串表示不限制文章作者"""
+        with db_session:
+            tag = model.Tag.get(name=tag)
+            if gitname:
+                lamb = lambda x: x.gitname == gitname and tag in x.tags
+            else:
+                lamb = lambda x: tag in x.tags
+            return get_article_list(lamb, pagenum, pagesize)
+
+    @cache.cached(timeout=3)
+    def get_list_by_keywords(self, gitname, keywords, pagenum, pagesize):
+        """按关键字查找文章，不指定 gitname 或者 gitname 为空字符串表示不限制文章作者"""
+        if gitname:
+            lamb = lambda x: x.gitname == gitname and keywords in x.title
+        else:
+            lamb = lambda x: keywords in x.title
+        return get_article_list(lamb, pagenum, pagesize)

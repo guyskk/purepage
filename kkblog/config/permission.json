@@ -7,7 +7,7 @@
         "user": ["get", "post_login", "post_register",
             "post_forgot_password", "post_reset_password"
         ],
-        "article": ["get", "get_by_id", "get_list", "get_list_by_user", "get_list_by_user_id"],
+        "article*": [],
         "userinfo": ["get"]
     },
     "user.admin": {

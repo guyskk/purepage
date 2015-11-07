@@ -9,8 +9,8 @@ def test_app():
     app = create_app()
     with app.test_client() as c:
         assert 200 == c.get("/").status_code
-        assert 200 == c.get("/login").status_code
-        assert 200 == c.get("/register").status_code
+        # assert 200 == c.get("/login").status_code
+        # assert 200 == c.get("/register").status_code
         assert 200 == c.get("/api/article/list").status_code
         data = {"username": "admin@admin.com", "password": "123456"}
         login_resp = c.post("/api/user/login", data=data)

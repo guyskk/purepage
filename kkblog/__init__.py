@@ -122,9 +122,9 @@ def config_view(app):
         p = pattern_article_path.findall(path)
         if not p:
             abort(404)
-        git_username, subdir, name = p[0]
+        gitname, subdir, name = p[0]
         with app.open_resource("static/article.html") as f:
-            art = article.get_article(git_username, subdir, "%s.md" % name)
+            art = article.get_article(gitname, subdir, "%s.md" % name)
             if not art:
                 abort(404)
             title = art["title"]
@@ -136,9 +136,9 @@ def config_view(app):
             return contents
 
     view_urls = (
-        ("article_list.html", '/article/<git_username>'),
-        ("login.html", '/login'),
-        ("register.html", '/register'),
+        ("article_list.html", '/article/<gitname>'),
+        # ("register.html", '/register'),
+        # ("login.html", '/login'),
         ("reset_password.html", "/reset_password"),
         ("index.html", '/'),
         ("favicon.ico", '/favicon.ico'),
