@@ -34,6 +34,11 @@ API_AUTH_SECRET = "API_AUTH_SECRET"
 API_PERMISSION_PATH = "config/permission.json"
 API_BOOTSTRAP = "/static/css/bootstrap.min.css"
 
+# 图形验证码加密密钥, must be either 16, 24, or 32 bytes long
+CAPTCHA_KEY = "CAPTCHA_CAPTCHA_"
+# 图形验证码加密盐过期时间，30分钟
+CAPTCHA_SALT_EXP = 30 * 60
+CAPTCHA_FONT = "georgia.ttf"
 USER_ADMIN_EMAIL = "admin@admin.com"
 USER_ADMIN_PASSWORD = "123456"
 USER_ADMIN_REPO_URL = "https://github.com/guyskk/kkblog-article.git"

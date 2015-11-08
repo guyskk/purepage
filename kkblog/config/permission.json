@@ -8,6 +8,7 @@
             "post_forgot_password", "post_reset_password"
         ],
         "article*": [],
+        "captcha*": [],
         "userinfo": ["get"]
     },
     "user.admin": {

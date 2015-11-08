@@ -14,7 +14,7 @@ from logging.handlers import RotatingFileHandler
 
 from kkblog.extensions import api, db, cache, mail
 from kkblog import (model, user, bloguser, userinfo, article,
-                    tag, comment, githooks)
+                    tag, comment, githooks, captcha)
 from kkblog import roles
 
 # __all__ must be str, can't be unicode
@@ -70,7 +70,9 @@ def config_app(app):
         app.config["ARTICLE_DEST"] = dir_article
     if not os.path.exists(dir_article):
         os.makedirs(dir_article)
-
+    # 图形验证码字体文件
+    app.config["CAPTCHA_FONT"] = os.path.join(
+        app.root_path, app.config["CAPTCHA_FONT"])
     app.config["flask_profiler"] = {
         "enabled": app.config["DEBUG"],
         "storage": {
@@ -162,6 +164,7 @@ def config_api(app):
         bloguser.BlogUser,
         comment.Comment,
         userinfo.UserInfo,
+        captcha.Captcha,
     ]
     for res in reslist:
         api.add_resource(res)
