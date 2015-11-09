@@ -11,3 +11,4 @@ include uwsgi.conf
 include deploy.sh
 include readme.md
 include requires.txt
+include kkblog/georgia.ttf

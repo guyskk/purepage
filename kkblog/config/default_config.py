@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 DEBUG = True
-SQL_DEBUG = True
+SQL_DEBUG = False
 DEBUG_LEVEL = None  # "INFO"
 ALLOW_CORS = True
 MAIL_DEBUG = True

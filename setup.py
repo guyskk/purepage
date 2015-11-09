@@ -24,6 +24,8 @@ setup(
         "pyquery>=1.2",
         "pygitutil>=0.0.5",
         "flask-mail>=0.9.1",
+        "pillow>=3.0.0",
+        "pycrypto>=2.6.1",
     ],
     dependency_links=[
         # "https://github.com/mitsuhiko/flask/tarball/master",

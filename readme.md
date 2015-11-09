@@ -298,7 +298,10 @@ Grunt 插件
 	# 正确方式
 	sudo apt-get install build-essential libxml2-dev libxslt-dev lib32z1-dev python-dev
 	sudo pip install lxml
-	
+
+安装 pillow
+
+	apt-get install libjpeg-dev
 	
 数据库 mongodb 或者 mysql, 目前是 sqlite
 	
@@ -332,3 +335,4 @@ http://docs.mongodb.org/master/tutorial/install-mongodb-on-ubuntu/
 	# curl https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py
 	# python /tmp/get-pip.py
 	# 
+

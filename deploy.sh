@@ -36,20 +36,27 @@ test -d $log_dir || mkdir $log_dir
 test -d $socket_dir || mkdir $socket_dir
 test -d $config_dir || mkdir $config_dir
 test -d $nginx_config_dir || mkdir $nginx_config_dir
+test -d $nginx_config_dir/sites-available || mkdir $nginx_config_dir/sites-available
+test -d $nginx_config_dir/sites-enabled || mkdir $nginx_config_dir/sites-enabled
 test -d $uwsgi_config_dir || mkdir $uwsgi_config_dir
 test -d $env_dir || virtualenv $env_dir
 
 cd $app_dir
-cp kkblog_nginx.conf $nginx_config_dir
+cp kkblog_nginx.conf $nginx_config_dir/sites-available
+ln -s $nginx_config_dir/sites-available/kkblog_nginx.conf $nginx_config_dir/sites-enabled/kkblog_nginx.conf
 cp kkblog_uwsgi.ini $uwsgi_config_dir
 
 echo install kkblog
 # insall lxml
 apt-get install -y --force-yes libxml2-dev libxslt-dev lib32z1-dev python-dev
+# for pillow, Prerequisites are installed on Ubuntu 14.04 LTS with:
+sudo apt-get -y --force-yes install libtiff5-dev libjpeg8-dev zlib1g-dev \
+libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python-tk
+
 ${env_dir}/bin/pip install -r requires.txt
 
 echo reload uwsgi
-if test $(pgrep uwsgi|wc -l) -eq 0
+if test $(ps -aux|grep "uwsgi --emperor"|wc -l) -eq 1
 then
     uwsgi --emperor ${uwsgi_config_dir} --daemonize ${log_dir}/uwsgi_emperor.log
 else
