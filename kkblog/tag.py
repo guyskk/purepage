@@ -2,7 +2,8 @@
 
 from __future__ import unicode_literals
 from __future__ import absolute_import
-from flask.ext.restaction import Resource, abort, schema
+from flask import abort
+from flask.ext.restaction import Resource, schema
 from pony.orm import select, db_session, count
 from kkblog import model
 from kkblog import cache

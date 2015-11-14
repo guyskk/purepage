@@ -3,13 +3,12 @@
 from __future__ import unicode_literals
 from __future__ import absolute_import
 import os
-from flask import request, current_app
-from flask.ext.restaction import Resource, abort, schema
+from flask import request, current_app,abort
+from flask.ext.restaction import Resource, schema
 from pony.orm import db_session, flush
 import gitutil
 from kkblog.article_util import read_articles, read_modified_articles
 from kkblog import model
-from kkblog import bloguser
 
 
 def update_local(repo_url, owner):
@@ -141,10 +140,6 @@ class GitHooks(Resource):
         "post": schema("message"),
         "post_update": schema("message"),
     }
-
-    @staticmethod
-    def user_role(user_id):
-        return bloguser.user_role(user_id)
 
     def post(self):
         """响应github webhooks更新数据"""

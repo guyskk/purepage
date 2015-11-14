@@ -20,10 +20,9 @@
         "bloguser": ["post", "put", "get_me"],
         "userinfo": ["get_me", "put"]
     },
-    "bloguser.admin": {
-        "*": []
-    },
     "bloguser.normal": {
-        "githooks": ["post", "post_update"]
+        "githooks": ["post", "post_update"],
+        "article*": [],
+        "captcha*": []
     }
 }

@@ -2,12 +2,11 @@
 
 from __future__ import unicode_literals
 from __future__ import absolute_import
-from flask import request, url_for
-from flask.ext.restaction import Resource, abort, schema
+from flask import request, url_for,abort
+from flask.ext.restaction import Resource, schema
 from pony.orm import select, db_session, count
 
 from kkblog import model
-from kkblog import user
 
 
 @db_session
@@ -37,27 +36,21 @@ class UserInfo(Resource):
     photo_url = "url"
     nickname = "unicode"
     sex = "bool", None, "True表示男,False表示女"
-
     email = "email"
     phone = "phone"
-
     date_create = "iso_datetime"
     lastlogin_date = "iso_datetime"
     lastlogin_ip = "ipv4"
     lastlogin_ua = "unicode"
-
     birthday = "iso_datetime"
     message = "unicode"
-
     public_items = ["user_id", "nickname", "photo_url", "sex", "birthday"]
     private_items = ["email", "phone", "date_create", "lastlogin_date",
                      "lastlogin_ip", "lastlogin_ua"]
     info_public = schema(*public_items)
     info_private = schema(*private_items)
     info_all = schema(*(public_items + private_items))
-
     info_in = schema("photo_url", "nickname", "sex", "email", "phone", "birthday")
-
     schema_inputs = {
         "get": schema("user_id"),
         "get_me": None,
@@ -68,10 +61,6 @@ class UserInfo(Resource):
         "get_me": info_all,
         "put": info_all,
     }
-
-    @staticmethod
-    def user_role(user_id):
-        return user.user_role(user_id)
 
     def get(self, id):
         """获取用户的公开信息"""

@@ -2,20 +2,12 @@
 
 from __future__ import unicode_literals
 from __future__ import absolute_import
-from flask import request
-from flask.ext.restaction import Resource, abort, schema
+from flask import request,abort
+from flask.ext.restaction import Resource, schema
 from datetime import datetime
 from pony.orm import select, db_session, count
 from kkblog import model
-from kkblog import user
 import gitutil
-
-
-@db_session
-def user_role(user_id):
-    u = model.BlogUser.get(user_id=user_id)
-    if u is not None:
-        return u.role
 
 
 @db_session
@@ -75,10 +67,6 @@ class BlogUser(Resource):
         "post": out,
         "put": out,
     }
-
-    @staticmethod
-    def user_role(user_id):
-        return user.user_role(user_id)
 
     def get(self, user_id):
         with db_session:

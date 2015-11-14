@@ -2,8 +2,8 @@
 
 from __future__ import unicode_literals
 from __future__ import absolute_import
-from flask import request, url_for, current_app
-from flask.ext.restaction import Resource, abort, schema
+from flask import request, url_for, current_app,abort
+from flask.ext.restaction import Resource, schema
 import jwt
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -14,13 +14,6 @@ from flask.ext.mail import Message
 
 class InvalidTokenError(Exception):
     """reset_password token invalid"""
-
-
-@db_session
-def user_role(user_id):
-    user = get_user_by_id(user_id)
-    if user is not None:
-        return user.role
 
 
 @db_session
@@ -171,10 +164,6 @@ class User(Resource):
         "put_password": out,
         "delete": schema("message"),
     }
-
-    @staticmethod
-    def user_role(user_id):
-        return user_role(user_id)
 
     def get(self, id):
         """获取用户的信息"""

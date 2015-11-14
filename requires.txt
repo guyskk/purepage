@@ -1,11 +1,11 @@
 flask>=0.10.1
 markupsafe>=0.23
 pyjwt>=1.4
-flask-restaction>=0.18.1
-git+https://github.com/corydolphin/flask-cors.git
+flask-cors>=2.1.2
 flask-cache>=0.13.0
 markdown>=2.6
 git+https://github.com/ponyorm/pony.git
+git+https://github.com/guyskk/flask-restaction.git
 pyquery>=1.2
 pygitutil>=0.0.5
 flask-mail>=0.9.1

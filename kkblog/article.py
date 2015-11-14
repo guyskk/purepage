@@ -2,10 +2,10 @@
 
 from __future__ import unicode_literals
 from __future__ import absolute_import
-from flask.ext.restaction import Resource, abort, schema
+from flask import abort
+from flask.ext.restaction import Resource, schema
 from pony.orm import select, db_session, count
 from kkblog import model
-from kkblog import user
 from kkblog import cache
 
 
@@ -85,10 +85,6 @@ class Article(Resource):
         "get_list_by_tag": schema(["article"]),
         "get_list_by_keywords": schema(["article"]),
     }
-
-    @staticmethod
-    def user_role(user_id):
-        return user.user_role(user_id)
 
     @cache.cached(timeout=3)
     def get(self, gitname, subdir, filename):

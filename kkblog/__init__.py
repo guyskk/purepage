@@ -15,10 +15,21 @@ from logging.handlers import RotatingFileHandler
 from kkblog.extensions import api, db, cache, mail
 from kkblog import (model, user, bloguser, userinfo, article,
                     tag, comment, githooks, captcha)
-from kkblog import roles
 
 # __all__ must be str, can't be unicode
 __all__ = [str("create_app"), str("api"), str("db")]
+
+
+def user_role(uid, user):
+    user_model = {
+        "user": (model.User, "id"),
+        "bloguser": (model.BlogUser, "user_id"),
+    }
+    with db_session:
+        User, key = user_model[user]
+        u = User.get(**{key: uid})
+        if u:
+            return u.role
 
 
 def create_app():
@@ -27,7 +38,7 @@ def create_app():
     config_logging(app)
 
     bp_api = Blueprint('api', __name__, static_folder='static')
-    api.init_app(bp_api)
+    api.init_app(bp_api, fn_user_role=user_role)
     api.config(app.config)
     if app.config.get("ALLOW_CORS"):
         config_cors(app)
@@ -101,10 +112,6 @@ def config_validater(app):
             return (False, None)
     add_validater("iso_datetime", iso_datetime_validater)
     add_validater("friendly_date", friendly_date_validater)
-
-    # add role validater
-    for u, v in roles.role_validaters.items():
-        add_validater(u, v)
 
 
 def config_view(app):

@@ -2,11 +2,10 @@
 
 from __future__ import unicode_literals
 from __future__ import absolute_import
-from flask import request
-from flask.ext.restaction import Resource, abort, schema
+from flask import request,abort
+from flask.ext.restaction import Resource, schema
 from pony.orm import select, db_session, count
 from kkblog import model
-from kkblog import user
 from datetime import datetime
 
 
@@ -78,10 +77,6 @@ class Comment(Resource):
         "post3": comment,
         "put": comment
     }
-
-    @staticmethod
-    def user_role(user_id):
-        return user.user_role(user_id)
 
     def get(self, id):
         """获取一个评论"""
