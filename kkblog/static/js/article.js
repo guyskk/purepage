@@ -1,5 +1,4 @@
 $(window).ready(function() {
-	//通过正则表达式，取得文件信息
 	var url = decodeURI(location.pathname)
 
 	function parse_article_url(url) {
@@ -15,6 +14,7 @@ $(window).ready(function() {
 			"filename": result[3] + ".md",
 		}
 	};
+
 	var get_article_info = parse_article_url(url);
 	//通过三个参数确定唯一的文章
 	res.api.article.get({

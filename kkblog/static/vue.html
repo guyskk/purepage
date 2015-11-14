@@ -14,30 +14,19 @@
 <body>
 <div id="main-container">
 	<!-- 导航部分 -->
-	<header></header>
+	<header data-name="home"></header>
 
 	<!--弹出の框-->
 	<div id="popUp"></div>
 	<!-- 网页文章 -->
 	<div class="am-container" id="MainCtrl">
 		<div class="am-u-sm-12 article_title">
-			<div id="user_showInfo">
-				<div class="am-padding">
-					<div class="am-fl am-cf">
-						<strong class="am-text-primary am-text-lg">
-						<span class="user_name"></span>
-						的所有文章</strong> / <small>All Article</small>
-					</div>
-					<img src="" id="user_photo" class="am-fr" style="width: 96px;height: 96px;border-radius: 48px;" />
-				</div>
-			</div>
-			<hr />
-			<div class='main_article' v-for='ele in article_list'>
+			<div class='main_article' v-for="ele in article_list">
 				<a href={{"/article/"+ele.gitname+"/"+ele.subdir+"/"+ele.filename.replace(".md","")}} style="font-size: 2.2rem;">{{ele.title}}</a>
 				<p style='color: #999;'>
-					<span class='am-badge am-badge-secondary am-text-sm' style="margin-right: 0.5rem" v-for='tag in ele.tags'>{{tag}}</span>
+					<span class='am-badge am-badge-secondary am-text-sm' style="margin-right: 0.5rem" v-for = "tags in ele.tags">{{tags}}</span>
 					<span class='am-fr'>
-					<span class='am-icon-pencil'>{{"&nbsp;"+ele.author}}</span>
+					<span class='am-icon-pencil'>{{"&nbsp;"+ele.gitname}}</span>
 					<span class='am-icon-clock-o' style='padding-left: 1.3rem;'>
 						{{ele.date_create | time}}
 					</span>
@@ -54,11 +43,9 @@
 
 <!-- JS调用 -->
 <script src="/static/js/jquery-2.1.0.js"></script>
-<script src="/static/js/amazeui.js"></script>
 <script src="/static/js/login.js"></script>
-<script src="/static/res.js"></script>
 <script src="/static/js/vue.js" type="text/javascript" charset="utf-8"></script>
-<script src="/static/js/pc.js"></script>
+<script src="/static/res.js"></script>
 <script type="text/javascript">
 	res.api.article.get_list(null,function (error,data) {
 		if (data) {
@@ -71,8 +58,9 @@
 		}
 	});
 	Vue.filter('time', function (value) {
-	    return value.replace("T00:00:00","").replace("-","年").replace("-","月")+"日";
-	});
+	    return value.replace("T00:00:00","")
+	 
+	})
 </script>
 </body>
 </html>

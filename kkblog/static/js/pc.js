@@ -47,7 +47,7 @@ $(document).ready(function () {
 					alert("修改成功");
 					$("#user_changeInfo").addClass("am-hide");
 					$("#user_showInfo").removeClass("am-hide");
-					location.href="/static/personal_center.html";
+					location.href="http://127.0.0.1:5001/static/personal_center.html";
 				} else {
 					alert("修改失败，请稍后尝试！")
 				}

@@ -250,7 +250,7 @@ $(document).ready(function() {
 				e.preventDefault();
 				alert("登出成功！");
 				localStorage.clear();
-				location.href = "http://127.0.0.1:5001/";
+				location.href = "/";
 			});
 
 			/*网页Ajax主体部分*/
