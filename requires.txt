@@ -5,7 +5,7 @@ flask-cors>=2.1.2
 flask-cache>=0.13.0
 markdown>=2.6
 git+https://github.com/ponyorm/pony.git
-git+https://github.com/guyskk/flask-restaction.git
+flask-restaction>=0.19.0
 pyquery>=1.2
 pygitutil>=0.0.5
 flask-mail>=0.9.1

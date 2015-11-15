@@ -16,7 +16,7 @@ setup(
         'flask>=0.10.1',
         'markupsafe>=0.23',
         'pyjwt>=1.4',
-        "flask-restaction>=0.18.1",
+        "flask-restaction>=0.19.0",
         "flask-cors>=2.1.2",
         "flask-cache>=0.13.0",
         "markdown>=2.6",
