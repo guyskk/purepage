@@ -1,17 +1,15 @@
 # coding=utf-8
-
+from __future__ import unicode_literals, absolute_import, print_function
 import random
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 import StringIO
 import string
 from binascii import b2a_hex, a2b_hex
 from Crypto.Cipher import AES
-
-
-from flask import current_app, make_response, url_for
 from werkzeug.security import gen_salt
-from flask.ext.restaction import Resource, schema
 from datetime import datetime, timedelta
+from flask import current_app, make_response, url_for
+from flask_restaction import Resource
 
 
 def encrypt(text, key, salt):
@@ -164,19 +162,28 @@ def check(token, text):
 
 class Captcha(Resource):
     """图形验证码"""
-    token = "str&required"
-    text = "str&required"
-    url = "str&required"
-    success = "bool&required"
 
     schema_inputs = {
-        "get_show": schema("token"),
-        "get_check": schema("token", "text"),
+        "get": None,
+        "get_show": {
+            "token": "unicode&required"
+        },
+        "get_check": {
+            "token": "unicode&required",
+            "text": "unicode&required"
+        }
     }
-
     schema_outputs = {
-        "get": schema("token", "url"),
-        "get_check": schema("token", "text", "success"),
+        "get": {
+            "token": "unicode&required",
+            "url": "unicode&required"
+        },
+        "get_show": None,
+        "get_check": {
+            "token": "unicode&required",
+            "text": "unicode&required",
+            "success": "bool&required"
+        },
     }
 
     def get(self):

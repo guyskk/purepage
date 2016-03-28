@@ -1,13 +1,8 @@
+data/
 kkblog/static/node_modules
 kkblog/static/resdocs.html
 kkblog/static/res.js
-data/
-kkblog/data/
-kkblog_config.py
-fab_settings.py
-kkblog.zip
-venv
-flask_profiler.sql
+kkblog/static/permission.html
 
 *.db
 

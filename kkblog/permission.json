@@ -1,0 +1,14 @@
+{
+    "normal": {
+        "user": "normal",
+        "article": "other",
+        "comment": "normal",
+        "permission": "other"
+    },
+    "admin":{
+        "user": "owner",
+        "article": "owner",
+        "comment": "owner",
+        "permission": "owner"
+    }
+}

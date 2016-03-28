@@ -1,0 +1,14 @@
+{
+    "user": {
+        "other": ["get", "post_signup", "post_login"],
+        "normal": ["get_me", "put", "post_sync_repo"]
+    },
+    "article": {
+        "other": ["get", "get_list"]
+    },
+    "comment": {
+        "other": ["get"],
+        "normal": ["post", "get_my"]
+    },
+    "permission": {}
+}
