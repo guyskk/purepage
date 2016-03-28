@@ -16,13 +16,18 @@ $(document).ready(function() {
 			$("header").append(header);
 			//根据页面中#header的data-name属性，从而把相应的class："am-active"加上
 			var div_data = $("header").data("name")
-			if (div_data === "home") {
-				$("#nav_homepage").addClass("am-active");
-			} else if (div_data === "article") {
-				$("#nav_article a").removeClass("am-hide");
-				$("#nav_article").addClass("am-active");
-			} else if (div_data === "pc") {
-				$("#nav_pc").addClass("am-active")
+			switch(div_data) {
+				case "home":
+					$("#nav_homepage").addClass("am-active");
+					break;
+				case "article":
+					$("#nav_article a").removeClass("am-hide");
+					$("#nav_article").addClass("am-active");
+					break;
+				case "pc":
+					$("#nav_pc").addClass("am-active")
+				default:
+					break;
 			}
 		},
 		error: function(e) {
