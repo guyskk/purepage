@@ -34,12 +34,19 @@ KkBloG 是一套基于 Python 的博客程序，采用 Restful 架构，简单�
 		cd kkblog
 		pip install -e .
 
-4. 启动
-
+4. 初始化数据库&启动
+		
+		python manage.py initdb
 		python manage.py runserver -dr
 
 	访问 http://127.0.0.1:5000/static/resdocs.html 查看 API 文档
 
+	打开浏览器控制台，注册用户并设置博客仓库地址:
+
+		res.user.post_signup({userid:'guyskk',password:'123456'})
+		res.user.post_login({userid:'guyskk',password:'123456'})
+		res.user.put({repo: 'https://github.com/guyskk/kkblog-article.git'})
+	
 	
 ### 快速上手
 

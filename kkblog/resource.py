@@ -5,7 +5,7 @@ from flask_restaction import Resource
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from validater import validate
-from . import db, auth, api
+from . import auth, api, db
 from .article_util import read_repo
 
 
@@ -219,8 +219,8 @@ class User(Resource):
         "post_login": schema_user,
         "put": schema_user,
         "post_sync_repo": {
-            "total": ("int&required", "文章总数"),
-            "errors": "any"
+            "succeed": ("int&required", "同步成功的文章数"),
+            "errors": ("any", "错误")
         }
     }
 
@@ -269,10 +269,21 @@ class User(Resource):
         需要先设置好自己的博客仓库地址（调用修改个人信息接口）。
         服务器会从仓库下载所有文件，并解析其中的 markdown 文件。
         再将解析后的文章内容和标题，日期等信息保存到数据库中。
+        <pre>
+        errors的结构为: 
+            {
+                "my_article": {
+                    "title": "error reason",
+                    "date": "error reason",
+                    ...
+                },
+                "other_article": ...
+            }
+        </pre>
         """
         repo = self.user.get("repo")
         count = 0
-        errors = []
+        errors = {}
         if not repo:
             abort(400, "you didn't set your repo")
         for content, meta in read_repo(repo, "data"):
@@ -284,13 +295,13 @@ class User(Resource):
             changes["content"] = content
             err, changes = validate(changes, schema_article)
             if err:
-                errors.extend(err)
+                errors[changes["title"]] = dict(err)
             else:
                 changes["type"] = "article"
                 origin.update(changes)
                 db.save(origin)
                 count += 1
         return {
-            "total": count,
-            "errors": dict(errors)
+            "succeed": count,
+            "errors": errors
         }

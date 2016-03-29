@@ -1,12 +1,13 @@
 # coding:utf-8
 from __future__ import unicode_literals, absolute_import, print_function
 from flask import Flask, Blueprint
+from werkzeug.local import LocalProxy
 from flask_restaction import Api, Gen, Auth, Permission
 from flask_github import GitHub
-import couchdb
+from .flask_couchdb import CouchDB
 
-couch = couchdb.Server('http://127.0.0.1:5984/')
-db = couch["kkblog"]
+couch = CouchDB()
+db = LocalProxy(lambda: couch.db)
 github = GitHub()
 api = Api()
 auth = Auth()
@@ -26,13 +27,12 @@ def fn_user_role(token):
 
 def create_app():
     app = Flask(__name__)
-
-    app.config['GITHUB_CLIENT_ID'] = 'XXX'
-    app.config['GITHUB_CLIENT_SECRET'] = 'YYY'
+    app.config.from_object("config_default")
 
     app.route("/webhooks")(Webhooks())
+    couch.init_app(app)
     github.init_app(app)
-    
+
     bp_api = Blueprint('api', __name__, static_folder='static')
     api.init_app(app, blueprint=bp_api)
     api.add_resource(Article)
