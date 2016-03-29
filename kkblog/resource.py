@@ -128,8 +128,8 @@ class Comment(Resource):
     }
     schema_outputs = {
         "get": {
-            "total": "int&required",
-            "offset": "int&required",
+            "total": ("int&required", "总数(包括未返回的结果)"),
+            "offset": ("int&required", "offset"),
             "rows": [schema_comment]
         },
         "post": schema_comment
@@ -162,6 +162,7 @@ class Comment(Resource):
         return self.format_result(result)
 
     def post(self, article_id, content):
+        """发表评论"""
         doc = db.get(_id, None)
         if doc is None:
             abort(400, "Article Not Found")
@@ -192,10 +193,10 @@ class Comment(Resource):
 class User(Resource):
     """User"""
     schema_user = {
-        "_id": "unicode&required",
-        "role": "unicode&required",
-        "photo": "unicode&required",
-        "repo": "url&required"
+        "_id": ("unicode&required", "用户ID"),
+        "role": ("unicode&required", "角色"),
+        "photo": ("unicode&required", "头像"),
+        "repo": ("url&required", "博客仓库地址")
     }
     schema_inputs = {
         "get_me": None,
@@ -208,7 +209,7 @@ class User(Resource):
             "password": "password&required",
         },
         "put": {
-            "repo": "url&required"
+            "repo": ("url&required", "博客仓库地址")
         },
         "post_sync_repo": None
     }
@@ -218,8 +219,7 @@ class User(Resource):
         "post_login": schema_user,
         "put": schema_user,
         "post_sync_repo": {
-            "message": "unicode&required",
-            "total": "int&required",
+            "total": ("int&required", "文章总数"),
             "errors": "any"
         }
     }
@@ -232,11 +232,13 @@ class User(Resource):
             self.user = db.get(g.token["userid"], None)
 
     def get_me(self):
+        """获取自己的信息"""
         if self.user:
             return self.user
         abort(404, "Not Found")
 
     def post_signup(self, userid, password):
+        """注册"""
         user = {
             "_id": userid,
             "role": "normal",
@@ -247,6 +249,7 @@ class User(Resource):
         return "OK"
 
     def post_login(self, userid, password):
+        """登录"""
         user = db.get(userid, None)
         if user is None:
             abort(403, "User Not Exists")
@@ -255,11 +258,18 @@ class User(Resource):
         return user, auth.gen_header({"userid": userid})
 
     def put(self, repo):
+        """修改个人信息"""
         self.user["repo"] = repo
         db.save(self.user)
         return self.user
 
     def post_sync_repo(self):
+        """同步博客仓库
+
+        需要先设置好自己的博客仓库地址（调用修改个人信息接口）。
+        服务器会从仓库下载所有文件，并解析其中的 markdown 文件。
+        再将解析后的文章内容和标题，日期等信息保存到数据库中。
+        """
         repo = self.user.get("repo")
         count = 0
         errors = []
@@ -281,7 +291,6 @@ class User(Resource):
                 db.save(origin)
                 count += 1
         return {
-            "message": "OK",
             "total": count,
             "errors": dict(errors)
         }
