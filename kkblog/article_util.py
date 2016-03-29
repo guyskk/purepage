@@ -1,6 +1,6 @@
 # coding:utf-8
 from __future__ import unicode_literals, absolute_import, print_function
-from markdown import Markdown
+import misaka as md
 import os
 import re
 from datetime import datetime
@@ -16,13 +16,8 @@ def parse_article(path):
     """parse_article"""
     with codecs.open(path, encoding="utf-8") as f:
         source = f.read()
-    extension_configs = {
-        'markdown.extensions.codehilite': {'linenums': False},
-    }
-    md = Markdown(extensions=["markdown.extensions.meta", "markdown.extensions.codehilite"],
-                  extension_configs=extension_configs)
-    html = md.convert(source)
-    meta = parse_meta(md.Meta, path)
+    html = md.html(source, extensions=[md.EXT_TABLES|md.EXT_HIGHLIGHT])
+    meta = parse_meta({}, path)
     return html, meta
 
 

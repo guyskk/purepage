@@ -266,17 +266,19 @@ class User(Resource):
         if not repo:
             abort(400, "you didn't set your repo")
         for content, meta in read_repo(repo, "data"):
-            doc = dict(meta)
-            key = [self.userid, meta["catalog"], meta["article"]]
-            doc["userid"] = self.userid
-            doc["_id"] = ".".join(key)
-            doc["content"] = content
-            err, doc = validate(doc, schema_article)
+            key = ".".join([self.userid, meta["catalog"], meta["article"]])
+            origin = db.get(key, {})
+            changes = dict(meta)
+            changes["userid"] = self.userid
+            changes["_id"] = key
+            changes["content"] = content
+            err, changes = validate(changes, schema_article)
             if err:
                 errors.extend(err)
             else:
-                doc["type"] = "article"
-                db.save(doc)
+                changes["type"] = "article"
+                origin.update(changes)
+                db.save(origin)
                 count += 1
         return {
             "message": "OK",
