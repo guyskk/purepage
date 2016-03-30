@@ -1,4 +1,4 @@
-# coding=utf-8
+# coding:utf-8
 from __future__ import unicode_literals, absolute_import, print_function
 import random
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
@@ -7,8 +7,9 @@ import string
 from flask import current_app, make_response, session
 from flask_restaction import Resource
 
-CHARS = string.ascii_letters + string.digits
-
+CHARS = set(string.ascii_letters + string.digits)
+CHARS = CHARS - set('Il1o0')
+print(CHARS)
 
 def create_captcha(text, font_type, height=30, mode="RGB",
                    point_chance=15, twisty=15):
@@ -123,7 +124,8 @@ class Captcha(Resource):
     def get(self):
         """显示验证码"""
         text = ''.join(random.sample(CHARS, 4))
-        session["captcha"] = text
+        print(text)
+        session["captcha_text"] = text
         font = current_app.config["CAPTCHA_FONT"]
         captcha_img = create_captcha(text, font)
         buf = StringIO.StringIO()
@@ -135,8 +137,11 @@ class Captcha(Resource):
 
     def get_check(self, text):
         """查看验证码是否正确"""
-        captcha = session.get("captcha")
+        session.setdefault("captcha_success", False)
+        captcha = session.get("captcha_text")
+        success = bool(captcha is not None and captcha.lower() == text.lower())
+        session["captcha_success"] = success
         return {
             "text": text,
-            "success": bool(captcha is not None and captcha.lower() == text.lower())
+            "success": success
         }
