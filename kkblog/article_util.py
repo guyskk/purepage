@@ -3,47 +3,64 @@ from __future__ import unicode_literals, absolute_import, print_function
 import misaka as md
 import os
 import re
-from datetime import datetime
-from dateutil.parser import parse as date_parse
+import datetime
 import git
 import codecs
 import giturlparse
 import logging
 from git.repo.fun import is_git_dir
+import re
+import yaml
+import logging
+
+meta_end = re.compile(r"\n(\.{3}|-{3})")
+
+
+def split_meta(text):
+    if text[0:3] != '---':
+        return {}, text
+    meta_text = meta_end.split(text[3:])
+    # meta_text: ['title: xx', '---', '\n# xxx']
+    if len(meta_text) != 3:
+        return {}, text
+    meta, __, text = meta_text
+    text = text.strip('\n')
+    try:
+        meta = yaml.load(meta)
+    except yaml.YAMLError as ex:
+        logging.warning("%s:\n%s" % (meta, ex))
+        meta = {}
+    return meta, text
 
 
 def parse_article(path):
     """parse_article"""
     with codecs.open(path, encoding="utf-8") as f:
         source = f.read()
-    html = md.html(source, extensions=[md.EXT_TABLES|md.EXT_HIGHLIGHT])
-    meta = parse_meta({}, path)
-    return html, meta
+    meta, source = split_meta(source)
+    html = md.html(source, extensions=[md.EXT_TABLES | md.EXT_HIGHLIGHT])
+    return parse_meta(meta, path), html
 
 
 def parse_meta(meta, path):
+    meta = {k.lower(): v for k, v in meta.items()}
 
-    get_meta = lambda key: "".join(meta.get(key, []))
-
-    def get_date(key):
-        datestr = get_meta(key)
-        date = None
-        if datestr:
-            try:
-                date = date_parse(datestr)
-            except Exception:
-                logging.warning(
-                    "[%s] invalid datetime format: %s" % (path, datestr))
-        if date is None:
-            date = datetime.utcnow()
+    def get_date():
+        date = meta.get("date", None)
+        if isinstance(date, datetime.date):
+            date = datetime.datetime(*date.timetuple()[:3])
+        if not isinstance(date, datetime.datetime):
+            if date is not None:
+                logging.warning("[%s] invalid datetime: %s" % (path, date))
+            date = datetime.datetime.utcnow()
         return date
 
-    title = get_meta("title")
+    title = meta.get("title")
     fdir, fname = os.path.split(path)
     article_name = os.path.splitext(fname)[0]
     if not title:
         title = article_name
-    date = get_date("date")
+    date = get_date()
     tags = meta.get("tags", [])
     return {
         "catalog": os.path.basename(fdir),
@@ -92,7 +109,7 @@ def read_repo(url, data_path):
             repo.git.merge()
             # repo.git.pull(["--git-dir=%s" % repo_path])
         except git.exc.GitCommandError as ex:
-            logging.info(str(ex))
+            logging.warning(str(ex))
             if not ex.status == 128:
                 raise
     else:

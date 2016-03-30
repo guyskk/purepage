@@ -286,7 +286,7 @@ class User(Resource):
         errors = {}
         if not repo:
             abort(400, "you didn't set your repo")
-        for content, meta in read_repo(repo, "data"):
+        for meta, content in read_repo(repo, "data"):
             key = ".".join([self.userid, meta["catalog"], meta["article"]])
             origin = db.get(key, {})
             changes = dict(meta)
