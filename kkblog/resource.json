@@ -10,5 +10,8 @@
         "other": ["get"],
         "normal": ["post", "get_my"]
     },
-    "permission": {}
+    "permission": {},
+    "captcha": {
+        "other": ["get", "get_check"]
+    }
 }
