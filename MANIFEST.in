@@ -1,14 +1,14 @@
 recursive-include kkblog/templates *
 recursive-include kkblog/static *
+include kkblog/*
 prune kkblog/static/node_modules
 exclude kkblog/static/res.js
 exclude kkblog/static/resdocs.html
-recursive-include kkblog/config *
-include kkblog_config.py
-include kkblog_nginx.conf
-include kkblog_uwsgi.ini
-include uwsgi.conf
-include deploy.sh
+exclude kkblog/static/permission.html
+include manage.py
+include deploy.py
+include nginx.conf
 include readme.md
 include requires.txt
-include kkblog/georgia.ttf
+include tox.ini
+include uwsgi.ini

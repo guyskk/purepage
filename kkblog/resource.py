@@ -195,8 +195,8 @@ class User(Resource):
     schema_user = {
         "_id": ("unicode&required", "用户ID"),
         "role": ("unicode&required", "角色"),
-        "photo": ("unicode&required", "头像"),
-        "repo": ("url&required", "博客仓库地址")
+        "photo": ("unicode", "头像"),
+        "repo": ("url", "博客仓库地址")
     }
     schema_inputs = {
         "get_me": None,

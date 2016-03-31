@@ -13,7 +13,7 @@ KkBloG 是一套基于 Python 的博客程序，采用 Restful 架构，简单�
 #### Windows 
 
 1. 安装 Git
-2. 安装 Python 2.7 最新版，用 Python3 有些依赖的库安装很麻烦
+2. 安装 Python 2.7 Windows x86-64 最新版，用其他版本有些依赖的库(misaka)安装很麻烦
 
 	在命令行下执行
 
@@ -23,10 +23,14 @@ KkBloG 是一套基于 Python 的博客程序，采用 Restful 架构，简单�
 
 	没有报错就 OK 了
 
+	再到 http://aka.ms/vcpython27 下载 Microsoft Visual C++ Compiler for Python 2.7
+	并安装，安装一些 Python 库的时候需要用到
+
 4. 安装 CouchDB
 
 	下载&安装即可
-	http://couchdb.apache.org/
+	http://couchdb.apache.org/  
+	安装完成之后访问 http://127.0.0.1:5984/_utils/index.html 可以看到数据库信息
 
 3. 安装 kkblog
 	
