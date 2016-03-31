@@ -1,11 +1,11 @@
 ## KkBloG
 
-**注意，此项目正在重写！**
+**此项目正在重写！**
 
 
-KkBloG 是一套基于 Python 的博客程序，采用 Restful 架构，简单易拓展，你可以轻松定制自己的博客界面。
+KkBloG 是一套基于 Python 的博客程序，类似于 [Read the docs](https://readthedocs.org/) 的模式，采用 Restful 架构，简单易拓展，你可以轻松定制自己的博客界面。
 
-这个项目是对[flask-restaction](https://github.com/guyskk/flask-restaction)框架的一次尝试，最初是准备做成个人博客，现在做成了一个多人博客系统，类似于[Read the docs](https://readthedocs.org/)的模式。
+这个项目是对 [flask-restaction](https://github.com/guyskk/flask-restaction) 框架的一次尝试。
 
 
 ###安装
@@ -13,7 +13,7 @@ KkBloG 是一套基于 Python 的博客程序，采用 Restful 架构，简单�
 #### Windows 
 
 1. 安装 Git
-2. 安装 Python 2.7 最新版，用 Python3 有些依赖的库安装很麻烦
+2. 安装 Python 2.7 Windows x86-64 最新版，用其他版本有些依赖的库(misaka)安装很麻烦
 
 	在命令行下执行
 
@@ -23,10 +23,14 @@ KkBloG 是一套基于 Python 的博客程序，采用 Restful 架构，简单�
 
 	没有报错就 OK 了
 
+	再到 http://aka.ms/vcpython27 下载 Microsoft Visual C++ Compiler for Python 2.7
+	并安装，安装一些 Python 库的时候需要用到
+
 4. 安装 CouchDB
 
 	下载&安装即可
-	http://couchdb.apache.org/
+	http://couchdb.apache.org/  
+	安装完成之后访问 http://127.0.0.1:5984/_utils/index.html 可以看到数据库信息
 
 3. 安装 kkblog
 	
@@ -47,6 +51,9 @@ KkBloG 是一套基于 Python 的博客程序，采用 Restful 架构，简单�
 		res.user.post_login({userid:'guyskk',password:'123456'})
 		res.user.put({repo: 'https://github.com/guyskk/kkblog-article.git'})
 	
+	最后，同步博客仓库:
+
+		res.user.post_sync_repo({})
 	
 ### 快速上手
 

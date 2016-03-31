@@ -3,7 +3,7 @@ from __future__ import unicode_literals, absolute_import, print_function
 from flask import Flask, Blueprint
 from werkzeug.local import LocalProxy
 from flask_restaction import Api, Gen, Auth, Permission
-from flask_github import GitHub
+from flask.ext.github import GitHub
 from .flask_couchdb import CouchDB
 
 couch = CouchDB()
@@ -27,7 +27,7 @@ def fn_user_role(token):
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object("config_default")
+    app.config.from_object("kkblog.config_default")
 
     app.route("/webhooks")(Webhooks())
     couch.init_app(app)

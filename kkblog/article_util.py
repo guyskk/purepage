@@ -19,7 +19,7 @@ meta_end = re.compile(r"\n(\.{3}|-{3})")
 def split_meta(text):
     if text[0:3] != '---':
         return {}, text
-    meta_text = meta_end.split(text[3:])
+    meta_text = meta_end.split(text[3:], 1)
     # meta_text: ['title: xx', '---', '\n# xxx']
     if len(meta_text) != 3:
         return {}, text

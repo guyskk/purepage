@@ -16,7 +16,10 @@ class CouchDB(object):
 
     def init_app(self, app):
         self.server = couchdb.Server(app.config["DATABASE_URL"])
-        self.db = self.server[app.config["DATABASE_NAME"]]
+        database = app.config["DATABASE_NAME"]
+        if database not in self.server:
+            self.server.create(database)
+        self.db = self.server[database]
 
     def dump_designs(self, path):
         params = {
