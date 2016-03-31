@@ -1,11 +1,11 @@
 ## KkBloG
 
-**注意，此项目正在重写！**
+**此项目正在重写！**
 
 
-KkBloG 是一套基于 Python 的博客程序，采用 Restful 架构，简单易拓展，你可以轻松定制自己的博客界面。
+KkBloG 是一套基于 Python 的博客程序，类似于 [Read the docs](https://readthedocs.org/) 的模式，采用 Restful 架构，简单易拓展，你可以轻松定制自己的博客界面。
 
-这个项目是对[flask-restaction](https://github.com/guyskk/flask-restaction)框架的一次尝试，最初是准备做成个人博客，现在做成了一个多人博客系统，类似于[Read the docs](https://readthedocs.org/)的模式。
+这个项目是对 [flask-restaction](https://github.com/guyskk/flask-restaction) 框架的一次尝试。
 
 
 ###安装
@@ -51,6 +51,9 @@ KkBloG 是一套基于 Python 的博客程序，采用 Restful 架构，简单�
 		res.user.post_login({userid:'guyskk',password:'123456'})
 		res.user.put({repo: 'https://github.com/guyskk/kkblog-article.git'})
 	
+	最后，同步博客仓库:
+
+		res.user.post_sync_repo({})
 	
 ### 快速上手
 

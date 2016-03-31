@@ -9,7 +9,6 @@ from flask_restaction import Resource
 
 CHARS = set(string.ascii_letters + string.digits)
 CHARS = CHARS - set('Il1o0')
-print(CHARS)
 
 def create_captcha(text, font_type, height=30, mode="RGB",
                    point_chance=15, twisty=15):
