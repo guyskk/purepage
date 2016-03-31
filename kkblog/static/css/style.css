@@ -1,0 +1,33 @@
+*{
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	text-decoration: none;
+}
+html{
+	font-size: 12px;
+}
+#sideBar{
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 240px;
+	min-height: 100%;
+	transition: .3s;
+	z-index: 99;
+}
+#sideBar.hide{
+	left: -240px;
+}
+#blogCon{
+	margin-left: 240px;
+	transition: .3s;
+}
+#sideBar.hide + #blogCon{
+	margin-left: 0px;
+}
+#blogTitleBtns{
+	position: fixed;
+	top: 0px;
+	z-index: 66;
+}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+  <meta content="width = device-width, initial-scale = 1.0, minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name = "viewport" id = "viewport"/>
+	<title>kkblog</title>
+  <link rel="stylesheet" type="text/css" href="css/github-markdown.css"/>
+  <link rel="stylesheet" type="text/css" href="css/style.css"/>
+  <link rel="stylesheet" type="text/css" href="css/s1.css" media="(min-width:1250px;)">
+</head>
+<body>
+<div id="container">
+  <div id="sideBar" class="show"></div>
+  <div id="blogCon">
+    <div id="blogTitle">
+      <div id="blogTileBtns">
+        <div id="change"></div>
+        <div id="share"></div>
+      </div>
+    </div>
+    <div id="blogArt"></div>
+  </div>
+</div>
+
+<script type="text/javascript" src="res.js"></script>
+<script type="text/javascript" src="js/vue.js"></script>
+
+
+<script type="text/javascript">
+  // var Asd = Vue.extend({
+  //   template: '<div>asdasdasd</div>'
+  // })
+  // Vue.component("asd",Asd)
+  // var contentVM = new Vue({
+  //   el: "body",
+  // })
+
+  res.article.get_list({
+  }).then(function(value){
+    for(let i=0; i<value.rows.length; i++){
+      var artDiv = document.createElement('artdiv'+i);
+      artDiv.className = 'markdown-body';
+      // var aaa = '<asd' + i + '></asd' + i + '>';
+      document.getElementById('blogArt').appendChild(artDiv);
+      var Asd = Vue.extend({
+        template: '<div>' + value.rows[i].content + '</div>'
+      })
+      Vue.component('artdiv'+i,Asd)
+      new Vue({
+        el: "#container"
+      })
+      console.log(value.rows[i].content);
+      // contentVM.contents.push(value.rows[i].content)
+    }
+  }).catch(function(err){
+    console.log(err);
+  })
+</script>
+</body>
+</html>
