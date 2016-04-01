@@ -113,7 +113,7 @@ html{
 	cursor: pointer;
 	float: left;
 	transition: 0.4s ease-in-out;
-	margin-left: 240px;
+	margin-left: 0px;
 }
 #share{
 	height: 50px;
@@ -139,6 +139,16 @@ html{
 }
 #blogArt{
 }
+#clickBox{
+	height: 100%;
+	width: 100%;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 88;
+	background-color: rgba(0,0,0,0.3);
+	display: none;
+}
 
 @media screen and (min-width: 0px){
 	#blogArt{
@@ -154,6 +164,9 @@ html{
 	#scripts p{
 		font-size: 14px;
 		line-height: 18px;
+	}
+	.markdown-body{
+		font-size: 12px;
 	}
 }
 @media screen and (min-width: 768px){
@@ -181,6 +194,9 @@ html{
 		font-size: 16px;
 		line-height: 20px;
 	}
+	.markdown-body{
+		font-size: 14px;
+	}
 }
 @media screen and (min-width: 1250px){
 	#blogArt{
@@ -202,6 +218,9 @@ html{
 	#scripts p{
 		font-size: 20px;
 		line-height: 24px;
+	}
+	.markdown-body{
+		font-size: 16px;
 	}
 }
 

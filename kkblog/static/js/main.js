@@ -1,7 +1,7 @@
 var sideBar;
-
+var roundEle;
 window.onload = function(){
-	load();
+  load();
 	if(window.innerWidth >= 1250){
 		showSide();
 	}

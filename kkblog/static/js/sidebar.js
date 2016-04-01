@@ -2,12 +2,19 @@ var sideBarObj = function(){
 	this.dom;
 	this.show;
 	this.btn;
+	this.menu;
+	this.close;
+	this.clickBox;
 }
 sideBarObj.prototype.init = function(){
 	this.dom = getDom('sideBar');
-	this.show = true;
+	this.show = false;
 	this.btn = getDom('change');
+	this.menu = getDom('menu');
+	this.close = getDom('close');
+	this.clickBox = getDom('clickBox');
 	this.btn.addEventListener('click',changeSide,false);
+	this.clickBox.addEventListener('click',hideSide,false);
 	changeSide();
 }
 function changeSide(){
@@ -22,13 +29,20 @@ function hideSide(){
 	sideBar.dom.className = 'hide';
 	sideBar.show = false;
 	sideBar.btn.style.marginLeft = '0px';
-	getDom('menu').style.display = 'block';
-	getDom('close').style.display = 'none';
+	sideBar.menu.style.display = 'block';
+	sideBar.close.style.display = 'none';
+	sideBar.clickBox.style.display = 'none';
 }
 function showSide(){
 	sideBar.dom.className = 'show';
 	sideBar.show = true;
-	sideBar.btn.style.marginLeft = '240px';
-	getDom('menu').style.display = 'none';
-	getDom('close').style.display = 'block';
+	if(window.innerWidth <= 768){
+		sideBar.btn.style.marginLeft = '0px';
+		sideBar.clickBox.style.display = 'block';
+	}
+	else{
+		sideBar.btn.style.marginLeft = '240px';
+	}
+	sideBar.menu.style.display = 'none';
+	sideBar.close.style.display = 'block';
 }
