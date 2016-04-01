@@ -7,27 +7,136 @@
 html{
 	font-size: 12px;
 }
+
+/*侧边栏*/
 #sideBar{
 	position: fixed;
 	left: 0;
 	top: 0;
 	width: 240px;
 	min-height: 100%;
-	transition: .3s;
+	transition: 0.4s ease-in-out;
 	z-index: 99;
+	will-change: left;
+	box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+	background-color: #fff;
 }
 #sideBar.hide{
 	left: -240px;
 }
-#blogCon{
-	margin-left: 240px;
-	transition: .3s;
+.sideBarTitle{
+	background-image: url(http://www.imys.net/img/brand.jpg);
+	background-size: 100% 100%;
+	padding-left: 30px;
 }
-#sideBar.hide + #blogCon{
-	margin-left: 0px;
+.me{
+	padding: 30px 0;
+	font-weight: bold;
+}
+.myPic{
+	height: 80px;
+	width: 80px;
+	border: 2px solid #fff;
+	margin: 10px 0;
+	border-radius: 50%;
+	display: block;
+}
+.myName{
+	font-size: 18px;
+	line-height: 26px;
+	color: #fff;
+}
+.myMail{
+	font-size: 14px;
+	line-height: 18px;
+	color: #c5cae9;
+}
+.sideBarPos{
+	font-size: 20px;
+	font-weight: bold;
+	margin-top: 50px;
+}
+.sideBarPos a{
+	color: #c5cae9;
+	padding: 10px 0 10px 60px;
+	transition: 0.4s ease-in-out;
+	display: block;
+}
+.sideBarPos a:hover{
+	background-color: #005588;
+}
+
+/*内容*/
+#blogCon{
+	transition: 0.4s ease-in-out;
+}
+
+#blogTitle{
+	background: #3f51b5;
 }
 #blogTitleBtns{
 	position: fixed;
 	top: 0px;
+	right: 0px;
 	z-index: 66;
+	height: 50px;
+	width: 100%;
+	background: #3f51b5;
+	transition: 0.2s linear;
 }
+#blogTitleBtns.showShadow{
+	box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+}
+#change{
+	height: 50px;
+	width: 50px;
+	background: url(../image/diagram.png);
+	background-size: 30px 30px;
+	background-repeat: no-repeat;
+	background-position: center; 
+	cursor: pointer;
+	float: left;
+	transition: 0.4s ease-in-out;
+	margin-left: 240px;
+}
+#share{
+	height: 50px;
+	width: 50px;
+	background-color: #005588;
+	cursor: pointer;
+	float: right;
+}
+#scripts{
+	height: 250px;
+}
+#blogArt{
+}
+
+@media screen and (min-width: 0px){
+	#blogArt{
+		margin: 0px 20px!important;
+	}
+}
+@media screen and (min-width: 768px){
+	#blogArt{
+		width: 720px;
+		min-width: 720px;
+		margin: 0 auto!important;
+	}
+	#sideBar.hide + #blogCon{
+		margin-left: 0px;
+	}
+	#blogCon{
+		margin-left: 0px;
+	}
+}
+@media screen and (min-width: 1250px){
+	#blogArt{
+		width: 960px;
+		min-width: 960px;
+	}
+	#blogCon{
+		margin-left: 240px;
+	}
+}
+

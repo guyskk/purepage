@@ -6,26 +6,43 @@
 	<title>kkblog</title>
   <link rel="stylesheet" type="text/css" href="css/github-markdown.css"/>
   <link rel="stylesheet" type="text/css" href="css/style.css"/>
-  <link rel="stylesheet" type="text/css" href="css/s1.css" media="(min-width:1250px;)">
+  <script type="text/javascript" src="res.js"></script>
+  <script type="text/javascript" src="js/vue.js"></script>
+  <script type="text/javascript" src="js/function.js"></script>
+  <script type="text/javascript" src="js/main.js"></script>
+  <script type="text/javascript" src="js/sidebar.js"></script>
 </head>
 <body>
 <div id="container">
-  <div id="sideBar" class="show"></div>
+  <!-- 侧边栏 -->
+  <div id="sideBar" class="show">
+    <div class="sideBarTitle">
+      <div class="me">
+        <a href="" class="myPic"></a>
+        <p class="myName">kkblog</p>
+        <a href="mailto:1053789026@qq.com" class="myMail">1053789026@qq.com</a>
+      </div>
+    </div>
+    <ul class="sideBarPos">
+      <li><a href="">Home</a></li>
+      <li><a href="">Archives</a></li>
+      <li><a href="">Tags</a></li>
+      <li><a href="">Github</a></li>
+      <li><a href="">Weibo</a></li>
+    </ul>
+  </div>
+  <!-- 内容 -->
   <div id="blogCon">
     <div id="blogTitle">
-      <div id="blogTileBtns">
+      <div id="blogTitleBtns">
         <div id="change"></div>
-        <div id="share"></div>
+        <a href="javascript:void();" id="share">S</a>
       </div>
+      <div id="scripts"></div>
     </div>
     <div id="blogArt"></div>
   </div>
 </div>
-
-<script type="text/javascript" src="res.js"></script>
-<script type="text/javascript" src="js/vue.js"></script>
-
-
 <script type="text/javascript">
   // var Asd = Vue.extend({
   //   template: '<div>asdasdasd</div>'
@@ -49,7 +66,6 @@
       new Vue({
         el: "#container"
       })
-      console.log(value.rows[i].content);
       // contentVM.contents.push(value.rows[i].content)
     }
   }).catch(function(err){
