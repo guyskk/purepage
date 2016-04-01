@@ -1,0 +1,1 @@
+DATABASE_NAME = "kkblog-test"
