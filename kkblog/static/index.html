@@ -6,26 +6,64 @@
 	<title>kkblog</title>
   <link rel="stylesheet" type="text/css" href="css/github-markdown.css"/>
   <link rel="stylesheet" type="text/css" href="css/style.css"/>
-  <link rel="stylesheet" type="text/css" href="css/s1.css" media="(min-width:1250px;)">
+  <script type="text/javascript" src="res.js"></script>
+  <script type="text/javascript" src="js/vue.js"></script>
+  <script type="text/javascript" src="js/function.js"></script>
+  <script type="text/javascript" src="js/main.js"></script>
+  <script type="text/javascript" src="js/sidebar.js"></script>
 </head>
 <body>
 <div id="container">
-  <div id="sideBar" class="show"></div>
+  <!-- 侧边栏 -->
+  <div id="sideBar" class="hide">
+    <div class="sideBarTitle">
+      <div class="me">
+        <a href="" class="myPic"></a>
+        <p class="myName">kkblog</p>
+        <a href="mailto:1053789026@qq.com" class="myMail">1053789026@qq.com</a>
+      </div>
+    </div>
+    <ul class="sideBarPos">
+      <li><a href="">Home</a></li>
+      <li><a href="">Archives</a></li>
+      <li><a href="">Tags</a></li>
+      <li><a href="">Github</a></li>
+      <li><a href="">Weibo</a></li>
+    </ul>
+    <div class="sideBarFoot">
+      <p>Guyskk's Blog © 2016</p>
+      <p>Power by kk &amp; dw</p>
+    </div>
+  </div>
+  <!-- 内容 -->
   <div id="blogCon">
     <div id="blogTitle">
-      <div id="blogTileBtns">
-        <div id="change"></div>
-        <div id="share"></div>
+      <div id="blogTitleBtns">
+        <div id="change">
+          <svg style="width:20px;height:20px;margin:15px;" version="1.1" id="menu" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1152px" height="1024px" viewBox="0 0 1152 1024" enable-background="new 0 0 1152 1024" xml:space="preserve">
+            <path class="svgpath" data-index="path_0" fill="#fff" d="M978.560364 186.181818c0 24.522182-16.638545 46.545455-37.158545 46.545455L177.188 232.727273c-20.520727 0-37.159273-22.023273-37.159273-46.545455l0 0c0-24.522182 16.637818-46.545455 37.159273-46.545455l764.213818 0C961.921818 139.636364 978.560364 161.659636 978.560364 186.181818L978.560364 186.181818z" />
+            <path class="svgpath" data-index="path_1" fill="#fff" d="M978.560364 512c0 24.522182-16.638545 46.545455-37.158545 46.545455L177.188 558.545455c-20.520727 0-37.159273-22.023273-37.159273-46.545455l0 0c0-24.522182 16.637818-46.545455 37.159273-46.545455l764.213818 0C961.921818 465.454545 978.560364 487.477818 978.560364 512L978.560364 512z" />
+            <path class="svgpath" data-index="path_2" fill="#fff" d="M978.560364 837.818182c0 24.522182-16.638545 46.545455-37.158545 46.545455L177.188 884.363636c-20.520727 0-37.159273-22.023273-37.159273-46.545455l0 0c0-24.522182 16.637818-46.545455 37.159273-46.545455l764.213818 0C961.921818 791.272727 978.560364 813.296 978.560364 837.818182L978.560364 837.818182z" />
+          </svg>
+          <svg style="width:20px;height:20px;margin:15px;display:none;" version="1.1" id="close" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1024px" height="1024px" viewBox="0 0 1024 1024" enable-background="new 0 0 1024 1024" xml:space="preserve">
+            <path class="svgpath" data-index="path_0" fill="#fff" d="M182.317349 915.820162l-74.137511-74.133418L841.738933 108.179838l74.081229 74.137511L182.317349 915.820162 182.317349 915.820162 182.317349 915.820162zM841.738933 915.820162 108.179838 182.317349l74.137511-74.137511 733.502813 733.506906L841.738933 915.820162 841.738933 915.820162 841.738933 915.820162zM841.738933 915.820162" />
+          </svg>
+        </div>
+        <a href="javascript:void();" id="share">
+          <svg style="width:20px;height:20px;margin:15px;" version="1.1" id="图形" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1024px" height="1024px" viewBox="0 0 1024 1024" enable-background="new 0 0 1024 1024" xml:space="preserve">
+            <path class="svgpath" data-index="path_0" fill="#fff" d="M2.116709 700.449c0 131.671878 106.744139 238.409878 238.400668 238.409878 93.294826 0 174.030615-53.582359 213.210963-131.649366l229.616608 40.445154-0.082888 6.052856c0 94.061282 76.247568 170.291454 170.291454 170.291454 94.039793 0 170.286338-76.230172 170.286338-170.291454 0-94.062306-76.246545-170.286338-170.286338-170.286338-68.201312 0-127.000486 40.029692-154.207128 97.911984l-224.00275-39.430034c2.363837-13.44829 3.578502-27.318182 3.578502-41.454134 0-62.243623-23.868617-118.899994-62.909795-161.337525l207.136617-207.15913c18.691711 7.052626 38.947034 10.891048 60.113099 10.891048 94.04491 0 170.291454-76.230172 170.291454-170.286338 0-94.056166-76.246545-170.287361-170.291454-170.287361-94.03877 0-170.285315 76.231195-170.285315 170.287361 0 47.76384 19.673062 90.915639 51.335179 121.846092L362.86182 495.853251c-35.772738-21.448498-77.596286-33.810037-122.344442-33.810037C108.860848 462.049355 2.116709 568.777121 2.116709 700.449L2.116709 700.449zM2.116709 700.449" />
+          </svg>
+        </a>
+      </div>
+      <div id="scripts">
+        <h1>Guyskk's Blog</h1>
+        <p>JavaScript很容易学习</p>
       </div>
     </div>
     <div id="blogArt"></div>
   </div>
 </div>
-
-<script type="text/javascript" src="res.js"></script>
-<script type="text/javascript" src="js/vue.js"></script>
-
-
+<div id="clickBox"></div>
 <script type="text/javascript">
   // var Asd = Vue.extend({
   //   template: '<div>asdasdasd</div>'
@@ -49,7 +87,6 @@
       new Vue({
         el: "#container"
       })
-      console.log(value.rows[i].content);
       // contentVM.contents.push(value.rows[i].content)
     }
   }).catch(function(err){

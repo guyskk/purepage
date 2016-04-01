@@ -7,27 +7,220 @@
 html{
 	font-size: 12px;
 }
+
+/*侧边栏*/
 #sideBar{
 	position: fixed;
 	left: 0;
 	top: 0;
 	width: 240px;
 	min-height: 100%;
-	transition: .3s;
+	transition: 0.4s ease-in-out;
 	z-index: 99;
+	will-change: left;
+	box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+	background-color: #fff;
 }
 #sideBar.hide{
 	left: -240px;
 }
-#blogCon{
-	margin-left: 240px;
-	transition: .3s;
+.sideBarTitle{
+	background-image: url(http://www.imys.net/img/brand.jpg);
+	background-size: 100% 100%;
+	padding-left: 30px;
 }
-#sideBar.hide + #blogCon{
-	margin-left: 0px;
+.me{
+	padding: 30px 0;
+	font-weight: bold;
+}
+.myPic{
+	height: 80px;
+	width: 80px;
+	border: 2px solid #fff;
+	margin: 10px 0;
+	border-radius: 50%;
+	display: block;
+	background-image: url(../image/pic.jpg);
+	background-size: 100% 100%;
+}
+.myName{
+	font-size: 18px;
+	line-height: 26px;
+	color: #fff;
+}
+.myMail{
+	font-size: 14px;
+	line-height: 18px;
+	color: #c5cae9;
+}
+.sideBarPos{
+	font-size: 20px;
+	font-weight: bold;
+	margin: 20px 0;
+}
+.sideBarPos a{
+	color: #727272;
+	padding: 10px 0 10px 60px;
+	transition: 0.4s ease-in-out;
+	display: block;
+}
+.sideBarPos a:hover{
+	background-color: #f4f4f4;
+}
+.sideBarFoot{
+	border-top: 2px solid #f4f4f4;
+	padding: 20px 0;
+	position: absolute;
+	bottom: 0px;
+	width: 100%;
+}
+.sideBarFoot p{
+	font-family: Consolas, Monaco, courier, monospace;
+	font-size: 12px;
+	line-height: 20px;
+	padding-left: 40px;
+	color: #212121;
+}
+
+/*内容*/
+#blogCon{
+	transition: 0.4s ease-in-out;
+}
+
+#blogTitle{
+	background: #3f51b5;
 }
 #blogTitleBtns{
 	position: fixed;
 	top: 0px;
+	right: 0px;
 	z-index: 66;
+	height: 50px;
+	width: 100%;
+	background: #3f51b5;
+	transition: 0.2s linear;
 }
+#blogTitleBtns.showShadow{
+	box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+}
+#change{
+	height: 50px;
+	width: 50px;
+	/*background: url(../image/diagram.png);*/
+	/*background-size: 30px 30px;*/
+	/*background-repeat: no-repeat;*/
+	/*background-position: center; */
+	cursor: pointer;
+	float: left;
+	transition: 0.4s ease-in-out;
+	margin-left: 0px;
+}
+#share{
+	height: 50px;
+	width: 50px;
+	/*background-color: #005588;*/
+	cursor: pointer;
+	float: right;
+}
+#scripts{
+	color: #fff;
+	height: 250px;
+	margin: 0 auto;
+}
+#scripts h1{
+	position: relative;
+	top: 120px;
+	/*font-size: 50px;*/
+}
+#scripts p{
+	position: relative;
+	top: 125px;
+	/*font-size: 20px;*/
+}
+#blogArt{
+}
+#clickBox{
+	height: 100%;
+	width: 100%;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 88;
+	background-color: rgba(0,0,0,0.3);
+	display: none;
+}
+
+@media screen and (min-width: 0px){
+	#blogArt{
+		margin: 0px 20px!important;
+	}
+	#scripts{
+		margin: 0px 35px!important;
+	}
+	#scripts h1{
+		font-size: 30px;
+		line-height: 34px;
+	}
+	#scripts p{
+		font-size: 14px;
+		line-height: 18px;
+	}
+	.markdown-body{
+		font-size: 12px;
+	}
+}
+@media screen and (min-width: 768px){
+	#blogArt{
+		width: 720px;
+		min-width: 720px;
+		margin: 0 auto!important;
+	}
+	#sideBar.hide + #blogCon{
+		margin-left: 0px;
+	}
+	#blogCon{
+		margin-left: 0px;
+	}
+	#scripts{
+		width: 720px;
+		min-width: 720px;
+		margin: 0 auto!important;
+	}
+	#scripts h1{
+		font-size: 40px;
+		line-height: 44px;
+	}
+	#scripts p{
+		font-size: 16px;
+		line-height: 20px;
+	}
+	.markdown-body{
+		font-size: 14px;
+	}
+}
+@media screen and (min-width: 1250px){
+	#blogArt{
+		width: 960px;
+		min-width: 960px;
+	}
+	#blogCon{
+		margin-left: 240px;
+	}
+	#scripts{
+		width: 960px;
+		min-width: 960px;
+		margin: 0 auto!important;
+	}
+	#scripts h1{
+		font-size: 50px;
+		line-height: 54px;
+	}
+	#scripts p{
+		font-size: 20px;
+		line-height: 24px;
+	}
+	.markdown-body{
+		font-size: 16px;
+	}
+}
+
