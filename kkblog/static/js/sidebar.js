@@ -22,9 +22,13 @@ function hideSide(){
 	sideBar.dom.className = 'hide';
 	sideBar.show = false;
 	sideBar.btn.style.marginLeft = '0px';
+	getDom('menu').style.display = 'block';
+	getDom('close').style.display = 'none';
 }
 function showSide(){
 	sideBar.dom.className = 'show';
 	sideBar.show = true;
 	sideBar.btn.style.marginLeft = '240px';
+	getDom('menu').style.display = 'none';
+	getDom('close').style.display = 'block';
 }
