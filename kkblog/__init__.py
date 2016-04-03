@@ -10,6 +10,7 @@
 from __future__ import unicode_literals, absolute_import, print_function
 import os
 from flask import Flask, Blueprint
+from werkzeug.routing import BaseConverter, ValidationError
 from werkzeug.local import LocalProxy
 from flask_restaction import Api, Gen, Auth, Permission
 from flask_github import GitHub
@@ -36,12 +37,25 @@ def fn_user_role(token):
     return None
 
 
+class NoConverter(BaseConverter):
+
+    def __init__(self, map, *items):
+        BaseConverter.__init__(self, map)
+        self.items = items
+
+    def to_python(self, value):
+        if value in self.items:
+            raise ValidationError()
+        return value
+
+
 def create_app(config=None):
     app = Flask(__name__)
     app.config.from_object("kkblog.config_default")
     if config:
         app.config.from_object(config)
 
+    app.url_map.converters['no'] = NoConverter
     app.route("/webhooks")(Webhooks())
     route_views(app)
     couch.init_app(app)
@@ -69,9 +83,9 @@ def route_views(app):
         ("/", "index.html"),
         ("/login", "login.html"),
         ("/signup", "signup.html"),
-        ("/<userid>", "article-user.html"),
-        ("/<userid>/<catalog>", "article-catalog.html"),
-        ("/<userid>/<catalog>/<article>", "article.html"),
+        ("/<no(static):userid>", "user.html"),
+        ("/<no(static):userid>/<catalog>", "catalog.html"),
+        ("/<no(static):userid>/<catalog>/<article>", "article.html"),
     ]
 
     # 静态文件
@@ -79,8 +93,8 @@ def route_views(app):
         return lambda *args, **kwargs: app.send_static_file(filename)
 
     for url, filename in views:
-        end = os.path.splitext(filename)[0]
-        app.route(url, endpoint=end)(make_view(filename))
+        endpoint = os.path.splitext(filename)[0]
+        app.route(url, endpoint=endpoint)(make_view(filename))
 
 
 def config_cors(app):
