@@ -14,7 +14,7 @@ from werkzeug.routing import BaseConverter, ValidationError
 from werkzeug.local import LocalProxy
 from flask_restaction import Api, Gen, Auth, Permission
 from flask_github import GitHub
-from .flask_couchdb import CouchDB
+from kkblog.flask_couchdb import CouchDB
 
 couch = CouchDB()
 db = LocalProxy(lambda: couch.db)
@@ -23,10 +23,10 @@ api = Api(docs=__doc__)
 auth = Auth()
 
 from .webhooks import Webhooks
-from .user import User
-from .article import Article
-from .comment import Comment
-from .captcha import Captcha
+from .views.user import User
+from .views.article import Article
+from .views.comment import Comment
+from .views.captcha import Captcha
 
 
 def fn_user_role(token):

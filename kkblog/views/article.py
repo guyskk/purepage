@@ -2,7 +2,7 @@
 from __future__ import unicode_literals, absolute_import, print_function
 from flask import abort
 from flask_restaction import Resource
-from . import db
+from kkblog import db
 
 
 class Article(Resource):

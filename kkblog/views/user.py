@@ -5,8 +5,8 @@ from flask_restaction import Resource
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from validater import validate
-from . import auth, api, db
-from .article_util import read_repo
+from kkblog import auth, api, db
+from kkblog.article_util import read_repo
 
 
 def gen_pwdhash(password):
