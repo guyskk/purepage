@@ -7,16 +7,23 @@ from kkblog import db
 
 class Article(Resource):
     """Article"""
-    schema_article = {
+
+    schema_article_no_content = {
         "_id": ("unicode&required", "文章ID"),
         "userid": ("unicode&required", "作者"),
         "catalog": ("unicode&required", "目录"),
         "article": ("unicode&required", "文章名称"),
         "title": ("unicode&required", "文章标题"),
-        "content": ("unicode&required", "文章内容"),
+        "summary": ("unicode", "文章摘要"),
         "tags": [("unicode&required", "标签")],
         "date": ("datetime&required&output", "创建/修改日期")
     }
+    schema_article_content = {
+        "content": ("unicode&required", "文章内容"),
+    }
+    schema_article = dict(schema_article_no_content.items() +
+                          schema_article_content.items())
+
     schema_inputs = {
         "get": {
             "userid": ("unicode&required", "作者"),
@@ -36,7 +43,7 @@ class Article(Resource):
         "get_list": {
             "total": "int&required",
             "offset": "int&required",
-            "rows": [schema_article]
+            "rows": [schema_article_no_content]
         }
     }
 

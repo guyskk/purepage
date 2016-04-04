@@ -11,6 +11,8 @@ import datetime
 import codecs
 import logging
 import yaml
+import snownlp
+
 
 META_END = re.compile(r"\n(\.{3}|-{3})")
 
@@ -38,8 +40,12 @@ class HighlighterRenderer(misaka.HtmlRenderer):
 
     def blockcode(self, text, lang):
         if not lang:
-            return '\n<pre><code>{}</code></pre>\n'\
-                .format(text.encode("utf-8").strip())
+            assert type(text) is unicode
+            try:
+                return '\n<pre><code>{}</code></pre>\n'.format(text.strip())
+            except UnicodeError:
+                print(repr(text))
+                raise
         lexer = get_lexer_by_name(lang, stripall=True)
         formatter = HtmlFormatter()
         return highlight(text, lexer, formatter)
@@ -49,12 +55,14 @@ def parse_article(path):
     """Parse article."""
     with codecs.open(path, encoding="utf-8") as f:
         source = f.read()
+        assert type(source) is unicode
     meta, source = split_meta(source)
     extensions = misaka.EXT_TABLES | misaka.EXT_FENCED_CODE \
         | misaka.EXT_AUTOLINK | misaka.EXT_NO_INTRA_EMPHASIS
     md = misaka.Markdown(HighlighterRenderer(), extensions=extensions)
     html = md(source)
-    return parse_meta(meta, path), html
+    meta = parse_meta(meta, path)
+    return meta, html
 
 
 def parse_meta(meta, path):
@@ -82,5 +90,6 @@ def parse_meta(meta, path):
         "article": article_name,
         "date": date,
         "title": title,
-        "tags": tags
+        "tags": tags,
+        "summary": meta.get("summary")
     }

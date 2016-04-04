@@ -55,8 +55,9 @@ schema_article = {
     "article": ("unicode&required", "文章名称"),
     "title": ("unicode&required", "文章标题"),
     "content": ("unicode&required", "文章内容"),
+    "summary": ("unicode", "文章摘要"),
     "tags": [("unicode&required", "标签")],
-    "date": ("datetime&required&output", "创建/修改日期")
+    "date": ("datetime&required&output", "创建/修改日期"),
 }
 schema_article = api.validater.parse(schema_article)
 
