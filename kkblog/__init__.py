@@ -1,9 +1,11 @@
 # coding:utf-8
-"""
+"""Kkblog
+
 注册用户并设置博客仓库地址:
     res.user.post_signup({userid:'guyskk',password:'123456'})
     res.user.post_login({userid:'guyskk',password:'123456'})
     res.user.put({repo: 'https://github.com/guyskk/kkblog-article.git'})
+
 同步博客仓库:
     res.user.post_sync_repo({})
 """
@@ -11,17 +13,8 @@ from __future__ import unicode_literals, absolute_import, print_function
 import os
 from flask import Flask, Blueprint
 from werkzeug.routing import BaseConverter, ValidationError
-from werkzeug.local import LocalProxy
-from flask_restaction import Api, Gen, Auth, Permission
-from flask_github import GitHub
-from kkblog.flask_couchdb import CouchDB
-
-couch = CouchDB()
-db = LocalProxy(lambda: couch.db)
-github = GitHub()
-api = Api(docs=__doc__)
-auth = Auth()
-
+from flask_restaction import Gen, Permission
+from .exts import couch, db, github, mail, limiter, api, auth
 from .webhooks import Webhooks
 from .views.user import User
 from .views.article import Article
@@ -38,6 +31,7 @@ def fn_user_role(token):
 
 
 class NoConverter(BaseConverter):
+    """NoConverter."""
 
     def __init__(self, map, *items):
         BaseConverter.__init__(self, map)
@@ -60,9 +54,11 @@ def create_app(config=None):
     route_views(app)
     couch.init_app(app)
     github.init_app(app)
+    mail.init_app(app)
+    limiter.init_app(app)
 
     bp_api = Blueprint('api', __name__, static_folder='static')
-    api.init_app(app, blueprint=bp_api)
+    api.init_app(app, blueprint=bp_api, docs=__doc__)
     api.add_resource(Article)
     api.add_resource(Comment)
     api.add_resource(User)

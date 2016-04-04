@@ -1,9 +1,9 @@
-## KkBloG
+## Kkblog
 
 **此项目正在重写！**
 
 
-KkBloG 是一套基于 Python 的博客程序，类似于 [Read the docs](https://readthedocs.org/) 的模式，采用 Restful 架构，简单易拓展，你可以轻松定制自己的博客界面。
+Kkblog 是一套基于 Python 的博客程序，类似于 [Read the docs](https://readthedocs.org/) 的模式，采用 Restful 架构，简单易拓展，你可以轻松定制自己的博客界面。
 
 这个项目是对 [flask-restaction](https://github.com/guyskk/flask-restaction) 框架的一次尝试。
 
@@ -32,7 +32,7 @@ KkBloG 是一套基于 Python 的博客程序，类似于 [Read the docs](https:
 	http://couchdb.apache.org/  
 	安装完成之后访问 http://127.0.0.1:5984/_utils/index.html 可以看到数据库信息
 
-3. 安装 kkblog
+3. 安装 Kkblog
 	
 		git clone https://github.com/guyskk/kkblog.git
 		cd kkblog
