@@ -36,7 +36,7 @@ function hideSide(){
 function showSide(){
 	sideBar.dom.className = 'show';
 	sideBar.show = true;
-	if(window.innerWidth <= 768){
+	if(window.innerWidth <= 1250){
 		sideBar.btn.style.marginLeft = '0px';
 		sideBar.clickBox.style.display = 'block';
 	}
