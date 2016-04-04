@@ -85,14 +85,14 @@ KkBloG 是一套基于 Python 的博客程序，类似于 [Read the docs](https:
 
 #### 路由
 	
-路径                | 对应的html           | 内容
-------------------- | -------------------- | --------------------------
-/                   | index.html           | 首页，主要显示最新文章列表
-/login              | login.html           | 登录
-/signup             | signup.html          | 注册
-/userid             | article-user.html    | 显示具体用户的最新文章列表
-/userid/catalog     | article-catalog.html | 显示具体用户的文章归档
-/userid/catalog/xxx | article.html         | 显示具体文章
+路径                    | 对应的html        | 内容
+----------------------- | ----------------- | --------------------------
+/                       | index.html        | 首页，主要显示最新文章列表
+/login                  | login.html        | 登录
+/signup                 | signup.html       | 注册
+/userid                 | user.html         | 显示具体用户的最新文章列表
+/userid/catalog         | catalog.html      | 显示具体用户的文章归档
+/userid/catalog/article | article.html      | 显示具体文章
 
 
 ### 前端

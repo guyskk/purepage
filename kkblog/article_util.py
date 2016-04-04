@@ -1,6 +1,9 @@
 # coding:utf-8
 from __future__ import unicode_literals, absolute_import, print_function
-import misaka as md
+import misaka
+from pygments import highlight
+from pygments.lexers import get_lexer_by_name
+from pygments.formatters import HtmlFormatter
 import os
 import re
 import datetime
@@ -13,13 +16,13 @@ import re
 import yaml
 import logging
 
-meta_end = re.compile(r"\n(\.{3}|-{3})")
+META_END = re.compile(r"\n(\.{3}|-{3})")
 
 
 def split_meta(text):
     if text[0:3] != '---':
         return {}, text
-    meta_text = meta_end.split(text[3:], 1)
+    meta_text = META_END.split(text[3:], 1)
     # meta_text: ['title: xx', '---', '\n# xxx']
     if len(meta_text) != 3:
         return {}, text
@@ -33,12 +36,26 @@ def split_meta(text):
     return meta, text
 
 
+class HighlighterRenderer(misaka.HtmlRenderer):
+    """code highlight"""
+
+    def blockcode(self, text, lang):
+        if not lang:
+            return '\n<pre><code>{}</code></pre>\n'.format(text.encode("utf-8").strip())
+        lexer = get_lexer_by_name(lang, stripall=True)
+        formatter = HtmlFormatter()
+        return highlight(text, lexer, formatter)
+
+
 def parse_article(path):
     """parse_article"""
     with codecs.open(path, encoding="utf-8") as f:
         source = f.read()
     meta, source = split_meta(source)
-    html = md.html(source, extensions=[md.EXT_TABLES | md.EXT_HIGHLIGHT])
+    extensions = misaka.EXT_TABLES | misaka.EXT_FENCED_CODE \
+        | misaka.EXT_AUTOLINK | misaka.EXT_NO_INTRA_EMPHASIS
+    md = misaka.Markdown(HighlighterRenderer(), extensions=extensions)
+    html = md(source)
     return parse_meta(meta, path), html
 
 
