@@ -14,12 +14,12 @@ import os
 from flask import Flask, Blueprint
 from werkzeug.routing import BaseConverter, ValidationError
 from flask_restaction import Gen, Permission
-from .exts import couch, db, github, mail, limiter, api, auth
-from .webhooks import Webhooks
-from .views.user import User
-from .views.article import Article
-from .views.comment import Comment
-from .views.captcha import Captcha
+from kkblog.exts import couch, db, github, mail, limiter, api, auth
+from kkblog.webhooks import Webhooks
+from kkblog.views.user import User
+from kkblog.views.article import Article
+from kkblog.views.comment import Comment
+from kkblog.views.captcha import Captcha
 
 
 def fn_user_role(token):
@@ -48,7 +48,6 @@ def create_app(config=None):
     app.config.from_object("kkblog.config_default")
     if config:
         app.config.from_object(config)
-
     app.url_map.converters['no'] = NoConverter
     app.route("/webhooks")(Webhooks())
     route_views(app)

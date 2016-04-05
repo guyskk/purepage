@@ -3,6 +3,7 @@ from __future__ import unicode_literals, absolute_import, print_function
 import os
 import couchdb
 import json
+import logging
 
 
 class CouchDB(object):
@@ -51,5 +52,5 @@ class CouchDB(object):
             if success:
                 succeed += 1
             else:
-                print("Error %s: %s" % (docid, rev_or_exc))
-        print("Succeed/Total = %s/%s" % (succeed, len(result)))
+                logging.info("Error %s: %s" % (docid, rev_or_exc))
+        logging.info("Succeed/Total = %s/%s" % (succeed, len(result)))

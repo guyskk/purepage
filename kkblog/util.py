@@ -1,25 +1,26 @@
 # coding:utf-8
 from __future__ import unicode_literals, absolute_import, print_function
-from flask import current_app
 from flask_mail import Message
 from kkblog import markdown
 from kkblog.exts import mail, db
 import git
 from git.repo.fun import is_git_dir
 import giturlparse
-import re
 import datetime
 import os
 import logging
 
+logger = logging.getLogger(__name__)
+
 
 def now():
+    """Current datetime in ISO_8601 format string"""
     return datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%fZ")
 
 
 def send_mail(to, subject, html):
-    if current_app.debug:
-        current_app.logger.info("Send Mail To %s:\n" % to + html)
+    """Send a html content mail"""
+    logger.info("Send Mail To %s:\n" % to + html)
     msg = Message(subject, recipients=[to])
     msg.html = html
     mail.send(msg)
@@ -35,32 +36,41 @@ def couchdb_count(view, key):
         return result[key].value
 
 
-def read_articles(repo_path):
+def read_articles(directory):
+    """Parse articles from a directory, yield (meta, html) by generator.
 
-    assert isinstance(repo_path, unicode), "repo_path must be unicode string"
+    The directory can has subdirs, and the subdir which name
+    contains '.' will be skiped, article filename must be end with '.md',
+    article name can't contains '.'.
 
-    p_catalog = re.compile(r"^\w{1,16}$")
-    for subdir in os.listdir(repo_path):
-        dir_path = os.path.join(repo_path, subdir)
-        if not p_catalog.match(subdir) or not os.path.isdir(dir_path):
-            logging.info("skip: %s" % subdir)
+    This function will not raise Exceptions when encountered invalid file,
+    it will just wran or info via logging.
+    """
+    assert isinstance(directory, unicode), "directory must be unicode string"
+    for subdir in os.listdir(directory):
+        dir_path = os.path.join(directory, subdir)
+        if "." in subdir or not os.path.isdir(dir_path):
+            logger.info("skip: %s" % subdir)
             continue
         for fname in os.listdir(dir_path):
-            logging.debug("join: %s & %s" % (type(dir_path), type(fname)))
             if not isinstance(fname, unicode):
-                logging.debug("fname not unicode")
-                logging.debug(fname)
+                logger.warn("filename not unicode: %s" % repr(fname))
                 continue
-            if os.path.splitext(fname)[1] != ".md":
+            article_name, ext = os.path.splitext(fname)
+            if ext != ".md":
+                continue
+            if "." in article_name:
+                logger.warn("article name can't has '.': %s" % article_name)
                 continue
             path = os.path.join(dir_path, fname)
             try:
                 yield markdown.parse_article(path)
             except Exception as e:
-                logging.warning("Can't read %s: %s" % (path, e))
+                logger.warn("can't read %s: \n%s" % (path, e))
 
 
 def read_repo(url, data_path):
+    """Read articles from a git repo, save repo in data_path"""
     p = giturlparse.parse(url)
     assert p.valid, "git url %s invalid" % url
     repo_path = os.path.abspath(os.path.join(
@@ -73,7 +83,7 @@ def read_repo(url, data_path):
             repo.git.merge()
             # repo.git.pull(["--git-dir=%s" % repo_path])
         except git.exc.GitCommandError as ex:
-            logging.warning(str(ex))
+            logger.warning(str(ex))
             if not ex.status == 128:
                 raise
     else:

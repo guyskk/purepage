@@ -2,6 +2,9 @@
 from __future__ import unicode_literals, absolute_import, print_function
 from kkblog import create_app, couch, db
 import pytest
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 
 
 @pytest.yield_fixture(scope="session")

@@ -32,4 +32,6 @@ def savedb():
     couch.dump_designs("design")
 
 if __name__ == '__main__':
+    import logging
+    logging.basicConfig(level=logging.DEBUG)
     manage.run()

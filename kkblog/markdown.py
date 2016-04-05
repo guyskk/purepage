@@ -11,9 +11,8 @@ import datetime
 import codecs
 import logging
 import yaml
-import snownlp
 
-
+logger = logging.getLogger(__name__)
 META_END = re.compile(r"\n(\.{3}|-{3})")
 
 
@@ -30,7 +29,7 @@ def split_meta(text):
     try:
         meta = yaml.load(meta)
     except yaml.YAMLError as ex:
-        logging.warning("%s:\n%s" % (meta, ex))
+        logger.warn("%s:\n%s" % (meta, ex))
         meta = {}
     return meta, text
 
@@ -74,7 +73,7 @@ def parse_meta(meta, path):
             date = datetime.datetime(*date.timetuple()[:3])
         if not isinstance(date, datetime.datetime):
             if date is not None:
-                logging.warning("[%s] invalid datetime: %s" % (path, date))
+                logger.warn("[%s] invalid datetime: %s" % (path, date))
             date = datetime.datetime.utcnow()
         return date
 
