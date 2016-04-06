@@ -2,7 +2,7 @@
 from __future__ import unicode_literals, absolute_import, print_function
 import requests
 import six
-from flask import request, json, abort
+from flask import request, json, abort, current_app
 from ipaddress import ip_address, ip_network
 
 
@@ -29,10 +29,10 @@ class Webhooks():
 
 
 def parse_request():
-    if config.get('github_ips_only', True):
+    if current_app.config.get('github_ips_only', True):
         check_ip()
 
-    secret = config.get('enforce_secret', '')
+    secret = current_app.config.get('enforce_secret', '')
     if secret:
         check_signature(secret)
 
