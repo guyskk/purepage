@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html manifest="/static/index.appcache">
 <head>
 	<meta charset="utf-8"/>
   <meta content="width = device-width, initial-scale = 1.0, minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name = "viewport" id = "viewport"/>
 	<title>kkblog</title>
   <link rel="stylesheet" type="text/css" href="/static/css/github-markdown.css"/>
   <link rel="stylesheet" type="text/css" href="/static/css/pygments.css"/>
-  <link rel="stylesheet" type="text/css" href="css/style.css"/>
-  <script type="text/javascript" src="res.js"></script>
-  <script type="text/javascript" src="js/vue.js"></script>
-  <script type="text/javascript" src="js/function.js"></script>
-  <script type="text/javascript" src="js/main.js"></script>
-  <script type="text/javascript" src="js/sidebar.js"></script>
+  <link rel="stylesheet" type="text/css" href="/static/css/style.css"/>
+  <script type="text/javascript" src="/static/res.js"></script>
+  <script type="text/javascript" src="/static/js/vue.js"></script>
+  <script type="text/javascript" src="/static/js/function.js"></script>
+  <script type="text/javascript" src="/static/js/main.js"></script>
+  <script type="text/javascript" src="/static/js/sidebar.js"></script>
 </head>
 <body>
 <div id="container">
@@ -65,6 +65,8 @@
   </div>
 </div>
 <div id="clickBox"></div>
+<div id="backTop"></div>
+<script type="text/javascript" src="/static/js/backTop.js"></script>
 <script type="text/javascript">
   // var Asd = Vue.extend({
   //   template: '<div>asdasdasd</div>'
@@ -77,6 +79,7 @@
   res.article.get_list({
   }).then(function(value){
     for(let i=0; i<value.rows.length; i++){
+      // console.log(value.rows[i]);
       var artDiv = document.createElement('artdiv'+i);
       artDiv.className = 'markdown-body';
       // var aaa = '<asd' + i + '></asd' + i + '>';
