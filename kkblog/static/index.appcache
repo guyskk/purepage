@@ -1,0 +1,18 @@
+CACHE MANIFEST
+
+CACHE:
+# 2016-04-04 v0.0.2
+/static/res.js
+/static/image/brand.jpg
+/static/image/pic.jpg
+/static/css/style.css
+/static/css/pygments.css
+/static/css/github-markdown.css
+/static/js/backTop.js
+/static/js/sidebar.js
+/static/js/function.js
+/static/js/main.js
+/static/js/vue.js
+
+NETWORK:
+*
