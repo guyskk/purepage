@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html manifest="/static/index.appcache">
+<html>
 <head>
 	<meta charset="utf-8"/>
   <meta content="width = device-width, initial-scale = 1.0, minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name = "viewport" id = "viewport"/>
@@ -61,41 +61,81 @@
         <p>JavaScript很容易学习</p>
       </div>
     </div>
-    <div id="blogArt"></div>
+    <div id="blogArt">
+      <div class="markdown-body" v-for="i in num">
+        <h1>{{ $data.artTit[i] }}</h1>
+        <p>{{ $data.artSum[i] }}</p>
+        <button class="more" v-on:click="toOne" v-bind:artName="artName[i]" v-bind:catalog="catalog[i]" v-bind:userid="userId[i]">MORE</button>
+      </div>
+    </div>
   </div>
 </div>
 <div id="clickBox"></div>
 <div id="backTop"></div>
 <script type="text/javascript" src="/static/js/backTop.js"></script>
 <script type="text/javascript">
-  // var Asd = Vue.extend({
-  //   template: '<div>asdasdasd</div>'
-  // })
-  // Vue.component("asd",Asd)
-  // var contentVM = new Vue({
-  //   el: "body",
-  // })
 
-  res.article.get_list({
-  }).then(function(value){
-    for(let i=0; i<value.rows.length; i++){
-      // console.log(value.rows[i]);
-      var artDiv = document.createElement('artdiv'+i);
-      artDiv.className = 'markdown-body';
-      // var aaa = '<asd' + i + '></asd' + i + '>';
-      document.getElementById('blogArt').appendChild(artDiv);
-      var Asd = Vue.extend({
-        template: '<div>' + value.rows[i].content + '</div>'
+  var art = new Vue({
+    el: "#blogArt",
+    data: {
+      artTit: [],
+      artSum: [],
+      num: 0,
+      artName: [],
+      catalog: [],
+      userId: []
+    },
+    init: function(){
+      res.article.get_list({
+      }).then(function(data){
+        console.log(data);
+        art.num = data.rows.length;
+        for(let i=0; i<data.rows.length; i++){
+          art.artTit.push(data.rows[i].title);
+          art.artSum.push(data.rows[i].summary);
+          art.artName.push(data.rows[i].article);
+          art.catalog.push(data.rows[i].catalog);
+          art.userId.push(data.rows[i].userid);
+        }
+        // console.log(art.artTit);
+        // console.log(art.artSum);
+      }).catch(function(error){
+        console.log(error);
       })
-      Vue.component('artdiv'+i,Asd)
-      new Vue({
-        el: "#container"
-      })
-      // contentVM.contents.push(value.rows[i].content)
+    },
+    methods: {
+      toOne: function(e){
+        res.article.get({
+          article: e.srcElement.getAttribute('artName'),
+          catalog: e.srcElement.getAttribute('catalog'),
+          userid: e.srcElement.getAttribute('userid')
+        }).then(function(data){
+          console.log(data);
+        })
+      }
     }
-  }).catch(function(err){
-    console.log(err);
   })
+
+  // res.article.get_list({
+  // }).then(function(value){
+  //   console.log(value.rows);
+  //   for(let i=0; i<value.rows.length; i++){
+  //     var artDiv = document.createElement('artdiv'+i);
+  //     artDiv.className = 'markdown-body';
+  //     // var aaa = '<asd' + i + '></asd' + i + '>';
+  //     document.getElementById('blogArt').appendChild(artDiv);
+  //     var Asd = Vue.extend({
+  //       template: '<div>' + value.rows[i].content + '</div>'
+  //     })
+  //     Vue.component('artdiv'+i,Asd)
+  //     new Vue({
+  //       el: "#container"
+  //     })
+  //     // contentVM.contents.push(value.rows[i].content)
+  //   }
+  // }).catch(function(err){
+  //   console.log(err);
+  // })
 </script>
 </body>
 </html>
