@@ -65,7 +65,8 @@
       <div class="markdown-body" v-for="i in num">
         <h1>{{ $data.artTit[i] }}</h1>
         <p>{{ $data.artSum[i] }}</p>
-        <button class="more" v-on:click="toOne" v-bind:artName="artName[i]" v-bind:catalog="catalog[i]" v-bind:userid="userId[i]">MORE</button>
+        <!-- <button class="more" v-on:click="toOne" v-bind:artName="artName[i]" v-bind:catalog="catalog[i]" v-bind:userid="userId[i]">MORE</button> -->
+        <a class="more" href="/{{userId[i]}}/{{catalog[i]}}/{{artName[i]}}">MORE</a>
       </div>
     </div>
   </div>
