@@ -39,7 +39,6 @@ class HighlighterRenderer(misaka.HtmlRenderer):
 
     def blockcode(self, text, lang):
         if not lang:
-            assert type(text) is unicode
             try:
                 return '\n<pre><code>{}</code></pre>\n'.format(text.strip())
             except UnicodeError:
@@ -54,7 +53,6 @@ def parse_article(path):
     """Parse article."""
     with codecs.open(path, encoding="utf-8") as f:
         source = f.read()
-        assert type(source) is unicode
     meta, source = split_meta(source)
     extensions = misaka.EXT_TABLES | misaka.EXT_FENCED_CODE \
         | misaka.EXT_AUTOLINK | misaka.EXT_NO_INTRA_EMPHASIS

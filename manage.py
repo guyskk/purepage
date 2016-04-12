@@ -1,9 +1,7 @@
 # coding:utf-8
-
-import os
 from flask_script import Manager
-from kkblog import create_app, couch, db
-from kkblog.article_util import read_repo, read_articles
+from kkblog import create_app, couch
+from kkblog.util import read_repo, read_articles
 
 
 app = create_app()

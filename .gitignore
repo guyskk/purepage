@@ -1,9 +1,12 @@
 data/
+!tests/data
 kkblog/static/node_modules
 kkblog/static/resdocs.html
 kkblog/static/res.js
 kkblog/static/permission.html
 
+.vagrant
+*.box
 *.db
 
 # pkg resource

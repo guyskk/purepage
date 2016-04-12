@@ -15,7 +15,7 @@ setup(
     author_email="guyskk@qq.com",
     url="https://github.com/guyskk/kkblog",
     license="MIT",
-    packages=["kkblog"],
+    packages=["kkblog", "kkblog.views"],
     install_requires=install_requires,
     include_package_data=True,
     zip_safe=False,

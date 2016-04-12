@@ -21,8 +21,8 @@ class Article(Resource):
     schema_article_content = {
         "content": ("unicode&required", "文章内容"),
     }
-    schema_article = dict(schema_article_no_content.items() +
-                          schema_article_content.items())
+    schema_article = dict(list(schema_article_no_content.items()) +
+                          list(schema_article_content.items()))
 
     schema_inputs = {
         "get": {

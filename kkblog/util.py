@@ -28,12 +28,12 @@ def send_mail(to, subject, html):
 
 def couchdb_count(view, key):
     """统计key的数量"""
-    result = db.view(view, key=key)
-    if result.total_rows == 0:
-        return 0
+    result = db.view(view, key=key, group=True).rows
+    assert len(result) <= 1, "Key Not Unique On Reduce View"
+    if result:
+        return result[0][key].value
     else:
-        assert result.total_rows == 1, "Key Not Unique On Reduce View"
-        return result[key].value
+        return 0
 
 
 def read_articles(directory):
@@ -46,16 +46,12 @@ def read_articles(directory):
     This function will not raise Exceptions when encountered invalid file,
     it will just wran or info via logging.
     """
-    assert isinstance(directory, unicode), "directory must be unicode string"
     for subdir in os.listdir(directory):
         dir_path = os.path.join(directory, subdir)
         if "." in subdir or not os.path.isdir(dir_path):
             logger.info("skip: %s" % subdir)
             continue
         for fname in os.listdir(dir_path):
-            if not isinstance(fname, unicode):
-                logger.warn("filename not unicode: %s" % repr(fname))
-                continue
             article_name, ext = os.path.splitext(fname)
             if ext != ".md":
                 continue

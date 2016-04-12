@@ -171,7 +171,7 @@ class User(Resource):
         }
         if userid in db:
             abort(400, "UserID Already SignUp")
-        if util.couchdb_count("email/_count", key=email) >= 1:
+        if util.couchdb_count("user/email", key=email) >= 1:
             abort(400, "Email Already SignUp")
         token = encode_token(token)
         server = current_app.config["SERVER_URL"]
