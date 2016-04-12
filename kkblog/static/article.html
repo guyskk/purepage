@@ -62,37 +62,30 @@
     </div>
     <div id="blogArt">
     </div>
+    <div id="blogCom">
+      <div id="othersCom">
+        <div v-for="i in num">
+          <p></p>
+        </div>
+      </div>
+      <textarea id="textCon" style="resize: none;"></textarea>
+      <input type="button" id="comment-btn" value="Post">
+    </div>
   </div>
 </div>
 <div id="clickBox"></div>
 <div id="backTop"></div>
 <script type="text/javascript" src="/static/js/backTop.js"></script>
+<script type="text/javascript" src="/static/js/article.js"></script>
 <script type="text/javascript">
-  var title = new Vue({
-    el: "#scripts",
-    data: {
-      pageTitle: '',
-      pageScript: ''
-    }
-  })
-  var url = location.pathname.split('/');
-  var userid = decodeURI(url[1]);
-  var catalog = decodeURI(url[2]);
-  var article = decodeURI(url[3]);
-  title.pageTitle = article;
-  res.article.get({
-    article: article,
-    catalog: catalog,
-    userid: userid
-  }).then(function(data) {
-    console.log(data.content);
-    var newArt = document.createElement('div');
-    newArt.className = 'markdown-body';
-    newArt.innerHTML = data.content;
-    document.getElementById('blogArt').appendChild(newArt);
-  }).catch(function(err) {
-    console.log(err);
-  })
+  
+  // res.comment.get({
+  //   article: title.artId
+  // }).then(function(data){
+  //   // console.log(data);
+  // }).catch(function(err){
+  //   console.log(err);
+  // })
 </script>
 </body>
 </html>
