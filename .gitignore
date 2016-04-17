@@ -5,6 +5,7 @@ kkblog/static/resdocs.html
 kkblog/static/res.js
 kkblog/static/permission.html
 
+.venv
 .vagrant
 *.box
 *.db
@@ -33,7 +34,7 @@ lib/
 !kkblog/static/lib/
 lib64/
 parts/
-sdist/
+dist/
 var/
 *.egg-info/
 .installed.cfg

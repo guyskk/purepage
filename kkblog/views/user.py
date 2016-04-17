@@ -2,7 +2,7 @@
 """User API"""
 from __future__ import unicode_literals, absolute_import, print_function
 import jwt
-import couchdb
+import pycouchdb
 from datetime import datetime, timedelta
 from flask import abort, g, current_app, render_template
 from flask_restaction import Resource
@@ -201,7 +201,7 @@ class User(Resource):
         except couchdb.ResourceConflict:
             abort(400, "UserID Conflict")
         # check after save
-        if util.couchdb_count("email/_count", key=token["email"]) > 1:
+        if util.couchdb_count("user/email", key=token["email"]) > 1:
             db.delete(user)
             abort(400, "Email Already SignUp")
         return "OK", 201
@@ -223,7 +223,7 @@ class User(Resource):
             "include_docs": True,
             "key": email
         }
-        result = db.view("user/by_email", **params)
+        result = db.query("user/by_email", **params)
         if result.total_rows == 0:
             abort(400, "User Not Exists")
         else:
@@ -297,7 +297,10 @@ class User(Resource):
             abort(400, "you didn't set your repo")
         for meta, content in util.read_repo(repo, "data"):
             key = ".".join([self.userid, meta["catalog"], meta["article"]])
-            origin = db.get(key, {})
+            try:
+                origin = db.get(key)
+            except pycouchdb.exceptions.NotFound:
+                origin = {}
             changes = dict(meta)
             changes["userid"] = self.userid
             changes["_id"] = key

@@ -1,5 +1,6 @@
 # coding:utf-8
 from __future__ import unicode_literals, absolute_import, print_function
+from flask import abort
 from flask_mail import Message
 from kkblog import markdown
 from kkblog.exts import mail, db
@@ -23,12 +24,16 @@ def send_mail(to, subject, html):
     logger.info("Send Mail To %s:\n" % to + html)
     msg = Message(subject, recipients=[to])
     msg.html = html
-    mail.send(msg)
+    try:
+        mail.send(msg)
+    except Exception as ex:
+        logger.exception(ex)
+        abort(500, "邮件发送失败: %s" % str(ex))
 
 
 def couchdb_count(view, key):
     """统计key的数量"""
-    result = db.view(view, key=key, group=True).rows
+    result = db.query(view, key=key, group=True).rows
     assert len(result) <= 1, "Key Not Unique On Reduce View"
     if result:
         return result[0][key].value

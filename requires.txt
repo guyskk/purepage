@@ -1,14 +1,14 @@
 flask>=0.10.1
 markupsafe>=0.23
 validater>=0.9.5
-flask-restaction>=0.20.1
+flask-restaction>=0.20.2
 flask-mail>=0.9.1
 flask-cors>=2.1.2
 flask-cache>=0.13.0
 flask-limiter>=0.9.3
 flask-script>=2.0.5
 github-flask>=3.1.1
-couchdb>=1.0.1
+requests>=2.9.1
 pillow>=3.0.0
 captcha>=0.2.1
 ipaddress>=1.0.16

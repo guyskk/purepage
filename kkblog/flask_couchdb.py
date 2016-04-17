@@ -1,7 +1,6 @@
 # coding:utf-8
 from __future__ import unicode_literals, absolute_import, print_function
 import os
-import couchdb
 import json
 import logging
 
@@ -16,11 +15,11 @@ class CouchDB(object):
             self.init_app(app)
 
     def init_app(self, app):
-        self.server = couchdb.Server(app.config["DATABASE_URL"])
+        self.server = pycouchdb.Server(app.config["DATABASE_URL"])
         database = app.config["DATABASE_NAME"]
         if database not in self.server:
             self.server.create(database)
-        self.db = self.server[database]
+        self.db = self.server.database(database)
 
     def dump_designs(self, path):
         params = {
@@ -28,7 +27,7 @@ class CouchDB(object):
             "endkey": '"_design0"',
             "include_docs": True
         }
-        __, __, data = self.db.resource("_all_docs").get_json(**params)
+        resp, data = self.db.resource.get("_all_docs", params=params)
         for row in data["rows"]:
             name = os.path.basename(row["id"])
             design = row["doc"]
@@ -46,7 +45,7 @@ class CouchDB(object):
                 with open(os.path.join("design", filename)) as f:
                     design.update(json.load(f))
                     designs.append(design)
-        result = self.db.update(designs)
+        result = self.db.save_bulk(designs)
         succeed = 0
         for (success, docid, rev_or_exc) in result:
             if success:
