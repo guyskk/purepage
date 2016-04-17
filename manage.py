@@ -1,7 +1,8 @@
 # coding:utf-8
 from flask_script import Manager
-from kkblog import create_app, couch
+from kkblog import create_app, db
 from kkblog.util import read_repo, read_articles
+from couchdb_client.util import load_designs, dump_designs
 
 
 app = create_app()
@@ -22,12 +23,13 @@ def readarticles(path):
 
 @manage.command
 def initdb():
-    couch.load_designs("design")
+    import pdb;pdb.set_trace()
+    load_designs(db, "design")
 
 
 @manage.command
 def savedb():
-    couch.dump_designs("design")
+    dump_designs(db, "design")
 
 if __name__ == '__main__':
     import logging

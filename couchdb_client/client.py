@@ -60,7 +60,11 @@ class Client(object):
             http = HttpRequestsImpl()
         self.http = http
 
-    def request(self, method, url_tmpl, path_params, params, **kwargs):
+    def request(self, method, url_tmpl, path_params, params=None, **kwargs):
+        if path_params is None:
+            path_params = []
+        if params is None:
+            params = {}
         url_tmpl = self.url + url_tmpl
         path_params = {k: params.pop(k) for k in path_params}
         url = url_tmpl.format(**path_params)

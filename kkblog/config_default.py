@@ -2,8 +2,8 @@
 from __future__ import unicode_literals, absolute_import, print_function
 
 SECRET_KEY = "SECRET_KEY"
-DATABASE_URL = "http://127.0.0.1:5984/"
-DATABASE_NAME = "kkblog"
+COUCHDB_SERVER = "http://127.0.0.1:5984"
+COUCHDB_DATABASE = "kkblog"
 GITHUB_CLIENT_ID = "XXX"
 GITHUB_CLIENT_SECRET = "YYY"
 # 用于注册&找回密码

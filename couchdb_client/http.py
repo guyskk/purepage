@@ -2,6 +2,8 @@
 from __future__ import unicode_literals, absolute_import, print_function
 import requests
 import logging
+import json
+import six
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -21,10 +23,33 @@ class CouchdbException(Exception):
             self.error = None
             self.reason = None
 
+    def __repr__(self):
+        return "<CouchdbException %s> %s: %s" %\
+            (self.status_code, self.error or '', self.reason or '')
+
+    def __str__(self):
+        return "<%s %s>: %s" %\
+            (self.status_code, self.error or '', self.reason or '')
+
+
+def ensure_bytes(data):
+    if not (isinstance(data, six.string_types) and
+            isinstance(data, six.binary_type)):
+        data = json.dumps(data, ensure_ascii=False)
+        data = data.encode('utf-8')
+    if not isinstance(data, six.binary_type):
+        data = data.encode('utf-8')
+    return data
+
 
 class HttpRequestsImpl():
 
     def request(self, method, url, **kwargs):
+        kwargs.setdefault("headers", {})
+        kwargs["headers"].setdefault('Accept', 'application/json')
+        kwargs["headers"].setdefault('Content-Type', 'application/json')
+        if "data" in kwargs:
+            kwargs["data"] = ensure_bytes(kwargs["data"])
         logger.debug('"%s %s"\n%s' % (method, url, kwargs))
         resp = requests.request(method, url, **kwargs)
         stream = kwargs.get('stream', False)
