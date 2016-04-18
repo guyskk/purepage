@@ -3,6 +3,7 @@ from __future__ import unicode_literals, absolute_import, print_function
 from flask import abort
 from flask_restaction import Resource
 from kkblog import db
+from couchdb_client import CouchdbException
 
 
 class Article(Resource):
@@ -50,32 +51,30 @@ class Article(Resource):
     def get(self, userid, catalog, article):
         """获取一篇文章"""
         key = ".".join([userid, catalog, article])
-        result = db.get(key, None)
-        if result is None:
-            abort(404, "Not Found")
+        result = db.get(params=dict(docid=key))
         return result
 
     def get_list(self, pagenum, pagesize, userid, catalog, tag):
         """获取文章列表"""
         if userid:
             if tag:
-                view = "article/by_user_tag"
+                view = "by_user_tag"
                 startkey = [userid, tag, {}]
                 endkey = [userid, tag]
             elif catalog:
-                view = "article/by_user_catalog"
+                view = "by_user_catalog"
                 startkey = [userid, catalog, {}]
                 endkey = [userid, catalog]
             else:
-                view = "article/by_user"
+                view = "by_user"
                 startkey = [userid, {}]
                 endkey = [userid]
         elif tag:
-            view = "article/by_tag"
+            view = "by_tag"
             startkey = [tag, {}]
             endkey = [tag]
         else:
-            view = "article/by_date"
+            view = "by_date"
             startkey = None
             endkey = {}
         params = {
@@ -83,14 +82,23 @@ class Article(Resource):
             "include_docs": True,
             "skip": (pagenum - 1) * pagesize,
             "limit": pagesize,
-            "descending": True
+            "descending": True,
+            "ddoc": "article",
+            "view": view
         }
         if startkey:
             params["startkey"] = startkey
             params["endkey"] = endkey
-        result = db.view(view, **params)
+        result = db.get_view(params=params)
         return {
-            "total": result.total_rows,
-            "offset": result.offset,
-            "rows": [x.doc for x in result]
+            "total": result['total_rows'],
+            "offset": result['offset'],
+            "rows": [x['doc'] for x in result['rows']]
         }
+
+
+@Article.error_handler
+def handler_404(self, ex):
+    if isinstance(ex, CouchdbException):
+        if ex.status_code == 404:
+            abort(404, '%s: %s' % (ex.error or 'Not Found', ex.reason or ''))

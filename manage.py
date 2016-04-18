@@ -23,7 +23,6 @@ def readarticles(path):
 
 @manage.command
 def initdb():
-    import pdb;pdb.set_trace()
     load_designs(db, "design")
 
 

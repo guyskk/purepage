@@ -16,15 +16,15 @@ class CouchdbException(Exception):
         self.resp = resp
         if resp.content:
             self.json = resp.json()
-            self.error = self.json['error']
-            self.reason = self.json['reason']
+            self.error = self.json.get('error')
+            self.reason = self.json.get('reason')
         else:
             self.json = None
             self.error = None
             self.reason = None
 
     def __repr__(self):
-        return "<CouchdbException %s> %s: %s" %\
+        return "<CouchdbException %s %s>: %s" %\
             (self.status_code, self.error or '', self.reason or '')
 
     def __str__(self):
@@ -32,12 +32,12 @@ class CouchdbException(Exception):
             (self.status_code, self.error or '', self.reason or '')
 
 
-def ensure_bytes(data):
-    if not (isinstance(data, six.string_types) and
+def as_bytes(data):
+    if not (isinstance(data, six.string_types) or
             isinstance(data, six.binary_type)):
         data = json.dumps(data, ensure_ascii=False)
         data = data.encode('utf-8')
-    if not isinstance(data, six.binary_type):
+    elif not isinstance(data, six.binary_type):
         data = data.encode('utf-8')
     return data
 
@@ -49,7 +49,7 @@ class HttpRequestsImpl():
         kwargs["headers"].setdefault('Accept', 'application/json')
         kwargs["headers"].setdefault('Content-Type', 'application/json')
         if "data" in kwargs:
-            kwargs["data"] = ensure_bytes(kwargs["data"])
+            kwargs["data"] = as_bytes(kwargs["data"])
         logger.debug('"%s %s"\n%s' % (method, url, kwargs))
         resp = requests.request(method, url, **kwargs)
         stream = kwargs.get('stream', False)

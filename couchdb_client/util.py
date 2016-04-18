@@ -36,8 +36,12 @@ def load_designs(db, path):
             with open(os.path.join("design", filename)) as f:
                 design.update(json.load(f))
                 designs.append(design)
-    import pdb;pdb.set_trace()
-    result = db.post_bulk_docs(data=designs)
+    # all_or_nothing is not supported yet
+    data = {
+        # "all_or_nothing": True,
+        "docs": designs
+    }
+    result = db.post_bulk_docs(data=data)
     succeed = 0
     for (success, docid, rev_or_exc) in result:
         if success:
@@ -45,3 +49,19 @@ def load_designs(db, path):
         else:
             logging.info("Error %s: %s" % (docid, rev_or_exc))
     logging.info("Succeed/Total = %s/%s" % (succeed, len(result)))
+
+
+def couchdb_count(db, ddoc, view, key):
+    """统计key的数量"""
+    params = {
+        "ddoc": ddoc,
+        "view": view,
+        "key": key,
+        "group": True
+    }
+    result = db.get_view(params=params)['rows']
+    assert len(result) <= 1, "Key Not Unique On Reduce View"
+    if result:
+        return result[0][key].value
+    else:
+        return 0

@@ -2,7 +2,7 @@
 from __future__ import unicode_literals, absolute_import, print_function
 
 SECRET_KEY = "SECRET_KEY"
-COUCHDB_SERVER = "http://127.0.0.1:5984"
+COUCHDB_SERVER = "http://admin:123456@127.0.0.1:5984"
 COUCHDB_DATABASE = "kkblog"
 GITHUB_CLIENT_ID = "XXX"
 GITHUB_CLIENT_SECRET = "YYY"

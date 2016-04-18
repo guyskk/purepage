@@ -3,7 +3,7 @@ from __future__ import unicode_literals, absolute_import, print_function
 from flask import abort
 from flask_mail import Message
 from kkblog import markdown
-from kkblog.exts import mail, db
+from kkblog.exts import mail
 import git
 from git.repo.fun import is_git_dir
 import giturlparse
@@ -29,16 +29,6 @@ def send_mail(to, subject, html):
     except Exception as ex:
         logger.exception(ex)
         abort(500, "邮件发送失败: %s" % str(ex))
-
-
-def couchdb_count(view, key):
-    """统计key的数量"""
-    result = db.query(view, key=key, group=True).rows
-    assert len(result) <= 1, "Key Not Unique On Reduce View"
-    if result:
-        return result[0][key].value
-    else:
-        return 0
 
 
 def read_articles(directory):

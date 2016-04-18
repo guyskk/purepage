@@ -1,8 +1,7 @@
 # coding:utf-8
 from __future__ import unicode_literals, absolute_import, print_function
 from couchdb_client.http import HttpRequestsImpl
-from base64 import b64encode
-from requests.auth import AuthBase
+from requests.auth import HTTPBasicAuth
 from six.moves.urllib import parse
 
 
@@ -30,19 +29,6 @@ def extract_credentials(url):
     return parse.urlunsplit(parts), credentials
 
 
-class CouchdbBaseAuth(AuthBase):
-
-    def __init__(self, username, password):
-        self.username = username
-        self.password = password
-        token = b64encode(('%s:%s' % (self.username, self.password)).encode('ascii'))
-        self.token = (b'Basic %s' % token.strip()).decode('ascii')
-
-    def __call__(self, r):
-        r.headers['Authorization'] = self.token
-        return r
-
-
 class Client(object):
 
     def __init__(self, url, http=None):
@@ -51,7 +37,7 @@ class Client(object):
     def init(self, url, http=None):
         url, credentials = extract_credentials(url)
         if credentials:
-            auth = CouchdbBaseAuth(*credentials)
+            auth = HTTPBasicAuth(*credentials)
             self.auth = auth
         else:
             self.auth = None
@@ -60,7 +46,7 @@ class Client(object):
             http = HttpRequestsImpl()
         self.http = http
 
-    def request(self, method, url_tmpl, path_params, params=None, **kwargs):
+    def request(self, method, url_tmpl, path_params=None, params=None, **kwargs):
         if path_params is None:
             path_params = []
         if params is None:
@@ -107,10 +93,10 @@ class Server(Client):
         url = '/_stats'
         if params is not None and 'section' in params:
             section = params.pop('section')
-            url = url + '/' + section
+            url = '%s/%s' % (url, section)
             if 'statistic' in params:
                 statistic = params.pop('statistic')
-                url = url + '/' + statistic
+                url = '%s/%s' % (url, statistic)
         return self.request('GET', url, [], params, **kwargs)
 
     def get_uuids(self, params=None, **kwargs):
@@ -279,13 +265,13 @@ class Database(Client):
     def get_show(self, params=None, **kwargs):
         url = '/_design/{ddoc}/_show/{func}'
         if params is not None and 'docid' in params:
-            url = url + '/' + params.pop('docid')
+            url = '%s/%s' % (url, params.pop('docid'))
         return self.request('GET', url, ['ddoc', 'func'], params, **kwargs)
 
     def post_show(self, params=None, **kwargs):
         url = '/_design/{ddoc}/_show/{func}'
         if params is not None and 'docid' in params:
-            url = url + '/' + params.pop('docid')
+            url = '%s/%s' % (url, params.pop('docid'))
         return self.request('POST', url, ['ddoc', 'func'], params, **kwargs)
 
     def get_list(self, params=None, **kwargs):

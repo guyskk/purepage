@@ -1,1 +1,10 @@
-{"_id": "_design/user", "views": {"email": {"map": "function(doc) {\n  if(doc.type==\"user\"){\n     emit(doc.email, null);\n  }\n}", "reduce": "_count"}}, "language": "javascript"}
+{
+    "_id": "_design/user",
+    "views": {
+        "email": {
+            "map": "function(doc) {\n  if(doc.type==\"user\"){\n     emit(doc.email, null);\n  }\n}",
+            "reduce": "_count"
+        }
+    },
+    "language": "javascript"
+}
