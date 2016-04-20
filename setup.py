@@ -8,14 +8,14 @@ with open(join(dirname(__file__), 'requires.txt'), 'r') as f:
     install_requires = [x for x in install_requires if x[:4] != "git+"]
 
 setup(
-    name="kkblog",
+    name="purepage",
     version="1.0",
-    description="kkblog",
+    description="purepage",
     author="guyskk",
     author_email="guyskk@qq.com",
-    url="https://github.com/guyskk/kkblog",
+    url="https://github.com/guyskk/purepage",
     license="MIT",
-    packages=["kkblog", "kkblog.views"],
+    packages=["purepage", "purepage.views"],
     install_requires=install_requires,
     include_package_data=True,
     zip_safe=False,

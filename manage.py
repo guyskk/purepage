@@ -1,7 +1,7 @@
 # coding:utf-8
 from flask_script import Manager
-from kkblog import create_app, db
-from kkblog.util import read_repo, read_articles
+from purepage import create_app, db
+from purepage.util import read_repo, read_articles
 from couchdb_client.util import load_designs, dump_designs
 
 

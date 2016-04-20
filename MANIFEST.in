@@ -1,10 +1,10 @@
-recursive-include kkblog/templates *
-recursive-include kkblog/static *
-include kkblog/*
-prune kkblog/static/node_modules
-exclude kkblog/static/res.js
-exclude kkblog/static/resdocs.html
-exclude kkblog/static/permission.html
+recursive-include purepage/templates *
+recursive-include purepage/static *
+include purepage/*
+prune purepage/static/node_modules
+exclude purepage/static/res.js
+exclude purepage/static/resdocs.html
+exclude purepage/static/permission.html
 include manage.py
 include deploy.py
 include nginx.conf
