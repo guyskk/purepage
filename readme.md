@@ -1,62 +1,44 @@
-## Kkblog
+## PurePage
 
 **此项目正在重写！**
 
-
-Kkblog 是一套基于 Python 的博客程序，类似于 [Read the docs](https://readthedocs.org/) 的模式，采用 Restful 架构，简单易拓展，你可以轻松定制自己的博客界面。
+PurePage 是基于 Python 的博客程序，类似于 [Read the docs](https://readthedocs.org/) 的模式。
 
 这个项目是对 [flask-restaction](https://github.com/guyskk/flask-restaction) 框架的一次尝试。
 
+PurePage 致力于达到以下目标:
+
+1. 良好的写作体验和阅读体验
+2. 易于分享和发现有价值的文章
+3. 运行稳定，安全，快速
+4. 开放API
 
 ###安装
 
-#### Windows 
+PurePage 使用 docker 进行部署，linux 平台下需要安装 docker 和 docker-compose，
+windows 和 mac 需要安装 virtualbox，docker-machine，并通过 docker-machine 控制虚拟机中的 linux 主机。
+安装教程请参考 https://docs.docker.com/
 
-1. 安装 Git
-2. 安装 Python 2.7 Windows x86-64 最新版，用其他版本有些依赖的库(misaka)安装很麻烦
+安装完docker之后，执行以下命令:
+```
+git clone https://github.com/guyskk/purepage.git
+cd purepage
+docker-compose up
+```
 
-	在命令行下执行
+稍等片刻，PurePage 启动成功之后， 
+访问 http://127.0.0.1:5000/static/resdocs.html 查看 API 文档
 
-		python --version
-		pip --version
-		git --version
+打开浏览器控制台，注册用户并设置博客仓库地址:
 
-	没有报错就 OK 了
+    res.user.post_signup({userid:'guyskk',password:'123456'})
+    res.user.post_login({userid:'guyskk',password:'123456'})
+    res.user.put({repo: 'https://github.com/guyskk/kkblog-article.git'})
 
-	再到 http://aka.ms/vcpython27 下载 Microsoft Visual C++ Compiler for Python 2.7
-	并安装，安装一些 Python 库的时候需要用到
+最后，同步博客仓库:
 
-4. 安装 CouchDB
-
-	下载&安装即可
-	http://couchdb.apache.org/  
-	安装完成之后访问 http://127.0.0.1:5984/_utils/index.html 可以看到数据库信息
-
-3. 安装 Kkblog
+    res.user.post_sync_repo({})
 	
-		git clone https://github.com/guyskk/kkblog.git
-		cd kkblog
-		pip install -e .
-
-4. 初始化数据库&启动
-		
-		python manage.py initdb
-		python manage.py runserver -dr
-
-	访问 http://127.0.0.1:5000/static/resdocs.html 查看 API 文档
-
-	打开浏览器控制台，注册用户并设置博客仓库地址:
-
-		res.user.post_signup({userid:'guyskk',password:'123456'})
-		res.user.post_login({userid:'guyskk',password:'123456'})
-		res.user.put({repo: 'https://github.com/guyskk/kkblog-article.git'})
-	
-	最后，同步博客仓库:
-
-		res.user.post_sync_repo({})
-	
-### 快速上手
-
 
 #### 基本配置
 
