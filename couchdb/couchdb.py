@@ -10,16 +10,16 @@ class CouchDB():
     def destroy(self):
         pass
 
-    def put(self, doc, _id, _rev):
+    def put(self, doc, id, rev):
         pass
 
     def post(self, doc):
         pass
 
-    def get(self, _id, _rev=None, attachments=False, binary=False):
+    def get(self, id, rev=None, attachments=False, binary=False):
         pass
 
-    def remove(self, doc_or_id, _rev=None):
+    def remove(self, doc_or_id, rev=None):
         pass
 
     def bulkdocs(self, docs):
@@ -37,13 +37,13 @@ class CouchDB():
     def sync(self):
         pass
 
-    def put_attachment(self, _id, attachment_id, _rev, attachment, type):
+    def put_attachment(self, id,  attachment_id, rev, attachment, type):
         pass
 
-    def get_attachment(self, _id, attachment_id, _rev=None):
+    def get_attachment(self, id,  attachment_id, rev=None):
         pass
 
-    def remove_attachment(self, _id, attachment_id, _rev):
+    def remove_attachment(self, id,  attachment_id, rev):
         pass
 
     def query(self, fun, **options):
