@@ -1,9 +1,7 @@
-# coding:utf-8
-from __future__ import unicode_literals, absolute_import, print_function
 import os
 import json
 import logging
-from couchdb_client import CouchdbException
+from .http import NotFound
 
 
 def dump_designs(db, path):
@@ -28,7 +26,7 @@ def load_designs(db, path):
         if ext == ".json":
             try:
                 design = db.get_doc(params={"docid": "_design/%s" % name})
-            except CouchdbException as ex:
+            except NotFound as ex:
                 if ex.status_code == 404:
                     design = {"_id": "_design/%s" % name}
                 else:
