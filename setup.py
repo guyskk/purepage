@@ -1,5 +1,3 @@
-# coding:utf-8
-
 from setuptools import setup
 from os.path import join, dirname
 

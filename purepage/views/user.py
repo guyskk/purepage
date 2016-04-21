@@ -1,6 +1,4 @@
-# coding:utf-8
 """User API"""
-from __future__ import unicode_literals, absolute_import, print_function
 import jwt
 import pycouchdb
 from datetime import datetime, timedelta

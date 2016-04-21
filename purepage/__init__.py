@@ -1,4 +1,3 @@
-# coding:utf-8
 """Kkblog
 
 注册用户并设置博客仓库:
@@ -15,7 +14,6 @@ res.user.put({repo: 'https://github.com/guyskk/kkblog-article.git'})
 6. 同步博客仓库:
 res.user.post_sync_repo({})
 """
-from __future__ import unicode_literals, absolute_import, print_function
 import os
 from flask import Flask, Blueprint
 from werkzeug.routing import BaseConverter, ValidationError

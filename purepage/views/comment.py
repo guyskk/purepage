@@ -1,6 +1,4 @@
-# coding:utf-8
 """Comment"""
-from __future__ import unicode_literals, absolute_import, print_function
 from datetime import datetime
 from flask import abort, g
 from flask_restaction import Resource

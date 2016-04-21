@@ -1,4 +1,3 @@
-# coding:utf-8
 from flask_script import Manager
 from purepage import create_app, db
 from purepage.util import read_repo, read_articles

@@ -1,6 +1,3 @@
-# coding:utf-8
-from __future__ import unicode_literals, absolute_import, print_function
-
 SECRET_KEY = "SECRET_KEY"
 COUCHDB_SERVER = "http://admin:123456@127.0.0.1:5984"
 COUCHDB_DATABASE = "purepage"

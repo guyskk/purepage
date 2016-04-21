@@ -1,5 +1,3 @@
-# coding:utf-8
-from __future__ import unicode_literals, absolute_import, print_function
 from flask import abort
 from flask_restaction import Resource
 from kkblog import db

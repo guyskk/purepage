@@ -1,6 +1,4 @@
-# coding:utf-8
 """flask exts"""
-from __future__ import unicode_literals, absolute_import, print_function
 from werkzeug.local import LocalProxy
 from flask_restaction import Api, Auth
 from flask_github import GitHub

@@ -1,5 +1,3 @@
-# coding: utf-8
-from __future__ import unicode_literals, absolute_import, print_function
 import requests
 import six
 from flask import request, json, abort, current_app

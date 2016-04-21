@@ -1,6 +1,4 @@
-# coding:utf-8
 """Markdown."""
-from __future__ import unicode_literals, absolute_import, print_function
 import misaka
 from pygments import highlight
 from pygments.lexers import get_lexer_by_name
