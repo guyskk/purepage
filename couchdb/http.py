@@ -9,16 +9,17 @@ logger = logging.getLogger(__name__)
 class CouchdbException(Exception):
 
     def __init__(self, resp):
-        self.status_code = resp.status_code
         self.resp = resp
-        if resp.content:
+        self.status_code = resp.status_code
+        self.json = None
+        self.error = None
+        self.reason = None
+        try:
             self.json = resp.json()
             self.error = self.json.get('error')
             self.reason = self.json.get('reason')
-        else:
-            self.json = None
-            self.error = None
-            self.reason = None
+        except Exception as ex:
+            logger.debug("Can't parse error: %s" % ex)
 
     def __repr__(self):
         return "<CouchdbException %s %s>: %s" %\
@@ -93,10 +94,10 @@ exceptions = {
 
 
 def get_exception(resp):
-    ex = exceptions.get(resp.status_code)
-    if ex is None:
-        ex = CouchdbException
-    return ex
+    Ex = exceptions.get(resp.status_code)
+    if Ex is None:
+        Ex = CouchdbException
+    return Ex(resp)
 
 
 class HttpRequestsImpl():
