@@ -59,6 +59,9 @@ class CouchDB():
             except NotFound:
                 self.request('PUT', self.url)
 
+    def __repr__(self):
+        return '<CouchDB %s>' % self.url
+
     def request(self, method, url, **kwargs):
         """Send request with auth"""
         return self.http.request(method, url, auth=self.auth, **kwargs)
@@ -69,6 +72,7 @@ class CouchDB():
 
     def put(self, doc, id=None, rev=None):
         """Create a new document or update an existing document"""
+        doc = doc.copy()
         if id is None:
             if '_id' not in doc:
                 raise ValueError('_id is required in doc')

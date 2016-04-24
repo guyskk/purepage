@@ -19,7 +19,7 @@ class CouchdbException(Exception):
             self.error = self.json.get('error')
             self.reason = self.json.get('reason')
         except Exception as ex:
-            logger.debug("Can't parse error: %s" % ex)
+            logger.debug("Can't parse error message: %s" % ex)
 
     def __repr__(self):
         return "<CouchdbException %s %s>: %s" %\
@@ -94,6 +94,7 @@ exceptions = {
 
 
 def get_exception(resp):
+    """Get Exception class by response status code"""
     Ex = exceptions.get(resp.status_code)
     if Ex is None:
         Ex = CouchdbException
@@ -101,8 +102,23 @@ def get_exception(resp):
 
 
 class HttpRequestsImpl():
+    """A class implement request method using requests lib"""
 
     def request(self, method, url, **kwargs):
+        """
+        Send request and return json result
+
+        :param  method: http method
+        :param     url: taget url
+        :param headers: http headers
+        :type  headers: dict
+        :param    data: request data
+        :param  params: query params
+        :param  stream: return raw response object or not
+        :type   stream: bool
+        :return: json or reponse object if response status code < 400
+        :raises: CouchdbException if status code >= 400
+        """
         kwargs.setdefault("headers", {})
         kwargs["headers"].setdefault('Accept', 'application/json')
         kwargs["headers"].setdefault('Content-Type', 'application/json')
