@@ -103,18 +103,22 @@ class CouchDB():
                 if '_rev' not in doc_or_id:
                     raise ValueError('_rev is required in doc')
                 rev = doc_or_id['_rev']
-        return self.request('DELETE', id, params={'rev': rev})
+        url = self.url + '/' + id
+        return self.request('DELETE', url, params={'rev': rev})
 
-    def bulk_docs(self, docs, new_edits=False):
+    def bulk_docs(self, docs, new_edits=True):
         """Create/update a batch of documents"""
         url = self.url + '/_bulk_docs'
-        params = {'new_edits': new_edits}
-        return self.request('POST', url, data=docs, params=params)
+        data = {'docs': docs, 'new_edits': new_edits}
+        return self.request('POST', url, data=data)
 
     def all_docs(self, **options):
         """Fetch a batch of documents"""
         url = self.url + '/_all_docs'
-        return self.request('POST', url, params=options)
+        if 'keys' in options:
+            data = {'keys': options.pop('keys')}
+            return self.request('POST', url, data=data, params=options)
+        return self.request('GET', url, params=options)
 
     def changes(self, **options):
         """TODO"""
@@ -152,10 +156,14 @@ class CouchDB():
     def query(self, view, **options):
         """
         Query the database
-        view: (design, view)
+        view: (design, view) or {'map': 'function', 'reduce': 'function'}
         """
-        url = '%s/_design/%s/_view/%s' % (self.url, *view)
-        return self.request('GET', url, params=options)
+        if isinstance(view, tuple):
+            url = '%s/_design/%s/_view/%s' % (self.url, *view)
+            return self.request('GET', url, params=options)
+        else:
+            url = self.url + '/_temp_view'
+            return self.request('POST', url, data=view, params=options)
 
     def view_cleanup(self):
         """Cleans up any stale map/reduce indexes"""
