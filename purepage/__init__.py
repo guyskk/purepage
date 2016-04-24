@@ -1,4 +1,4 @@
-"""Kkblog
+"""PurePage
 
 注册用户并设置博客仓库:
 1. 验证邮箱
@@ -10,7 +10,7 @@ res.user.post_signup({userid:'guyskk',password:'123456'})
 4. 登录
 res.user.post_login({userid:'guyskk',password:'123456'})
 5. 设置代码仓库
-res.user.put({repo: 'https://github.com/guyskk/kkblog-article.git'})
+res.user.put({repo: 'https://github.com/guyskk/purepage-article.git'})
 6. 同步博客仓库:
 res.user.post_sync_repo({})
 """
@@ -18,12 +18,12 @@ import os
 from flask import Flask, Blueprint
 from werkzeug.routing import BaseConverter, ValidationError
 from flask_restaction import Gen, Permission
-from kkblog.exts import couch, db, github, mail, limiter, api, auth
-from kkblog.webhooks import Webhooks
-from kkblog.views.user import User
-from kkblog.views.article import Article
-from kkblog.views.comment import Comment
-from kkblog.views.captcha import Captcha
+from purepage.exts import couch, db, github, mail, limiter, api, auth
+from purepage.webhooks import Webhooks
+from purepage.views.user import User
+from purepage.views.article import Article
+from purepage.views.comment import Comment
+from purepage.views.captcha import Captcha
 
 
 def fn_user_role(token):
@@ -49,7 +49,7 @@ class NoConverter(BaseConverter):
 
 def create_app(config=None):
     app = Flask(__name__)
-    app.config.from_object("kkblog.config_default")
+    app.config.from_object("purepage.config_default")
     if config:
         app.config.from_object(config)
     app.url_map.converters['no'] = NoConverter

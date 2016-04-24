@@ -1,7 +1,6 @@
 from flask_script import Manager
 from purepage import create_app, db
 from purepage.util import read_repo, read_articles
-from couchdb_client.util import load_designs, dump_designs
 
 
 app = create_app()

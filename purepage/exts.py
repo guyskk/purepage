@@ -5,7 +5,7 @@ from flask_github import GitHub
 from flask_mail import Mail
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from kkblog.flask_couchdb import CouchDB
+from purepage.flask_couchdb import CouchDB
 
 couch = CouchDB()
 db = LocalProxy(lambda: couch.db)

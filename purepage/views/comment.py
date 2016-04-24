@@ -2,7 +2,7 @@
 from datetime import datetime
 from flask import abort, g
 from flask_restaction import Resource
-from kkblog import db
+from purepage import db
 
 
 def now():

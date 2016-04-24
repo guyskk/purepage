@@ -1,13 +1,12 @@
 """User API"""
 import jwt
-import pycouchdb
 from datetime import datetime, timedelta
 from flask import abort, g, current_app, render_template
 from flask_restaction import Resource
 from werkzeug.security import generate_password_hash, check_password_hash
 from validater import validate
-from kkblog import auth, api, db
-from kkblog import util
+from purepage import auth, api, db
+from purepage import util
 
 
 class InvalidTokenError(Exception):

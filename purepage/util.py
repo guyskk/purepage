@@ -1,7 +1,7 @@
 from flask import abort
 from flask_mail import Message
-from kkblog import markdown
-from kkblog.exts import mail
+from purepage import markdown
+from purepage.exts import mail
 import git
 from git.repo.fun import is_git_dir
 import giturlparse

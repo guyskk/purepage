@@ -26,6 +26,8 @@ cd purepage
 docker-compose up
 ```
 
+Note: 目前无法成功运行，正在查找原因
+
 稍等片刻，PurePage 启动成功之后， 
 访问 http://127.0.0.1:5000/static/resdocs.html 查看 API 文档
 

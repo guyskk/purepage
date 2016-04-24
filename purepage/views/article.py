@@ -1,7 +1,7 @@
 from flask import abort
 from flask_restaction import Resource
-from kkblog import db
-from couchdb_client import CouchdbException
+from purepage import db
+from couchdb.http import CouchdbException
 
 
 class Article(Resource):

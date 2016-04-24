@@ -1,9 +1,9 @@
 data/
 !tests/data
-kkblog/static/node_modules
-kkblog/static/resdocs.html
-kkblog/static/res.js
-kkblog/static/permission.html
+purepage/static/node_modules
+purepage/static/resdocs.html
+purepage/static/res.js
+purepage/static/permission.html
 
 .venv
 .vagrant
@@ -30,8 +30,8 @@ downloads/
 eggs/
 .eggs/
 lib/
-# kkblog/static/lib/
-!kkblog/static/lib/
+# purepage/static/lib/
+!purepage/static/lib/
 lib64/
 parts/
 dist/
