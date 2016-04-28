@@ -13,11 +13,10 @@ PurePage 致力于达到以下目标:
 3. 运行稳定，安全，快速
 4. 开放API
 
-###安装
+### 安装
 
 PurePage 使用 docker 进行部署，linux 平台下需要安装 docker 和 docker-compose，
-windows 和 mac 需要安装 virtualbox，docker-machine，并通过 docker-machine 控制虚拟机中的 linux 主机。
-安装教程请参考 https://docs.docker.com/
+windows 和 mac 需要安装 docker-toolbox。安装教程请参考 https://docs.docker.com/ 。
 
 安装完docker之后，执行以下命令:
 ```
@@ -25,8 +24,6 @@ git clone https://github.com/guyskk/purepage.git
 cd purepage
 docker-compose up
 ```
-
-Note: 目前无法成功运行，正在查找原因
 
 稍等片刻，PurePage 启动成功之后， 
 访问 http://127.0.0.1:5000/static/resdocs.html 查看 API 文档
