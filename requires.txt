@@ -14,5 +14,5 @@ ipaddress>=1.0.16
 python-dateutil>=2.4.2
 giturlparse.py>=0.0.5
 pyyaml>=3.11
-gitpython>=1.0.2
+gitpython>=2.0.2
 gunicorn>=19.4.5

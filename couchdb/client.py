@@ -2,6 +2,7 @@ from urllib.parse import urlsplit, unquote, urlunsplit
 from requests.auth import HTTPBasicAuth
 from urllib.parse import urljoin
 from .http import HttpRequestsImpl, NotFound
+from .util import UtilMixin
 
 
 def extract_credentials(url):
@@ -28,7 +29,7 @@ def extract_credentials(url):
     return urlunsplit(parts), credentials
 
 
-class CouchDB():
+class CouchDB(UtilMixin):
 
     def __init__(self, name, http=None, auth=None, skip_setup=False):
         """
@@ -61,6 +62,13 @@ class CouchDB():
 
     def __repr__(self):
         return '<CouchDB %s>' % self.url
+
+    def __contains__(self, item):
+        try:
+            self.get(item)
+            return True
+        except NotFound:
+            return False
 
     def request(self, method, url, **kwargs):
         """Send request with auth"""
@@ -162,8 +170,7 @@ class CouchDB():
             url = '%s/_design/%s/_view/%s' % (self.url, *view)
             return self.request('GET', url, params=options)
         else:
-            url = self.url + '/_temp_view'
-            return self.request('POST', url, data=view, params=options)
+            raise ValueError('Temporary views are not supported in CouchDB2.0')
 
     def view_cleanup(self):
         """Cleans up any stale map/reduce indexes"""

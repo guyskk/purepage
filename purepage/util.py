@@ -68,9 +68,7 @@ def read_repo(url, data_path):
         repo = git.Repo.init(repo_path)
         assert not repo.bare
         try:
-            repo.git.fetch()
-            repo.git.merge()
-            # repo.git.pull(["--git-dir=%s" % repo_path])
+            repo.git.pull(["--git-dir=%s" % repo_path])
         except git.exc.GitCommandError as ex:
             logger.warning(str(ex))
             if not ex.status == 128:

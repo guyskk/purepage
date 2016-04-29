@@ -49,7 +49,7 @@ class Article(Resource):
     def get(self, userid, catalog, article):
         """获取一篇文章"""
         key = ".".join([userid, catalog, article])
-        result = db.get(params=dict(docid=key))
+        result = db.get(key)
         return result
 
     def get_list(self, pagenum, pagesize, userid, catalog, tag):
@@ -81,13 +81,12 @@ class Article(Resource):
             "skip": (pagenum - 1) * pagesize,
             "limit": pagesize,
             "descending": True,
-            "ddoc": "article",
-            "view": view
         }
+        view = ("article", view)
         if startkey:
             params["startkey"] = startkey
             params["endkey"] = endkey
-        result = db.get_view(params=params)
+        result = db.query(view, **params)
         return {
             "total": result['total_rows'],
             "offset": result['offset'],

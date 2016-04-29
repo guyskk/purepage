@@ -101,7 +101,7 @@ def get_exception(resp):
     return Ex(resp)
 
 
-class HttpRequestsImpl():
+class HttpRequestsImpl:
     """A class implement request method using requests lib"""
 
     def request(self, method, url, **kwargs):

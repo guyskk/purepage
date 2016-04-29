@@ -4,7 +4,7 @@
 1. 验证邮箱
 res.user.post_verify({userid:'guyskk',email:'guyskk@qq.com'})
 2. 在(命令行)控制台里面会显示发送的邮件内容，取出其中的token
-res.user.post_signup(token:'token',password:'123456')
+res.user.post_signup({token:token,password:'123456'})
 3. 注册
 res.user.post_signup({userid:'guyskk',password:'123456'})
 4. 登录
@@ -18,7 +18,8 @@ import os
 from flask import Flask, Blueprint
 from werkzeug.routing import BaseConverter, ValidationError
 from flask_restaction import Gen, Permission
-from purepage.exts import couch, db, github, mail, limiter, api, auth
+from couchdb.http import NotFound
+from purepage.exts import db, github, mail, limiter, api, auth
 from purepage.webhooks import Webhooks
 from purepage.views.user import User
 from purepage.views.article import Article
@@ -28,9 +29,11 @@ from purepage.views.captcha import Captcha
 
 def fn_user_role(token):
     if token and "userid" in token:
-        user = db.get(token["userid"], None)
-        if user is not None:
+        try:
+            user = db.get(token["userid"])
             return user["role"]
+        except NotFound:
+            return None
     return None
 
 
@@ -55,7 +58,7 @@ def create_app(config=None):
     app.url_map.converters['no'] = NoConverter
     app.route("/webhooks")(Webhooks())
     route_views(app)
-    couch.init_app(app)
+    db.init_app(app)
     github.init_app(app)
     mail.init_app(app)
     limiter.init_app(app)

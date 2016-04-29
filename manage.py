@@ -21,12 +21,12 @@ def readarticles(path):
 
 @manage.command
 def initdb():
-    load_designs(db, "design")
+    db.load_designs("design")
 
 
 @manage.command
 def savedb():
-    dump_designs(db, "design")
+    db.dump_designs("design")
 
 if __name__ == '__main__':
     import logging

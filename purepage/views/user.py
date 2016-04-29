@@ -5,6 +5,7 @@ from flask import abort, g, current_app, render_template
 from flask_restaction import Resource
 from werkzeug.security import generate_password_hash, check_password_hash
 from validater import validate
+from couchdb.http import Conflict, NotFound
 from purepage import auth, api, db
 from purepage import util
 
@@ -168,7 +169,7 @@ class User(Resource):
         }
         if userid in db:
             abort(400, "UserID Already SignUp")
-        if util.couchdb_count("user/email", key=email) >= 1:
+        if db.count(('user', 'email'), key='"%s"' % email) >= 1:
             abort(400, "Email Already SignUp")
         token = encode_token(token)
         server = current_app.config["SERVER_URL"]
@@ -194,11 +195,11 @@ class User(Resource):
             "date_create": util.now()
         }
         try:
-            user = db.save(user)
-        except couchdb.ResourceConflict:
+            user = db.put(user)
+        except Conflict:
             abort(400, "UserID Conflict")
         # check after save
-        if util.couchdb_count("user/email", key=token["email"]) > 1:
+        if db.count(('user', 'email'), key='"%s"' % token["email"]) > 1:
             db.delete(user)
             abort(400, "Email Already SignUp")
         return "OK", 201
@@ -249,7 +250,7 @@ class User(Resource):
         if user is None:
             abort(400, "User Not Exists")
         user["pwdhash"] = gen_pwdhash(password)
-        db.save(user)
+        db.put(user)
         return "OK"
 
     def put_security(self, password, new_password, new_email):
@@ -259,14 +260,14 @@ class User(Resource):
         self.user["email"] = new_email
         if new_password:
             self.user["pwdhash"] = gen_pwdhash(password)
-        db.save(self.user)
+        db.put(self.user)
         return self.user
 
     def put(self, repo, photo):
         """修改个人信息"""
         self.user["repo"] = repo
         self.user["photo"] = photo
-        db.save(self.user)
+        db.put(self.user)
         return self.user
 
     def post_sync_repo(self):
@@ -296,7 +297,7 @@ class User(Resource):
             key = ".".join([self.userid, meta["catalog"], meta["article"]])
             try:
                 origin = db.get(key)
-            except pycouchdb.exceptions.NotFound:
+            except NotFound:
                 origin = {}
             changes = dict(meta)
             changes["userid"] = self.userid
@@ -308,7 +309,7 @@ class User(Resource):
             else:
                 changes["type"] = "article"
                 origin.update(changes)
-                db.save(origin)
+                db.put(origin)
                 count += 1
         return {
             "succeed": count,
