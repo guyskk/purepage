@@ -5,11 +5,12 @@
         "normal": ["get_me", "put", "post_sync_repo", "put_security"]
     },
     "article": {
-        "other": ["get", "get_list"]
+        "other": ["get", "get_list"],
+        "normal": ["post"]
     },
     "comment": {
         "other": ["get"],
-        "normal": ["post", "get_my"]
+        "normal": ["post"]
     },
     "permission": {},
     "captcha": {

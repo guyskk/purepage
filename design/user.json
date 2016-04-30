@@ -1,10 +1,1 @@
-{
-    "_id": "_design/user",
-    "views": {
-        "email": {
-            "map": "function(doc) {\n  if(doc.type==\"user\"){\n     emit(doc.email, null);\n  }\n}",
-            "reduce": "_count"
-        }
-    },
-    "language": "javascript"
-}
+{"_id": "_design/user", "_rev": "1-a1a020276d9fa1f9caba66b69e2ef709", "language": "javascript", "views": {"email": {"reduce": "_count", "map": "function(doc) {\n  if(doc.type==\"user\"){\n     emit(doc.email, null);\n  }\n}"}}}

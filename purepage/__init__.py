@@ -15,7 +15,7 @@ res.user.put({repo: 'https://github.com/guyskk/purepage-article.git'})
 res.user.post_sync_repo({})
 """
 import os
-from flask import Flask, Blueprint
+from flask import Flask, Blueprint, g
 from werkzeug.routing import BaseConverter, ValidationError
 from flask_restaction import Gen, Permission
 from couchdb.http import NotFound
@@ -31,9 +31,13 @@ def fn_user_role(token):
     if token and "userid" in token:
         try:
             user = db.get(token["userid"])
+            g.user = user
+            g.userid = token["userid"]
             return user["role"]
         except NotFound:
-            return None
+            pass
+    g.user = None
+    g.userid = None
     return None
 
 

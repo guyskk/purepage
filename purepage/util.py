@@ -14,7 +14,13 @@ logger = logging.getLogger(__name__)
 
 def now():
     """Current datetime in ISO_8601 format string"""
-    return datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+    dt = datetime.datetime.utcnow()
+    return format_date(dt)
+
+
+def format_date(dt):
+    """Format date/datetime in ISO_8601 format string"""
+    return dt.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
 
 
 def send_mail(to, subject, html):
@@ -68,7 +74,7 @@ def read_repo(url, data_path):
         repo = git.Repo.init(repo_path)
         assert not repo.bare
         try:
-            repo.git.pull(["--git-dir=%s" % repo_path])
+            repo.git(git_dir=repo_path).pull()
         except git.exc.GitCommandError as ex:
             logger.warning(str(ex))
             if not ex.status == 128:
