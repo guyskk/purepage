@@ -15,9 +15,9 @@ res.user.put({repo: 'https://github.com/guyskk/purepage-article.git'})
 res.user.post_sync_repo({})
 """
 import os
-from flask import Flask, Blueprint, g
+from flask import Flask, Blueprint, abort, g
 from werkzeug.routing import BaseConverter, ValidationError
-from flask_restaction import Gen, Permission
+from flask_restaction import Resource, Gen, Permission
 from couchdb.http import NotFound
 from purepage.exts import db, github, mail, limiter, api, auth
 from purepage.webhooks import Webhooks
@@ -25,6 +25,26 @@ from purepage.views.user import User
 from purepage.views.article import Article
 from purepage.views.comment import Comment
 from purepage.views.captcha import Captcha
+
+
+class Info(Resource):
+
+    def get(self):
+        return "welcome to purepage!"
+
+    def get_404(self):
+        abort(404, 'test')
+
+    def get_403(self):
+        abort(403, 'test')
+
+    def get_400(self):
+        abort(400, 'test')
+
+    def get_500(self):
+        raise ValueError('test')
+
+resources = [Info, User, Article, Comment, Captcha]
 
 
 def fn_user_role(token):
@@ -69,10 +89,8 @@ def create_app(config=None):
 
     bp_api = Blueprint('api', __name__, static_folder='static')
     api.init_app(app, blueprint=bp_api, docs=__doc__)
-    api.add_resource(Article)
-    api.add_resource(Comment)
-    api.add_resource(User)
-    api.add_resource(Captcha)
+    for x in resources:
+        api.add_resource(x)
     api.add_resource(Permission, auth=auth)
     auth.init_api(api, fn_user_role=fn_user_role)
     app.register_blueprint(bp_api, url_prefix='/api')

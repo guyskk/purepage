@@ -1,4 +1,4 @@
-from kkblog import markdown
+from purepage import markdown
 from datetime import datetime
 
 

@@ -1,1 +1,1 @@
-{"_id": "_design/comment", "_rev": "10-19f56cba902f64d090e62f84a68d44e5", "language": "javascript", "views": {"by_article": {"reduce": "_count", "map": "function(doc) {\n  if(doc.type==\"comment\"){\n    emit([doc.article,doc.date,doc.userid], {_id:doc.userid,comment:doc});\n  }\n}"}}}
+{"views": {"by_article": {"reduce": "_count", "map": "function(doc) {\n  if(doc.type==\"comment\"){\n    emit([doc.article,doc.date,doc.userid], {_id:doc.userid,comment:doc});\n  }\n}"}}, "_id": "_design/comment", "language": "javascript"}

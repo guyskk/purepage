@@ -1,4 +1,7 @@
 {
+    "info": {
+        "other": ["get", "get_400", "get_403", "get_404", "get_500"]
+    },
     "user": {
         "other": ["get","post_verify", "post_forgot", "post_reset",
                   "post_signup", "post_login"],

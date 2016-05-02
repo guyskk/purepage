@@ -16,6 +16,7 @@ class UtilMixin:
         for row in data["rows"]:
             name = os.path.basename(row["id"])
             design = row["doc"]
+            del design['_rev']
             with open(os.path.join(path, "%s.json" % name), "w") as f:
                 json.dump(design, f)
 
