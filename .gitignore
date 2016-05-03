@@ -4,6 +4,7 @@ purepage/static/node_modules
 purepage/static/resdocs.html
 purepage/static/res.js
 purepage/static/permission.html
+purepage/config_product.py
 
 .venv
 .vagrant
