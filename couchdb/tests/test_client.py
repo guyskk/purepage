@@ -1,6 +1,11 @@
 from couchdb import CouchDB
 from couchdb.http import CouchdbException, NotFound
 import pytest
+import time
+
+
+def delay(ms=100):
+    time.sleep(ms / 1000.0)
 
 
 def test_init_skip_setup(dburl):
@@ -132,11 +137,13 @@ def test_all_docs(db):
     doc = {'_id': 'guyskk'}
     result = db.post(doc)
     assert result['ok']
+
+    delay()
     result = db.all_docs(keys=['guyskk'])
     assert result['total_rows'] == 1
     assert result['rows'][0]['id'] == 'guyskk'
 
-    result = db.all_docs(startkey='"guyskk"')
+    result = db.all_docs(startkey='guyskk')
     assert result['total_rows'] == 1
     assert result['rows'][0]['id'] == 'guyskk'
 
@@ -167,6 +174,7 @@ def test_query_design(db):
     result = db.post(doc)
     assert result['ok']
 
+    delay()  # build index may take some time
     result = db.query(('user', 'by_id'))
     assert result['total_rows'] == 1
     assert result['rows'][0]['key'] == 'guyskk'

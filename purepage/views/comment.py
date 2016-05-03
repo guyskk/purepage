@@ -1,5 +1,5 @@
 """Comment"""
-from flask import json, abort, g
+from flask import abort, g
 from flask_restaction import Resource
 from couchdb.http import NotFound
 from purepage import db, util
@@ -51,8 +51,8 @@ class Comment(Resource):
             "skip": (pagenum - 1) * pagesize,
             "limit": pagesize,
             "descending": True,
-            "startkey": json.dumps([article, {}], ensure_ascii=False),
-            "endkey": json.dumps([article], ensure_ascii=False)
+            "startkey": [article, {}],
+            "endkey": [article]
         }
         result = db.query(("comment", "by_article"), **params)
         return {

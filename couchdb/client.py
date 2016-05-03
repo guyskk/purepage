@@ -1,3 +1,4 @@
+import json
 from urllib.parse import urlsplit, unquote, urlunsplit
 from requests.auth import HTTPBasicAuth
 from urllib.parse import urljoin
@@ -72,6 +73,13 @@ class CouchDB(UtilMixin):
 
     def request(self, method, url, **kwargs):
         """Send request with auth"""
+        # encode keys by json
+        keys = ['key', 'keys', 'start_key', 'end_key', 'startkey', 'endkey']
+        if 'params' in kwargs:
+            params = kwargs['params']
+            for k in params:
+                if k in keys:
+                    params[k] = json.dumps(params[k], ensure_ascii=False)
         return self.http.request(method, url, auth=self.auth, **kwargs)
 
     def destroy(self):

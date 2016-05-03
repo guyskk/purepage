@@ -1,4 +1,4 @@
-from flask import json, g, abort
+from flask import g, abort
 from flask_restaction import Resource
 from purepage import db
 from couchdb.http import NotFound, CouchdbException
@@ -98,8 +98,8 @@ class Article(Resource):
         }
         view = ("article", view)
         if startkey:
-            params["startkey"] = json.dumps(startkey, ensure_ascii=False)
-            params["endkey"] = json.dumps(endkey, ensure_ascii=False)
+            params["startkey"] = startkey
+            params["endkey"] = endkey
         result = db.query(view, **params)
         return {
             "total": result['total_rows'],

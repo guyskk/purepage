@@ -142,7 +142,7 @@ class User(Resource):
         }
         if userid in db:
             abort(400, "UserID Already SignUp")
-        if db.count(('user', 'email'), key='"%s"' % email) >= 1:
+        if db.count(('user', 'email'), key=email) >= 1:
             abort(400, "Email Already SignUp")
         token = encode_token(token)
         server = current_app.config["SERVER_URL"]
@@ -172,7 +172,7 @@ class User(Resource):
         except Conflict:
             abort(400, "UserID Conflict")
         # check after save
-        if db.count(('user', 'email'), key='"%s"' % token["email"]) > 1:
+        if db.count(('user', 'email'), key=token["email"]) > 1:
             db.delete(user)
             abort(400, "Email Already SignUp")
         return "OK", 201

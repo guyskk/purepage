@@ -46,6 +46,6 @@ class UtilMixin:
         result = self.query(view, key=key, group=True)['rows']
         if result:
             assert len(result) == 1
-            return result[0][key].value
+            return result[0]['value']
         else:
             return 0
