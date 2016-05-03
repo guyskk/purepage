@@ -21,7 +21,7 @@ user = {
     "repo": "https://github.com/guyskk/purepage-article.git"
 }
 
-article = {
+article1 = {
     "type": "article",
     "_id": "guyskk.2016.hello",
     "userid": "guyskk",
@@ -34,6 +34,18 @@ article = {
     "content": "2016",
 }
 
+article2 = {
+    "type": "article",
+    "_id": "xxx.2015.hello",
+    "userid": "xxx",
+    "catalog": "2015",
+    "article": "hello",
+    "date": now,
+    "title": "hello world",
+    "tags": ["javascript", "purepage"],
+    "summary": "first article in 2015",
+    "content": "2015",
+}
 comment = {
     "type": "comment",
     "_id": "guyskk.2016.hello.%s.guyskk" % now,
@@ -48,7 +60,7 @@ comment = {
 def app():
     app = create_app("purepage.config_test")
     db.load_designs("design")
-    data = [user, article, comment]
+    data = [user, article1, article2, comment]
     db.bulk_docs(data)
     yield app
     db.destroy()
