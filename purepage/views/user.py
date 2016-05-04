@@ -75,8 +75,11 @@ class User(Resource):
         "_id": ("unicode&required", "用户ID"),
         "role": ("unicode&required", "角色"),
         "photo": ("unicode&default='/static/image/photo-default.png'", "头像"),
-        "repo": ("url", "博客仓库地址")
+        "repo": ("url", "博客仓库地址"),
+        "email": ("email", "邮箱")
     }
+    schema_user_no_email = schema_user.copy()
+    del schema_user_no_email['email']
     schema_inputs = {
         "get": {
             "userid": "unicode&required"
@@ -103,7 +106,7 @@ class User(Resource):
             "password": "password&required",
         },
         "put_security": {
-            "password": "password",
+            "password": "password&required",
             "new_password": "password",
             "new_email": "email"
         },
@@ -114,6 +117,7 @@ class User(Resource):
         "post_sync_repo": None
     }
     schema_outputs = {
+        "get": schema_user_no_email,
         "get_me": schema_user,
         "post_signup": "unicode&required",
         "post_login": schema_user,
@@ -149,7 +153,7 @@ class User(Resource):
         link = "{server}/signup?userid={userid}&token={token}"\
             .format(server=server, token=token, userid=userid)
         html = render_template("mail-signup.html", link=link)
-        util.send_mail(email, "Kkblog注册", html)
+        util.send_mail(email, "PurePage注册", html)
         return "注册链接已发送至您的邮箱"
 
     def post_signup(self, token, password):
@@ -199,13 +203,13 @@ class User(Resource):
             "include_docs": True,
             "key": email
         }
-        result = db.query("user/by_email", **params)
-        if result.total_rows == 0:
+        result = db.query(("user", "email"), **params)
+        if len(result['rows']) == 0:
             abort(400, "User Not Exists")
         else:
-            if result.total_rows != 1:
-                abort(500, "Duplicate Email")
-            user = result[email].doc
+            if len(result['rows']) != 1:
+                current_app.logger.warn("Duplicate Email: %s" % email)
+            user = result['rows'][0]['doc']
         token = {
             "type": "reset",
             "userid": user["_id"],
@@ -216,7 +220,7 @@ class User(Resource):
         link = "{server}/reset?userid={userid}&token={token}"\
             .format(server=server, token=token, userid=user["_id"])
         html = render_template("mail-reset.html", link=link)
-        util.send_mail(email, "Kkblog重置密码", html)
+        util.send_mail(email, "PurePage重置密码", html)
         return "重置密码链接已发送至您的邮箱"
 
     def post_reset(self, token, password):
@@ -224,7 +228,7 @@ class User(Resource):
         try:
             token = decode_token(token)
         except InvalidTokenError as ex:
-            abort(403, str(ex))
+            abort(400, str(ex))
         if token["type"] != "reset":
             abort(400, "Token Type Incorrect")
         user = db.get(token["userid"])
@@ -236,11 +240,12 @@ class User(Resource):
 
     def put_security(self, password, new_password, new_email):
         """修改账号信息"""
-        if not check_password_hash(self.user["pwdhash"], password):
+        if not check_password_hash(g.user["pwdhash"], password):
             abort(403, "Password Incorrect")
-        g.user["email"] = new_email
+        if new_email:
+            g.user["email"] = new_email
         if new_password:
-            g.user["pwdhash"] = gen_pwdhash(password)
+            g.user["pwdhash"] = gen_pwdhash(new_password)
         db.put(g.user)
         return g.user
 

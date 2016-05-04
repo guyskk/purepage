@@ -4,6 +4,7 @@ from purepage.views import user
 from flask_restaction import Res
 import pytest
 import logging
+import time
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -62,6 +63,7 @@ def app():
     db.load_designs("design")
     data = [user, article1, article2, comment]
     db.bulk_docs(data)
+    time.sleep(0.02)  # delay 20ms
     yield app
     db.destroy()
 
