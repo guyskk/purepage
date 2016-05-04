@@ -56,7 +56,7 @@ comment = {
 }
 
 
-@pytest.yield_fixture(scope="session")
+@pytest.yield_fixture(scope="function")
 def app():
     app = create_app("purepage.config_test")
     db.load_designs("design")
@@ -66,7 +66,7 @@ def app():
     db.destroy()
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def guest(app):
     return Res(api)
 

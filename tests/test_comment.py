@@ -16,7 +16,7 @@ def test_post(res, guest):
     assert resp.json['user']['_id'] == 'guyskk'
     assert resp.json['user']['photo'] == 'http://www.purepage.org/logo.png'
 
-    time.sleep(0.1)  # delay 100ms
+    time.sleep(0.02)  # delay 20ms
     resp = res.comment.get(dict(article='guyskk.2016.hello'))
     assert resp.status_code == 200
     assert len(resp.json['rows']) == 2

@@ -5,7 +5,7 @@ from flask import request, abort, g, current_app, render_template
 from json import JSONDecodeError
 from flask_restaction import Resource, Res
 from werkzeug.security import generate_password_hash, check_password_hash
-from couchdb.http import Conflict
+from couchdb.http import Conflict, NotFound
 from purepage import auth, api, db, util
 
 
@@ -30,9 +30,9 @@ def decode_token(token):
         tk = jwt.decode(token, auth_secret,
                         algorithms=[auth_alg], options=options)
     except AttributeError as ex:
-        raise InvalidTokenError("Invalid token" % str(ex))
+        raise InvalidTokenError("Invalid token: %s" % str(ex))
     except jwt.InvalidTokenError as ex:
-        raise InvalidTokenError(str(ex))
+        raise InvalidTokenError("Invalid token: %s" % str(ex))
     return tk
 
 
@@ -154,7 +154,10 @@ class User(Resource):
 
     def post_signup(self, token, password):
         """注册"""
-        token = decode_token(token)
+        try:
+            token = decode_token(token)
+        except InvalidTokenError as ex:
+            abort(400, str(ex))
         if token["type"] != "signup":
             abort(400, "Token Type Incorrect")
         if token["userid"] in db:
@@ -175,12 +178,14 @@ class User(Resource):
         if db.count(('user', 'email'), key=token["email"]) > 1:
             db.delete(user)
             abort(400, "Email Already SignUp")
-        return "OK", 201
+        headers = auth.gen_header({"userid": token['userid']})
+        return "OK", 201, headers
 
     def post_login(self, userid, password, expiration):
         """登录"""
-        user = db.get(userid)
-        if user is None:
+        try:
+            user = db.get(userid)
+        except NotFound:
             abort(403, "User Not Exists")
         if not check_password_hash(user["pwdhash"], password):
             abort(403, "Password Incorrect")
@@ -216,7 +221,10 @@ class User(Resource):
 
     def post_reset(self, token, password):
         """重置密码"""
-        token = decode_token(token)
+        try:
+            token = decode_token(token)
+        except InvalidTokenError as ex:
+            abort(403, str(ex))
         if token["type"] != "reset":
             abort(400, "Token Type Incorrect")
         user = db.get(token["userid"])

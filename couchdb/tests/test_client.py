@@ -4,10 +4,6 @@ import pytest
 import time
 
 
-def delay(ms=100):
-    time.sleep(ms / 1000.0)
-
-
 def test_init_skip_setup(dburl):
     db = CouchDB(dburl, skip_setup=True)
     with pytest.raises(CouchdbException) as excinfo:
@@ -138,7 +134,7 @@ def test_all_docs(db):
     result = db.post(doc)
     assert result['ok']
 
-    delay()
+    time.sleep(0.02)
     result = db.all_docs(keys=['guyskk'])
     assert result['total_rows'] == 1
     assert result['rows'][0]['id'] == 'guyskk'
@@ -174,7 +170,7 @@ def test_query_design(db):
     result = db.post(doc)
     assert result['ok']
 
-    delay()  # build index may take some time
+    time.sleep(0.05)  # build index may take some time
     result = db.query(('user', 'by_id'))
     assert result['total_rows'] == 1
     assert result['rows'][0]['key'] == 'guyskk'
