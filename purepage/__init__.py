@@ -4,9 +4,8 @@
 1. 验证邮箱
 res.user.post_verify({userid:'guyskk',email:'guyskk@qq.com'})
 2. 在(命令行)控制台里面会显示发送的邮件内容，取出其中的token
-res.user.post_signup({token:token,password:'123456'})
 3. 注册
-res.user.post_signup({userid:'guyskk',password:'123456'})
+res.user.post_signup({token:token,password:'123456'})
 4. 登录
 res.user.post_login({userid:'guyskk',password:'123456'})
 5. 设置代码仓库

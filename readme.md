@@ -26,7 +26,8 @@ docker-compose up
 ```
 
 稍等片刻，PurePage 启动成功之后，
-另外一个控制台运行： `docker exec purepage_app_1 python manage.py initdb`
+另外一个控制台运行 `docker exec purepage_app_1 python manage.py initdb`
+
 访问 http://127.0.0.1:5000/static/resdocs.html 查看 API 文档
 
 打开浏览器控制台，注册用户并设置博客仓库地址:

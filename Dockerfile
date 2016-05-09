@@ -5,6 +5,7 @@ FROM python:3-alpine
 # 2. libffi for misaka
 RUN apk add --update\
     bash\
+    git\
     musl-dev\
     jpeg-dev zlib-dev\
     python3-dev\

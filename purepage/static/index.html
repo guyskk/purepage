@@ -1,81 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8"/>
+	<meta charset="utf-8"/>
   <meta content="width = device-width, initial-scale = 1.0, minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name = "viewport" id = "viewport"/>
-  <title>kkblog</title>
+	<title>kkblog</title>
   <link rel="stylesheet" type="text/css" href="/static/css/github-markdown.css"/>
   <link rel="stylesheet" type="text/css" href="/static/css/pygments.css"/>
   <link rel="stylesheet" type="text/css" href="/static/css/style.css"/>
   <script type="text/javascript" src="/static/res.js"></script>
   <script type="text/javascript" src="/static/js/vue.js"></script>
   <script type="text/javascript" src="/static/js/function.js"></script>
-  <!-- <script type="text/javascript" src="/static/js/main.js"></script> -->
-  <!-- <script type="text/javascript" src="/static/js/sidebar.js"></script> -->
+  <script type="text/javascript" src="/static/js/main.js"></script>
+  <script type="text/javascript" src="/static/js/sidebar.js"></script>
 </head>
 <body>
-<div>
-  <h1>Login</h1>
-  <p>
-    <label>email</label>
-    <input type="text" id="userName" />
-  </p>
-  <p>
-    <label>password</label>
-    <input type="password" id="userPass" />
-  </p>
-  <p>
-    <input type="checkbox" id="check" />
-    <label>Remeber</label>
-  </p>
-  <p>
-    <input type="button" value="login" id="login" />
-  </p>
-</div>
-<script type="text/javascript">
-    var storage = window.localStorage;
-    var getName = storage['userName'];
-    var getPass = storage['userPass'];
-    var storePass = storage['storePass'];
-    if(storePass === 'yes'){
-      if((getName != '' || getName != null) && (getPass != '' || getPass != null)) {
-        getDom('userName').value = getName;
-        getDom('userPass').value = getPass;
-        getDom('check').checked = true;
-        login();
-      }
-    }
-    getDom('login').onclick = function() {
-      login();
-    }
-  function login() {
-    var userName = getDom('userName').value;
-    var userPass = getDom('userPass').value;
-    var storage = window.storage;
-    if(storage.length != 0) {
-      if(getDom('check').checked) {
-        storage['userName'] = userName;
-        storage['userPass'] = userPass;
-        storage['storePass'] = 'yes';
-      }
-      else{
-        storage['userName'] = userName;
-        storage['storePass'] = 'no';
-      }
-      res.user.post_login({
-        password: userPass,
-        userid: userName
-      }).then(function(data) {
-        console.log(data);
-      }).catch(function(error) {
-        console.log(error);
-      })
-    }
-  }
-</script>
-<!-- <div id="container"> -->
+<div id="container">
   <!-- 侧边栏 -->
-  <!-- div id="sideBar" class="hide">
+  <div id="sideBar" class="hide">
     <div class="sideBarTitle">
       <div class="me">
         <a href="" class="myPic"></a>
@@ -94,9 +35,9 @@
       <p>Guyskk's Blog © 2016</p>
       <p>Power by kk &amp; dw</p>
     </div>
-  </div> -->
+  </div>
   <!-- 内容 -->
-  <!-- <div id="blogCon">
+  <div id="blogCon">
     <div id="blogTitle">
       <div id="blogTitleBtns">
         <div id="change">
@@ -117,63 +58,63 @@
       </div>
       <div id="scripts">
         <h1>Guyskk's Blog</h1>
-        <p>JavaScript很容易学习</p>
+        <h5>JavaScript很容易学习</h5>
       </div>
     </div>
     <div id="blogArt">
       <div class="markdown-body" v-for="i in num">
-        <h1>{{ $data.artTit[i] }}</h1>
-        <p>{{ $data.artSum[i] }}</p> -->
+        <h3><a class="post-title-link" href="/{{userId[i]}}/{{catalog[i]}}/{{artName[i]}}">{{ $data.artTit[i] }}</a></h3>
+        <p>{{ $data.artSum[i] }}</p>
         <!-- <button class="more" v-on:click="toOne" v-bind:artName="artName[i]" v-bind:catalog="catalog[i]" v-bind:userid="userId[i]">MORE</button> -->
-        <!-- <a class="more" href="/{{userId[i]}}/{{catalog[i]}}/{{artName[i]}}">MORE</a>
+        <a class="more" href="/{{userId[i]}}/{{catalog[i]}}/{{artName[i]}}">MORE</a>
       </div>
     </div>
   </div>
 </div>
 <div id="clickBox"></div>
-<div id="backTop"></div> -->
-<!-- <script type="text/javascript" src="/static/js/backTop.js"></script> -->
+<div id="backTop"></div>
+<script type="text/javascript" src="/static/js/backTop.js"></script>
 <script type="text/javascript">
-  // var art = new Vue({
-  //   el: "#blogArt",
-  //   data: {
-  //     artTit: [],
-  //     artSum: [],
-  //     num: 0,
-  //     artName: [],
-  //     catalog: [],
-  //     userId: []
-  //   },
-  //   init: function(){
-  //     res.article.get_list({
-  //     }).then(function(data){
-  //       console.log(data);
-  //       art.num = data.rows.length;
-  //       for(let i=0; i<data.rows.length; i++){
-  //         art.artTit.push(data.rows[i].title);
-  //         art.artSum.push(data.rows[i].summary);
-  //         art.artName.push(data.rows[i].article);
-  //         art.catalog.push(data.rows[i].catalog);
-  //         art.userId.push(data.rows[i].userid);
-  //       }
-  //       // console.log(art.artTit);
-  //       // console.log(art.artSum);
-  //     }).catch(function(error){
-  //       console.log(error);
-  //     })
-  //   },
-  //   methods: {
-  //     toOne: function(e){
-  //       res.article.get({
-  //         article: e.srcElement.getAttribute('artName'),
-  //         catalog: e.srcElement.getAttribute('catalog'),
-  //         userid: e.srcElement.getAttribute('userid')
-  //       }).then(function(data){
-  //         console.log(data);
-  //       })
-  //     }
-  //   }
-  // })
+  var art = new Vue({
+    el: "#blogArt",
+    data: {
+      artTit: [],
+      artSum: [],
+      num: 0,
+      artName: [],
+      catalog: [],
+      userId: []
+    },
+    init: function(){
+      res.article.get_list({
+      }).then(function(data){
+        console.log(data);
+        art.num = data.rows.length;
+        for(let i=0; i<data.rows.length; i++){
+          art.artTit.push(data.rows[i].title);
+          art.artSum.push(data.rows[i].summary);
+          art.artName.push(data.rows[i].article);
+          art.catalog.push(data.rows[i].catalog);
+          art.userId.push(data.rows[i].userid);
+        }
+        // console.log(art.artTit);
+        // console.log(art.artSum);
+      }).catch(function(error){
+        console.log(error);
+      })
+    },
+    methods: {
+      toOne: function(e){
+        res.article.get({
+          article: e.srcElement.getAttribute('artName'),
+          catalog: e.srcElement.getAttribute('catalog'),
+          userid: e.srcElement.getAttribute('userid')
+        }).then(function(data){
+          console.log(data);
+        })
+      }
+    }
+  })
 
   // res.article.get_list({
   // }).then(function(value){
