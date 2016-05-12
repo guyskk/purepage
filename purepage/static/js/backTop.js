@@ -28,7 +28,6 @@ backTopObj.prototype.showTop = function(){
 	this.demo.style.transition = 'opacity 0.7s';
 }
 backTopObj.prototype.hideTop = function(){
-	console.log(this.dom);
 	this.isShowTop = true;
 	this.isHideTop = false;
 	this.demo.style.opacity = 0;

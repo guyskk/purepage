@@ -68,8 +68,11 @@
         password: userPass,
         userid: userName
       }).then(function(data) {
-
+      	storage['photo'] = data.photo;
+      	storage['email'] = data.email;
+      	storage['repo'] = data.repo;
         console.log(data);
+        window.location.href = '/';
       }).catch(function(error) {
         console.log(error);
       })

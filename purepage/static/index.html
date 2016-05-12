@@ -19,9 +19,9 @@
   <div id="sideBar" class="hide">
     <div class="sideBarTitle">
       <div class="me">
-        <a href="" class="myPic"></a>
-        <p class="myName">kkblog</p>
-        <a href="mailto:1053789026@qq.com" class="myMail">1053789026@qq.com</a>
+        <a href="" class="myPic" style="background-image: url({{$data.photo}});"></a>
+        <p class="myName">{{ $data.userName }}</p>
+        <a href="mailto:1053789026@qq.com" class="myMail">{{ $data.email }}</a>
       </div>
     </div>
     <ul class="sideBarPos">
@@ -115,6 +115,23 @@
       }
     }
   })
+
+  var userInfor = new Vue({
+    el: '#sideBar',
+    data: {
+      photo: '',
+      userName: '',
+      email: ''
+    },
+    methods: {
+      getInfor: function(){
+        userInfor.photo = window.localStorage['photo'];
+        userInfor.email = window.localStorage['email'];
+        userInfor.userName = window.localStorage['userName'];
+      }
+    }
+  })
+  userInfor.getInfor();
 
   // res.article.get_list({
   // }).then(function(value){
