@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Logo</title>
+</head>
+
+<body>
+    <p>
+    需要操作系统安装<a href="http://www.1001fonts.com/honey-script-font.html">Honey Script</a>字体后才能看到效果
+    </p>
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="400" height="400">
+        <defs>
+            <clipPath id="cut1">
+                <ellipse cx="200" cy="289" rx="144" ry="233" transform="rotate(-78.92,200,56)" />
+            </clipPath>
+            <clipPath id="cut2">
+                <ellipse cx="200" cy="289" rx="144" ry="238" transform="rotate(78.92,200,56)" />
+                <rect x="51" y="200" width="144" height="94" />
+            </clipPath>
+        </defs>
+        <!--<line x1="56" y1="56" x2="344" y2="56" stroke="black" stroke-opacity="0.54" stroke-width="1" stroke-dasharray="5,5" />
+        <line x1="56" y1="289" x2="344" y2="289" stroke="black" stroke-opacity="0.54" stroke-width="1" stroke-dasharray="5,5" />
+        <line x1="56" y1="56" x2="56" y2="289" stroke="black" stroke-opacity="0.54" stroke-width="1" stroke-dasharray="5,5" />
+        <line x1="200" y1="56" x2="200" y2="289" stroke="black" stroke-opacity="0.54" stroke-width="1" stroke-dasharray="5,5" />
+        <line x1="344" y1="56" x2="344" y2="289" stroke="black" stroke-opacity="0.54" stroke-width="1" stroke-dasharray="5,5" />
+        <line x1="56" y1="200" x2="200" y2="200" stroke="black" stroke-opacity="0.54" stroke-width="1" stroke-dasharray="5,5" />
+        <line x1="111" y1="56" x2="111" y2="289" stroke="black" stroke-opacity="0.54" stroke-width="1" stroke-dasharray="5,5" />
+        <line x1="108" y1="265" x2="344" y2="265" stroke="black" stroke-opacity="0.54" stroke-width="1" stroke-dasharray="5,5" />-->
+        <ellipse cx="200" cy="289" rx="144" ry="233" stroke="#000" fill="none" stroke-width="10" clip-path="url(#cut2)" />
+        <ellipse cx="200" cy="289" rx="144" ry="233" stroke="#000" fill="none" stroke-width="10" transform="rotate(78.92,200,56)"
+            clip-path="url(#cut1)" />
+        <text x="108" y="265" font-family="Honey Script" font-size="144" font-style="italic" font-weight="bold" stroke="#000" fill="#000"
+            stroke-width="1">urepage</text>
+    </svg>
+    <script>
+        // SVG to PNG
+        // Thanks To: https://gist.github.com/gustavohenke/9073132
+        var svg = document.querySelector('svg');
+        var svgData = new XMLSerializer().serializeToString( svg );
+        var svgSize = svg.getBoundingClientRect();
+        var canvas = document.createElement( "canvas" );
+        canvas.width = svgSize.width;
+        canvas.height = svgSize.height;
+        var ctx = canvas.getContext( "2d" );
+        var img = document.createElement( "img" );
+        img.setAttribute( "title", "logo.svg");
+        img.setAttribute( "src", "data:image/svg+xml;base64," + btoa( svgData ) );
+        document.body.appendChild(img);
+        img.onload = function() {
+            ctx.drawImage( img, 0, 0 );
+            var png = document.createElement( "img" );
+            png.setAttribute( "title", "logo.png");
+            png.setAttribute( "src", canvas.toDataURL( "image/png" ) );
+            document.body.appendChild(png);
+        };
+    </script>
+</body>
+
+</html>
