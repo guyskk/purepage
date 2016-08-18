@@ -7,7 +7,12 @@
 html{
 	font-size: 12px;
 }
-
+body, input, button, textarea, select, option{
+	font: normal 1em Roboto, 'Helvetica Neue', Helvetica, 'Microsoft Yahei', Arial;
+}
+h1, h2, h3, h4, h5, h6{
+	font-weight: 100;
+}
 /*侧边栏*/
 #sideBar{
 	position: fixed;
@@ -27,11 +32,11 @@ html{
 .sideBarTitle{
 	background-image: url(../image/brand.jpg);
 	background-size: 100% 100%;
-	padding-left: 30px;
 }
 .me{
-	padding: 30px 0;
+	padding: 30px 0 30px 30px;
 	font-weight: bold;
+	background: rgba(63, 81, 181, 0.5);
 }
 .myPic{
 	height: 80px;
@@ -47,11 +52,13 @@ html{
 	font-size: 18px;
 	line-height: 26px;
 	color: #fff;
+	font-weight: 400;
 }
 .myMail{
 	font-size: 14px;
 	line-height: 18px;
 	color: #c5cae9;
+	font-weight: 400;
 }
 .sideBarPos{
 	font-size: 20px;
@@ -152,9 +159,11 @@ html{
 	top: 120px;
 	/*font-size: 50px;*/
 }
-#scripts p{
+#scripts h5{
 	position: relative;
 	top: 125px;
+	color: #c5cae9;
+	padding-top: 6px;
 	/*font-size: 20px;*/
 }
 #blogArt{
@@ -180,6 +189,10 @@ html{
   opacity: 0;
   cursor: pointer;
 }
+#backTop:before{
+	content: '\f0c9';
+	font-size: 30px;
+}
 
 @media screen and (min-width: 0px){
 	#blogArt{
@@ -192,7 +205,7 @@ html{
 		font-size: 30px;
 		line-height: 34px;
 	}
-	#scripts p{
+	#scripts h5{
 		font-size: 14px;
 		line-height: 18px;
 	}
@@ -221,7 +234,7 @@ html{
 		font-size: 40px;
 		line-height: 44px;
 	}
-	#scripts p{
+	#scripts h5{
 		font-size: 16px;
 		line-height: 20px;
 	}
@@ -246,7 +259,7 @@ html{
 		font-size: 50px;
 		line-height: 54px;
 	}
-	#scripts p{
+	#scripts h5{
 		font-size: 20px;
 		line-height: 24px;
 	}

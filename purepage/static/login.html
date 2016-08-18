@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title></title>
+ 	<script type="text/javascript" src="/static/res.js"></script>
+ 	<script type="text/javascript" src="/static/js/function.js"></script>
+ 	<style type="text/css">
+ 	*{
+ 		margin: 0 auto;
+ 		text-decoration: none;
+ 	}
+ 	a{
+ 	}
+ 	</style>
+</head>
+<body>
+<div>
+  <h1>Login</h1>
+  <p>
+    <label>email</label>
+    <input type="text" id="userName" />
+  </p>
+  <p>
+    <label>password</label>
+    <input type="password" id="userPass" />
+  </p>
+  <p>
+    <input type="checkbox" id="check" />
+    <label>Remeber</label>
+  </p>
+  <p>
+  	<a href="javascript:void(0)" id="login">login</a>
+  	<a href="/signup" id="signup">signup</a>
+  </p>
+</div>
+<script type="text/javascript">
+    var storage = window.localStorage;
+    var getName = storage['userName'];
+    var getPass = storage['userPass'];
+    var storePass = storage['storePass'];
+    if(storePass === 'yes'){
+      if((getName != '' || getName != null) && (getPass != '' || getPass != null)) {
+        getDom('userName').value = getName;
+        getDom('userPass').value = getPass;
+        getDom('check').checked = true;
+        login();
+      }
+    }
+    getDom('login').onclick = function() {
+      login();
+    }
+  function login() {
+    var userName = getDom('userName').value;
+    var userPass = getDom('userPass').value;
+    var storage = window.storage;
+    if(storage.length != 0) {
+      if(getDom('check').checked) {
+        storage['userName'] = userName;
+        storage['userPass'] = userPass;
+        storage['storePass'] = 'yes';
+      }
+      else{
+        storage['userName'] = userName;
+        storage['storePass'] = 'no';
+      }
+      res.user.post_login({
+        password: userPass,
+        userid: userName
+      }).then(function(data) {
+      	storage['photo'] = data.photo;
+      	storage['email'] = data.email;
+      	storage['repo'] = data.repo;
+        console.log(data);
+        window.location.href = '/';
+      }).catch(function(error) {
+        console.log(error);
+      })
+    }
+  }
+</script>
+</body>
+</html>

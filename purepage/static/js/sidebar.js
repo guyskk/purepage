@@ -15,7 +15,6 @@ sideBarObj.prototype.init = function(){
 	this.clickBox = getDom('clickBox');
 	this.btn.addEventListener('click',changeSide,false);
 	this.clickBox.addEventListener('click',hideSide,false);
-	changeSide();
 }
 function changeSide(){
 	if(sideBar.show){

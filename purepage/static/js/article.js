@@ -1,6 +1,3 @@
-  
-
-
 var commentObj = function(){
 	this.btn;
 	this.text;
@@ -46,6 +43,7 @@ var article;
 document.body.onload = game;
 
 function game(){
+  load();
   com = new commentObj();
   com.init();
   title = new Vue({
@@ -78,12 +76,12 @@ function game(){
     newArt.className = 'markdown-body';
     newArt.innerHTML = data.content;
     document.getElementById('blogArt').appendChild(newArt);
-    comment.artId = data._id;
+    comment.artId = unescape(article);
     // comment.num = data.rows.length;
-    console.log(comment.artId);
+    console.log(article);
     //获取评论
     res.comment.get({
-      article_id: comment.artId
+      article: comment.artId
     }).then(function(data) {
       console.log(data);
       comment.num = data.rows.length;

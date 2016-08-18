@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title></title>
+ 	<script type="text/javascript" src="/static/res.js"></script>
+ 	<script type="text/javascript" src="/static/js/function.js"></script>
+</head>
+<body>
+<div>
+  <h1>Login</h1>
+  <p>
+    <label>userid</label>
+    <input type="text" id="userId" />
+  </p>
+  <p>
+    <label>email</label>
+    <input type="password" id="email" />
+  </p>
+  <p>
+  	<a href="javascript:void(0)" id="signup">signup</a>
+  	<a href="/signup" id="login">login</a>
+  </p>
+</div>
+<script type="text/javascript">
+getDom('userId').onclick = function() {
+	signup();
+}
+function signup() {
+	console.log(234);
+}
+</script>
+</body>
+</html>

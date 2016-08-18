@@ -19,9 +19,9 @@
   <div id="sideBar" class="hide">
     <div class="sideBarTitle">
       <div class="me">
-        <a href="" class="myPic"></a>
-        <p class="myName">kkblog</p>
-        <a href="mailto:1053789026@qq.com" class="myMail">1053789026@qq.com</a>
+        <a href="" class="myPic" style="background-image: url({{$data.photo}});"></a>
+        <p class="myName">{{ $data.userName }}</p>
+        <a href="mailto:1053789026@qq.com" class="myMail">{{ $data.email }}</a>
       </div>
     </div>
     <ul class="sideBarPos">
@@ -58,12 +58,12 @@
       </div>
       <div id="scripts">
         <h1>Guyskk's Blog</h1>
-        <p>JavaScript很容易学习</p>
+        <h5>JavaScript很容易学习</h5>
       </div>
     </div>
     <div id="blogArt">
       <div class="markdown-body" v-for="i in num">
-        <h1>{{ $data.artTit[i] }}</h1>
+        <h3><a class="post-title-link" href="/{{userId[i]}}/{{catalog[i]}}/{{artName[i]}}">{{ $data.artTit[i] }}</a></h3>
         <p>{{ $data.artSum[i] }}</p>
         <!-- <button class="more" v-on:click="toOne" v-bind:artName="artName[i]" v-bind:catalog="catalog[i]" v-bind:userid="userId[i]">MORE</button> -->
         <a class="more" href="/{{userId[i]}}/{{catalog[i]}}/{{artName[i]}}">MORE</a>
@@ -115,6 +115,23 @@
       }
     }
   })
+
+  var userInfor = new Vue({
+    el: '#sideBar',
+    data: {
+      photo: '',
+      userName: '',
+      email: ''
+    },
+    methods: {
+      getInfor: function(){
+        userInfor.photo = window.localStorage['photo'];
+        userInfor.email = window.localStorage['email'];
+        userInfor.userName = window.localStorage['userName'];
+      }
+    }
+  })
+  userInfor.getInfor();
 
   // res.article.get_list({
   // }).then(function(value){
