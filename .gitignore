@@ -6,6 +6,9 @@ purepage/static/res.js
 purepage/static/permission.html
 purepage/config_product.py
 
+static/node_modules
+static/dist
+
 .venv
 .vagrant
 *.box
