@@ -5,7 +5,9 @@ let isProduction = process.env.NODE_ENV === 'production'
 let entry = {}
 let devtool = 'eval'
 let plugins = [
-    new webpack.optimize.CommonsChunkPlugin('common', 'common.[hash].js'),
+    new webpack.optimize.CommonsChunkPlugin(
+        'common', 'static/common.[hash].js'
+    ),
 ]
 if (isProduction) {
     devtool = 'source-map'
@@ -35,7 +37,7 @@ export default {
     entry: entry,
     output: {
         path: './dist',
-        filename: '[name].[hash].js'
+        filename: 'static/[name].[hash].js'
     },
     module: {
         loaders: [{
@@ -59,13 +61,14 @@ export default {
     devtool: devtool,
     plugins: plugins,
     devServer: {
-        historyApiFallback: true,
-        noInfo: true,
-        devServer: {
-            proxy: {
-                '/api': {
-                    target: 'http://127.0.0.1:5000',
-                    secure: false
+        contentBase: './dist',
+        historyApiFallback: false,
+        proxy: {
+            '/api': {
+                target: 'http://127.0.0.1:5000',
+                changeOrigin: true,
+                pathRewrite: {
+                    '^/api': '/'
                 }
             }
         }

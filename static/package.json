@@ -1,11 +1,11 @@
 {
-    "name": "hello",
+    "name": "purepage",
     "version": "1.0.0",
-    "description": "hello",
+    "description": "purepage",
     "main": "index.js",
     "scripts": {
-        "dev": "webpack-dev-server --content-base dist --inline --hot",
-        "build": "rm -rf dist/* && NODE_ENV=production webpack --progress --hide-modules"
+        "dev": "webpack-dev-server --inline --hot --no-info",
+        "build": "rm -rf dist/* && NODE_ENV=production webpack -p --progress"
     },
     "author": "guyskk",
     "license": "MIT",
