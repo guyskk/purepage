@@ -1,13 +1,20 @@
 version: '2'
 services:
-    app:
+    api:
+        build:
+          context: .
+          dockerfile: api.dockerfile
+        volumes:
+         - ./api:/api
+        depends_on:
+         - couchdb
+    static:
         build: .
         volumes:
          - .:/code
         network_mode: "host"
         depends_on:
          - couchdb
-
     nginx:
         image: nginx:stable-alpine
         volumes:
@@ -16,11 +23,9 @@ services:
         network_mode: "host"
         depends_on:
          - app
-
-    couchdb:
-        image: klaemo/couchdb:2.0-dev 
-        command: --admin=admin:123456 --with-haproxy 
+    db:
+        image: klaemo/couchdb:2.0-dev
+        command: --admin=admin:123456 --with-haproxy
         network_mode: "host"
         volumes:
          - ./data/couchdb:/usr/local/var/lib/couchdb
-

@@ -1,1 +1,0 @@
-{"views": {"email": {"reduce": "_count", "map": "function(doc) {\n  if(doc.type==\"user\"){\n     emit(doc.email, null);\n  }\n}"}}, "_id": "_design/user", "language": "javascript"}

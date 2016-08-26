@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Api Documents</title>
+    <link rel="stylesheet" type="text/css" href="http://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script type="text/javascript" src="/static/res.js"></script>
+    <style type="text/css">
+    .resource {
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+        border-bottom: solid 2px orange;
+    }
+    </style>
+</head>
+
+<body class="container-fluid">
+    <div class="page-header">
+        <h1>Api Documents</h1>
+    </div>
+    <ul>
+        
+        <li>auth_header: <code>Authorization</code></li>
+        
+        
+        <li>url_prefix: <code>/api</code></li>
+        
+        
+        <p><pre>PurePage
+
+注册用户并设置博客仓库:
+1. 验证邮箱
+res.user.post_verify({userid:'guyskk',email:'guyskk@qq.com'})
+2. 在(命令行)控制台里面会显示发送的邮件内容，取出其中的token
+res.user.post_signup({token:token,password:'123456'})
+3. 注册
+res.user.post_signup({userid:'guyskk',password:'123456'})
+4. 登录
+res.user.post_login({userid:'guyskk',password:'123456'})
+5. 设置代码仓库
+res.user.put({repo: 'https://github.com/guyskk/purepage-article.git'})
+6. 同步博客仓库:
+res.user.post_sync_repo({})</pre></p>
+        
+        
+        <li>
+            <a class="lead" href="#user">user</a>
+            <ul>
+                
+                <li>
+                    <a href="#user.get">
+                get 
+                </a> 获取用户信息
+                </li>
+                
+                <li>
+                    <a href="#user.get_me">
+                get_me 
+                </a> 获取自己的信息
+                </li>
+                
+                <li>
+                    <a href="#user.post_forgot">
+                post_forgot 
+                </a> 忘记密码
+                </li>
+                
+                <li>
+                    <a href="#user.post_login">
+                post_login 
+                </a> 登录
+                </li>
+                
+                <li>
+                    <a href="#user.post_reset">
+                post_reset 
+                </a> 重置密码
+                </li>
+                
+                <li>
+                    <a href="#user.post_signup">
+                post_signup 
+                </a> 注册
+                </li>
+                
+                <li>
+                    <a href="#user.post_sync_repo">
+                post_sync_repo 
+                </a> 同步博客仓库
+                </li>
+                
+                <li>
+                    <a href="#user.post_verify">
+                post_verify 
+                </a> 验证用户名和邮箱
+                </li>
+                
+                <li>
+                    <a href="#user.put">
+                put 
+                </a> 修改个人信息
+                </li>
+                
+                <li>
+                    <a href="#user.put_security">
+                put_security 
+                </a> 修改账号信息
+                </li>
+                
+            </ul>
+        </li>
+        
+        <li>
+            <a class="lead" href="#comment">comment</a>
+            <ul>
+                
+                <li>
+                    <a href="#comment.get">
+                get 
+                </a> 获取一篇文章的评论
+                </li>
+                
+                <li>
+                    <a href="#comment.post">
+                post 
+                </a> 发表评论
+                </li>
+                
+            </ul>
+        </li>
+        
+        <li>
+            <a class="lead" href="#info">info</a>
+            <ul>
+                
+                <li>
+                    <a href="#info.get">
+                get 
+                </a> 
+                </li>
+                
+                <li>
+                    <a href="#info.get_400">
+                get_400 
+                </a> 
+                </li>
+                
+                <li>
+                    <a href="#info.get_403">
+                get_403 
+                </a> 
+                </li>
+                
+                <li>
+                    <a href="#info.get_404">
+                get_404 
+                </a> 
+                </li>
+                
+                <li>
+                    <a href="#info.get_500">
+                get_500 
+                </a> 
+                </li>
+                
+            </ul>
+        </li>
+        
+        <li>
+            <a class="lead" href="#article">article</a>
+            <ul>
+                
+                <li>
+                    <a href="#article.get">
+                get 
+                </a> 获取一篇文章
+                </li>
+                
+                <li>
+                    <a href="#article.get_list">
+                get_list 
+                </a> 获取文章列表，结果按时间倒序排序。
+                </li>
+                
+                <li>
+                    <a href="#article.post">
+                post 
+                </a> 创建或修改文章
+                </li>
+                
+            </ul>
+        </li>
+        
+        <li>
+            <a class="lead" href="#permission">permission</a>
+            <ul>
+                
+                <li>
+                    <a href="#permission.delete">
+                delete 
+                </a> delete user_role
+                </li>
+                
+                <li>
+                    <a href="#permission.get">
+                get 
+                </a> get permission info
+                </li>
+                
+                <li>
+                    <a href="#permission.get_permit">
+                get_permit 
+                </a> check if the role can access the resource and action
+                </li>
+                
+                <li>
+                    <a href="#permission.post">
+                post 
+                </a> add or update user_role
+                </li>
+                
+            </ul>
+        </li>
+        
+        <li>
+            <a class="lead" href="#captcha">captcha</a>
+            <ul>
+                
+                <li>
+                    <a href="#captcha.get">
+                get 
+                </a> 显示验证码
+                </li>
+                
+                <li>
+                    <a href="#captcha.get_check">
+                get_check 
+                </a> 查看验证码是否正确
+                </li>
+                
+            </ul>
+        </li>
+        
+    </ul>
+    
+    <div class="resource table-responsive">
+        <h2 id="user">user</h2>
+        <p><pre>User API
+
+    注册分两步：
+        1. post_verify 会发送注册链接到用户邮箱，链接中包含 userid 和 token
+        2. post_signup 从链接中获取 userid 和 token，并在界面上显示 userid
+
+    找回密码分两步：
+        1. post_forgot 会发送重置链接到用户邮箱，链接中包含 userid 和 token
+        2. post_reset 从链接中获取 userid 和 token，并在界面上显示 userid
+
+    修改密码或邮箱：
+        put_security 需验证密码
+
+    注意：注册和找回密码的 token 不能互用
+
+    token 解码后的格式:
+
+        {
+            "type": "signup/reset",
+            "userid": "用户ID",
+            "email": "邮箱",
+            "exp": "过期时间"
+        }
+
+</pre></p>
+        <table class="table table-striped">
+            <tr>
+                <th>action / docs</th>
+                <th>method / url</th>
+                <th>param</th>
+                <th>return</th>
+            </tr>
+            
+            <tr id="user.get">
+                <td class="info">
+                    <strong>get</strong>
+                    <pre>获取用户信息</pre>
+                </td>
+                <td class="success"><code>GET /api/user</code></td>
+                <td class="info">
+                    <pre>{
+  "userid": {
+    "required": true,
+    "validater": "unicode"
+  }
+}</pre>
+                </td>
+                <td class="success">
+                    <pre>{
+  "_id": {
+    "desc": "用户ID",
+    "required": true,
+    "validater": "unicode"
+  },
+  "photo": {
+    "default": "/static/image/photo-default.png",
+    "desc": "头像",
+    "validater": "unicode"
+  },
+  "repo": {
+    "desc": "博客仓库地址",
+    "validater": "url"
+  },
+  "role": {
+    "desc": "角色",
+    "required": true,
+    "validater": "unicode"
+  }
+}</pre>
+                </td>
+            </tr>
+            
+            <tr id="user.get_me">
+                <td class="info">
+                    <strong>get_me</strong>
+                    <pre>获取自己的信息</pre>
+                </td>
+                <td class="success"><code>GET /api/user/me</code></td>
+                <td class="info">
+                    <pre>null</pre>
+                </td>
+                <td class="success">
+                    <pre>{
+  "_id": {
+    "desc": "用户ID",
+    "required": true,
+    "validater": "unicode"
+  },
+  "email": {
+    "desc": "邮箱",
+    "validater": "email"
+  },
+  "photo": {
+    "default": "/static/image/photo-default.png",
+    "desc": "头像",
+    "validater": "unicode"
+  },
+  "repo": {
+    "desc": "博客仓库地址",
+    "validater": "url"
+  },
+  "role": {
+    "desc": "角色",
+    "required": true,
+    "validater": "unicode"
+  }
+}</pre>
+                </td>
+            </tr>
+            
+            <tr id="user.post_forgot">
+                <td class="info">
+                    <strong>post_forgot</strong>
+                    <pre>忘记密码</pre>
+                </td>
+                <td class="success"><code>POST /api/user/forgot</code></td>
+                <td class="info">
+                    <pre>{
+  "email": {
+    "required": true,
+    "validater": "email"
+  }
+}</pre>
+                </td>
+                <td class="success">
+                    <pre>null</pre>
+                </td>
+            </tr>
+            
+            <tr id="user.post_login">
+                <td class="info">
+                    <strong>post_login</strong>
+                    <pre>登录</pre>
+                </td>
+                <td class="success"><code>POST /api/user/login</code></td>
+                <td class="info">
+                    <pre>{
+  "expiration": {
+    "args": [
+      10,
+      21600
+    ],
+    "default": 30,
+    "desc": "过期时间(分钟)",
+    "validater": "int"
+  },
+  "password": {
+    "required": true,
+    "validater": "password"
+  },
+  "userid": {
+    "required": true,
+    "validater": "unicode"
+  }
+}</pre>
+                </td>
+                <td class="success">
+                    <pre>{
+  "_id": {
+    "desc": "用户ID",
+    "required": true,
+    "validater": "unicode"
+  },
+  "email": {
+    "desc": "邮箱",
+    "validater": "email"
+  },
+  "photo": {
+    "default": "/static/image/photo-default.png",
+    "desc": "头像",
+    "validater": "unicode"
+  },
+  "repo": {
+    "desc": "博客仓库地址",
+    "validater": "url"
+  },
+  "role": {
+    "desc": "角色",
+    "required": true,
+    "validater": "unicode"
+  }
+}</pre>
+                </td>
+            </tr>
+            
+            <tr id="user.post_reset">
+                <td class="info">
+                    <strong>post_reset</strong>
+                    <pre>重置密码</pre>
+                </td>
+                <td class="success"><code>POST /api/user/reset</code></td>
+                <td class="info">
+                    <pre>{
+  "password": {
+    "required": true,
+    "validater": "password"
+  },
+  "token": {
+    "required": true,
+    "validater": "unicode"
+  }
+}</pre>
+                </td>
+                <td class="success">
+                    <pre>null</pre>
+                </td>
+            </tr>
+            
+            <tr id="user.post_signup">
+                <td class="info">
+                    <strong>post_signup</strong>
+                    <pre>注册</pre>
+                </td>
+                <td class="success"><code>POST /api/user/signup</code></td>
+                <td class="info">
+                    <pre>{
+  "password": {
+    "required": true,
+    "validater": "password"
+  },
+  "token": {
+    "required": true,
+    "validater": "unicode"
+  }
+}</pre>
+                </td>
+                <td class="success">
+                    <pre>{
+  "required": true,
+  "validater": "unicode"
+}</pre>
+                </td>
+            </tr>
+            
+            <tr id="user.post_sync_repo">
+                <td class="info">
+                    <strong>post_sync_repo</strong>
+                    <pre>同步博客仓库
+
+        需要先设置好自己的博客仓库地址（调用修改个人信息接口）。
+        服务器会从仓库下载所有文件，并解析其中的 markdown 文件。
+        再将解析后的文章内容和标题，日期等信息保存到数据库中。
+</pre>
+                </td>
+                <td class="success"><code>POST /api/user/sync_repo</code></td>
+                <td class="info">
+                    <pre>null</pre>
+                </td>
+                <td class="success">
+                    <pre>{
+  "errors": {
+    "desc": "错误",
+    "validater": "any"
+  },
+  "succeed": {
+    "desc": "同步成功的文章数",
+    "required": true,
+    "validater": "int"
+  }
+}</pre>
+                </td>
+            </tr>
+            
+            <tr id="user.post_verify">
+                <td class="info">
+                    <strong>post_verify</strong>
+                    <pre>验证用户名和邮箱</pre>
+                </td>
+                <td class="success"><code>POST /api/user/verify</code></td>
+                <td class="info">
+                    <pre>{
+  "email": {
+    "required": true,
+    "validater": "email"
+  },
+  "userid": {
+    "required": true,
+    "validater": "unicode"
+  }
+}</pre>
+                </td>
+                <td class="success">
+                    <pre>null</pre>
+                </td>
+            </tr>
+            
+            <tr id="user.put">
+                <td class="info">
+                    <strong>put</strong>
+                    <pre>修改个人信息</pre>
+                </td>
+                <td class="success"><code>PUT /api/user</code></td>
+                <td class="info">
+                    <pre>{
+  "photo": {
+    "desc": "头像",
+    "validater": "url"
+  },
+  "repo": {
+    "desc": "博客仓库地址",
+    "validater": "url"
+  }
+}</pre>
+                </td>
+                <td class="success">
+                    <pre>{
+  "_id": {
+    "desc": "用户ID",
+    "required": true,
+    "validater": "unicode"
+  },
+  "email": {
+    "desc": "邮箱",
+    "validater": "email"
+  },
+  "photo": {
+    "default": "/static/image/photo-default.png",
+    "desc": "头像",
+    "validater": "unicode"
+  },
+  "repo": {
+    "desc": "博客仓库地址",
+    "validater": "url"
+  },
+  "role": {
+    "desc": "角色",
+    "required": true,
+    "validater": "unicode"
+  }
+}</pre>
+                </td>
+            </tr>
+            
+            <tr id="user.put_security">
+                <td class="info">
+                    <strong>put_security</strong>
+                    <pre>修改账号信息</pre>
+                </td>
+                <td class="success"><code>PUT /api/user/security</code></td>
+                <td class="info">
+                    <pre>{
+  "new_email": {
+    "validater": "email"
+  },
+  "new_password": {
+    "validater": "password"
+  },
+  "password": {
+    "required": true,
+    "validater": "password"
+  }
+}</pre>
+                </td>
+                <td class="success">
+                    <pre>null</pre>
+                </td>
+            </tr>
+            
+        </table>
+    </div>
+    
+    <div class="resource table-responsive">
+        <h2 id="comment">comment</h2>
+        <p><pre>Comment</pre></p>
+        <table class="table table-striped">
+            <tr>
+                <th>action / docs</th>
+                <th>method / url</th>
+                <th>param</th>
+                <th>return</th>
+            </tr>
+            
+            <tr id="comment.get">
+                <td class="info">
+                    <strong>get</strong>
+                    <pre>获取一篇文章的评论</pre>
+                </td>
+                <td class="success"><code>GET /api/comment</code></td>
+                <td class="info">
+                    <pre>{
+  "article": {
+    "desc": "文章ID",
+    "required": true,
+    "validater": "unicode"
+  },
+  "pagenum": {
+    "default": 1,
+    "desc": "第几页，从1开始计算",
+    "validater": "+int"
+  },
+  "pagesize": {
+    "default": 10,
+    "desc": "每页的数量",
+    "validater": "+int"
+  }
+}</pre>
+                </td>
+                <td class="success">
+                    <pre>{
+  "offset": {
+    "desc": "offset",
+    "required": true,
+    "validater": "int"
+  },
+  "rows": [
+    {
+      "content": {
+        "desc": "评论内容",
+        "required": true,
+        "validater": "unicode"
+      },
+      "date": {
+        "desc": "评论日期",
+        "output": true,
+        "required": true,
+        "validater": "datetime"
+      },
+      "user": {
+        "_id": {
+          "desc": "评论者ID",
+          "required": true,
+          "validater": "unicode"
+        },
+        "photo": {
+          "default": "/static/image/photo-default.png",
+          "desc": "评论者头像",
+          "validater": "unicode"
+        }
+      }
+    }
+  ],
+  "total_rows": {
+    "desc": "总数(包括未返回的结果)",
+    "required": true,
+    "validater": "int"
+  }
+}</pre>
+                </td>
+            </tr>
+            
+            <tr id="comment.post">
+                <td class="info">
+                    <strong>post</strong>
+                    <pre>发表评论</pre>
+                </td>
+                <td class="success"><code>POST /api/comment</code></td>
+                <td class="info">
+                    <pre>{
+  "article": {
+    "desc": "文章ID",
+    "required": true,
+    "validater": "unicode"
+  },
+  "content": {
+    "desc": "评论内容",
+    "required": true,
+    "validater": "unicode"
+  }
+}</pre>
+                </td>
+                <td class="success">
+                    <pre>{
+  "content": {
+    "desc": "评论内容",
+    "required": true,
+    "validater": "unicode"
+  },
+  "date": {
+    "desc": "评论日期",
+    "output": true,
+    "required": true,
+    "validater": "datetime"
+  },
+  "user": {
+    "_id": {
+      "desc": "评论者ID",
+      "required": true,
+      "validater": "unicode"
+    },
+    "photo": {
+      "default": "/static/image/photo-default.png",
+      "desc": "评论者头像",
+      "validater": "unicode"
+    }
+  }
+}</pre>
+                </td>
+            </tr>
+            
+        </table>
+    </div>
+    
+    <div class="resource table-responsive">
+        <h2 id="info">info</h2>
+        <p><pre></pre></p>
+        <table class="table table-striped">
+            <tr>
+                <th>action / docs</th>
+                <th>method / url</th>
+                <th>param</th>
+                <th>return</th>
+            </tr>
+            
+            <tr id="info.get">
+                <td class="info">
+                    <strong>get</strong>
+                    <pre></pre>
+                </td>
+                <td class="success"><code>GET /api/info</code></td>
+                <td class="info">
+                    <pre>null</pre>
+                </td>
+                <td class="success">
+                    <pre>null</pre>
+                </td>
+            </tr>
+            
+            <tr id="info.get_400">
+                <td class="info">
+                    <strong>get_400</strong>
+                    <pre></pre>
+                </td>
+                <td class="success"><code>GET /api/info/400</code></td>
+                <td class="info">
+                    <pre>null</pre>
+                </td>
+                <td class="success">
+                    <pre>null</pre>
+                </td>
+            </tr>
+            
+            <tr id="info.get_403">
+                <td class="info">
+                    <strong>get_403</strong>
+                    <pre></pre>
+                </td>
+                <td class="success"><code>GET /api/info/403</code></td>
+                <td class="info">
+                    <pre>null</pre>
+                </td>
+                <td class="success">
+                    <pre>null</pre>
+                </td>
+            </tr>
+            
+            <tr id="info.get_404">
+                <td class="info">
+                    <strong>get_404</strong>
+                    <pre></pre>
+                </td>
+                <td class="success"><code>GET /api/info/404</code></td>
+                <td class="info">
+                    <pre>null</pre>
+                </td>
+                <td class="success">
+                    <pre>null</pre>
+                </td>
+            </tr>
+            
+            <tr id="info.get_500">
+                <td class="info">
+                    <strong>get_500</strong>
+                    <pre></pre>
+                </td>
+                <td class="success"><code>GET /api/info/500</code></td>
+                <td class="info">
+                    <pre>null</pre>
+                </td>
+                <td class="success">
+                    <pre>null</pre>
+                </td>
+            </tr>
+            
+        </table>
+    </div>
+    
+    <div class="resource table-responsive">
+        <h2 id="article">article</h2>
+        <p><pre>Article</pre></p>
+        <table class="table table-striped">
+            <tr>
+                <th>action / docs</th>
+                <th>method / url</th>
+                <th>param</th>
+                <th>return</th>
+            </tr>
+            
+            <tr id="article.get">
+                <td class="info">
+                    <strong>get</strong>
+                    <pre>获取一篇文章</pre>
+                </td>
+                <td class="success"><code>GET /api/article</code></td>
+                <td class="info">
+                    <pre>{
+  "article": {
+    "desc": "文章名称",
+    "required": true,
+    "validater": "unicode"
+  },
+  "catalog": {
+    "desc": "目录",
+    "required": true,
+    "validater": "unicode"
+  },
+  "userid": {
+    "desc": "作者",
+    "required": true,
+    "validater": "unicode"
+  }
+}</pre>
+                </td>
+                <td class="success">
+                    <pre>{
+  "_id": {
+    "desc": "文章ID",
+    "required": true,
+    "validater": "unicode"
+  },
+  "article": {
+    "desc": "文章名称",
+    "required": true,
+    "validater": "unicode"
+  },
+  "catalog": {
+    "desc": "目录",
+    "required": true,
+    "validater": "unicode"
+  },
+  "content": {
+    "desc": "文章内容",
+    "required": true,
+    "validater": "unicode"
+  },
+  "date": {
+    "desc": "创建/修改日期",
+    "output": true,
+    "required": true,
+    "validater": "datetime"
+  },
+  "summary": {
+    "desc": "文章摘要",
+    "validater": "unicode"
+  },
+  "tags": [
+    {
+      "desc": "标签",
+      "required": true,
+      "validater": "unicode"
+    }
+  ],
+  "title": {
+    "desc": "文章标题",
+    "required": true,
+    "validater": "unicode"
+  },
+  "userid": {
+    "desc": "作者",
+    "required": true,
+    "validater": "unicode"
+  }
+}</pre>
+                </td>
+            </tr>
+            
+            <tr id="article.get_list">
+                <td class="info">
+                    <strong>get_list</strong>
+                    <pre>获取文章列表，结果按时间倒序排序。
+
+过滤参数有以下组合：
+1. userid: 只返回指定作者的文章
+2. userid + catalog: 只返回指定作者的指定目录的文章
+3. userid + tag: 只返回指定作者的指定标签的文章
+4. tag: 只返回指定标签的文章
+</pre>
+                </td>
+                <td class="success"><code>GET /api/article/list</code></td>
+                <td class="info">
+                    <pre>{
+  "catalog": {
+    "desc": "目录",
+    "validater": "unicode"
+  },
+  "pagenum": {
+    "default": 1,
+    "desc": "第几页，从1开始计算",
+    "validater": "+int"
+  },
+  "pagesize": {
+    "default": 10,
+    "desc": "每页的数量",
+    "validater": "+int"
+  },
+  "tag": {
+    "desc": "标签",
+    "validater": "unicode"
+  },
+  "userid": {
+    "desc": "作者",
+    "validater": "unicode"
+  }
+}</pre>
+                </td>
+                <td class="success">
+                    <pre>{
+  "offset": {
+    "required": true,
+    "validater": "int"
+  },
+  "rows": [
+    {
+      "_id": {
+        "desc": "文章ID",
+        "required": true,
+        "validater": "unicode"
+      },
+      "article": {
+        "desc": "文章名称",
+        "required": true,
+        "validater": "unicode"
+      },
+      "catalog": {
+        "desc": "目录",
+        "required": true,
+        "validater": "unicode"
+      },
+      "date": {
+        "desc": "创建/修改日期",
+        "output": true,
+        "required": true,
+        "validater": "datetime"
+      },
+      "summary": {
+        "desc": "文章摘要",
+        "validater": "unicode"
+      },
+      "tags": [
+        {
+          "desc": "标签",
+          "required": true,
+          "validater": "unicode"
+        }
+      ],
+      "title": {
+        "desc": "文章标题",
+        "required": true,
+        "validater": "unicode"
+      },
+      "userid": {
+        "desc": "作者",
+        "required": true,
+        "validater": "unicode"
+      }
+    }
+  ],
+  "total": {
+    "required": true,
+    "validater": "int"
+  }
+}</pre>
+                </td>
+            </tr>
+            
+            <tr id="article.post">
+                <td class="info">
+                    <strong>post</strong>
+                    <pre>创建或修改文章</pre>
+                </td>
+                <td class="success"><code>POST /api/article</code></td>
+                <td class="info">
+                    <pre>{
+  "article": {
+    "desc": "文章名称",
+    "required": true,
+    "validater": "unicode"
+  },
+  "catalog": {
+    "desc": "目录",
+    "required": true,
+    "validater": "unicode"
+  },
+  "content": {
+    "desc": "文章内容",
+    "required": true,
+    "validater": "unicode"
+  },
+  "date": {
+    "desc": "创建/修改日期",
+    "output": true,
+    "required": true,
+    "validater": "datetime"
+  },
+  "summary": {
+    "desc": "文章摘要",
+    "validater": "unicode"
+  },
+  "tags": [
+    {
+      "desc": "标签",
+      "required": true,
+      "validater": "unicode"
+    }
+  ],
+  "title": {
+    "desc": "文章标题",
+    "required": true,
+    "validater": "unicode"
+  }
+}</pre>
+                </td>
+                <td class="success">
+                    <pre>{
+  "_id": {
+    "desc": "文章ID",
+    "required": true,
+    "validater": "unicode"
+  },
+  "article": {
+    "desc": "文章名称",
+    "required": true,
+    "validater": "unicode"
+  },
+  "catalog": {
+    "desc": "目录",
+    "required": true,
+    "validater": "unicode"
+  },
+  "content": {
+    "desc": "文章内容",
+    "required": true,
+    "validater": "unicode"
+  },
+  "date": {
+    "desc": "创建/修改日期",
+    "output": true,
+    "required": true,
+    "validater": "datetime"
+  },
+  "summary": {
+    "desc": "文章摘要",
+    "validater": "unicode"
+  },
+  "tags": [
+    {
+      "desc": "标签",
+      "required": true,
+      "validater": "unicode"
+    }
+  ],
+  "title": {
+    "desc": "文章标题",
+    "required": true,
+    "validater": "unicode"
+  },
+  "userid": {
+    "desc": "作者",
+    "required": true,
+    "validater": "unicode"
+  }
+}</pre>
+                </td>
+            </tr>
+            
+        </table>
+    </div>
+    
+    <div class="resource table-responsive">
+        <h2 id="permission">permission</h2>
+        <p><pre>Permission
+
+    json struct of get::
+
+        {
+            "permission": {
+                "user_role": {
+                    "resource": "res_role",
+                    ...
+                },
+                ...
+            }
+            "resource": {
+                "res": ["res_role", ...],
+                ...
+            }
+        }
+
+    json struct of post::
+
+        {
+            "user_role": "user_role"
+            "resource": {
+                "res": "res_role",
+                ...
+            }
+        }
+
+    :param auth: Auth
+</pre></p>
+        <table class="table table-striped">
+            <tr>
+                <th>action / docs</th>
+                <th>method / url</th>
+                <th>param</th>
+                <th>return</th>
+            </tr>
+            
+            <tr id="permission.delete">
+                <td class="info">
+                    <strong>delete</strong>
+                    <pre>delete user_role</pre>
+                </td>
+                <td class="success"><code>DELETE /api/permission</code></td>
+                <td class="info">
+                    <pre>{
+  "user_role": {
+    "required": true,
+    "validater": "unicode"
+  }
+}</pre>
+                </td>
+                <td class="success">
+                    <pre>{
+  "message": {
+    "required": true,
+    "validater": "unicode"
+  }
+}</pre>
+                </td>
+            </tr>
+            
+            <tr id="permission.get">
+                <td class="info">
+                    <strong>get</strong>
+                    <pre>get permission info
+</pre>
+                </td>
+                <td class="success"><code>GET /api/permission</code></td>
+                <td class="info">
+                    <pre>null</pre>
+                </td>
+                <td class="success">
+                    <pre>null</pre>
+                </td>
+            </tr>
+            
+            <tr id="permission.get_permit">
+                <td class="info">
+                    <strong>get_permit</strong>
+                    <pre>check if the role can access the resource and action
+</pre>
+                </td>
+                <td class="success"><code>GET /api/permission/permit</code></td>
+                <td class="info">
+                    <pre>{
+  "action": {
+    "required": true,
+    "validater": "unicode"
+  },
+  "resource": {
+    "required": true,
+    "validater": "unicode"
+  },
+  "user_role": {
+    "required": true,
+    "validater": "unicode"
+  }
+}</pre>
+                </td>
+                <td class="success">
+                    <pre>{
+  "permit": {
+    "required": true,
+    "validater": "bool"
+  }
+}</pre>
+                </td>
+            </tr>
+            
+            <tr id="permission.post">
+                <td class="info">
+                    <strong>post</strong>
+                    <pre>add or update user_role</pre>
+                </td>
+                <td class="success"><code>POST /api/permission</code></td>
+                <td class="info">
+                    <pre>{
+  "resource": {
+    "required": true,
+    "validater": "any"
+  },
+  "user_role": {
+    "required": true,
+    "validater": "unicode"
+  }
+}</pre>
+                </td>
+                <td class="success">
+                    <pre>{
+  "message": {
+    "required": true,
+    "validater": "unicode"
+  }
+}</pre>
+                </td>
+            </tr>
+            
+        </table>
+    </div>
+    
+    <div class="resource table-responsive">
+        <h2 id="captcha">captcha</h2>
+        <p><pre>图形验证码</pre></p>
+        <table class="table table-striped">
+            <tr>
+                <th>action / docs</th>
+                <th>method / url</th>
+                <th>param</th>
+                <th>return</th>
+            </tr>
+            
+            <tr id="captcha.get">
+                <td class="info">
+                    <strong>get</strong>
+                    <pre>显示验证码</pre>
+                </td>
+                <td class="success"><code>GET /api/captcha</code></td>
+                <td class="info">
+                    <pre>null</pre>
+                </td>
+                <td class="success">
+                    <pre>null</pre>
+                </td>
+            </tr>
+            
+            <tr id="captcha.get_check">
+                <td class="info">
+                    <strong>get_check</strong>
+                    <pre>查看验证码是否正确</pre>
+                </td>
+                <td class="success"><code>GET /api/captcha/check</code></td>
+                <td class="info">
+                    <pre>{
+  "text": {
+    "required": true,
+    "validater": "unicode"
+  }
+}</pre>
+                </td>
+                <td class="success">
+                    <pre>{
+  "success": {
+    "required": true,
+    "validater": "bool"
+  },
+  "text": {
+    "required": true,
+    "validater": "unicode"
+  }
+}</pre>
+                </td>
+            </tr>
+            
+        </table>
+    </div>
+    
+</body>
+
+</html>

@@ -1,1 +1,0 @@
-{"views": {"by_article": {"reduce": "_count", "map": "function(doc) {\n  if(doc.type==\"comment\"){\n    emit([doc.article,doc.date,doc.userid], {_id:doc.userid,comment:doc});\n  }\n}"}}, "_id": "_design/comment", "language": "javascript"}
