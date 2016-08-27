@@ -2,30 +2,30 @@ version: '2'
 services:
     api:
         build:
-          context: .
-          dockerfile: api.dockerfile
+            context: .
+            dockerfile: api.dockerfile
         volumes:
-         - ./api:/api
-        depends_on:
-         - couchdb
-    static:
-        build: .
+           - ./data:/data
+           - ./api:/api
+           - ./web/dist:/api/purepage/templates
+    web:
+        build:
+            context: .
+            dockerfile: web.dockerfile
         volumes:
-         - .:/code
-        network_mode: "host"
-        depends_on:
-         - couchdb
+           - ./web:/web
     nginx:
-        image: nginx:stable-alpine
+        image: daocloud.io/nginx:stable-alpine
         volumes:
-         - ./nginx.conf:/etc/nginx/nginx.conf:ro
-         - .:/code
-        network_mode: "host"
-        depends_on:
-         - app
+           - ./web/dist:/web
+           - ./data:/data
+           - ./nginx.conf:/etc/nginx/nginx.conf:ro
+        ports:
+           - "5000:80"
     db:
-        image: klaemo/couchdb:2.0-dev
-        command: --admin=admin:123456 --with-haproxy
-        network_mode: "host"
+        image: rethinkdb:latest
         volumes:
-         - ./data/couchdb:/usr/local/var/lib/couchdb
+           - ./data/rethinkdb:/data
+        ports:
+           - "28015:28015"
+           - "6000:8080"

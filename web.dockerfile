@@ -1,4 +1,4 @@
 FROM daocloud.io/node:latest
-WORKDIR /static
 RUN npm install -g cnpm --registry=https://registry.npm.taobao.org
-CMD cnpm install && npm run build 
+WORKDIR /web
+CMD cnpm install && npm run build

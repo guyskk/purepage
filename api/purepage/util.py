@@ -1,13 +1,14 @@
 from flask import abort
 from flask_mail import Message
-from purepage import markdown
-from purepage.exts import mail
+# from purepage import markdown
+# from purepage.exts import mail
 import git
 from git.repo.fun import is_git_dir
 import giturlparse
 import datetime
 import os
 import logging
+from flask import current_app
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +17,15 @@ def now():
     """Current datetime in ISO_8601 format string"""
     dt = datetime.datetime.utcnow()
     return format_date(dt)
+
+
+def render_template(name, **extra):
+    path = os.path.join('templates', name)
+    with current_app.open_resource(path) as f:
+        content = f.read()
+        for k, v in extra:
+            content.replace('$(%s)' % k, v)
+    return content
 
 
 def format_date(dt):

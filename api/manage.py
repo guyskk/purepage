@@ -1,34 +1,35 @@
-from flask_script import Manager
-from purepage import create_app, db
-from purepage.util import read_repo, read_articles
+"""Purepage Commands"""
+import click
+from flask.cli import FlaskGroup, run_command as flask_run_command
+from purepage import create_app
 
 
 app = create_app()
-manage = Manager(app)
+cli = FlaskGroup(create_app=lambda *args, **kwargs: app, help=__doc__)
 
 
-@manage.command
-@manage.option("-u", "--url", dest="url")
-def readrepo(url):
-    print(read_repo(url, "data"))
+@cli.command('run', short_help='Runs a development server.')
+@click.option('--host', '-h', default='127.0.0.1', help='Host to bind')
+@click.option('--port', '-p', default=5000, help='Port to bind')
+@click.option('--debug/--no-debug', '-d', default=None, help='Debug or not')
+def run_command(host, port, debug):
+    if debug is None:
+        debug = app.debug
+    flask_run_command.callback(
+        host=host, port=port, reload=debug, debugger=debug,
+        eager_loading=None, with_threads=False
+    )
 
 
-@manage.command
-@manage.option("-p", "--path", dest="path")
-def readarticles(path):
-    print(list(read_articles(path)))
-
-
-@manage.command
-def initdb():
-    db.load_designs("design")
-
-
-@manage.command
-def savedb():
-    db.dump_designs("design")
+@cli.command()
+def db():
+    """Runs a database command"""
+    click.echo('db')
 
 if __name__ == '__main__':
-    import logging
-    logging.basicConfig(level=logging.DEBUG)
-    manage.run()
+    try:
+        import ipdb as pdb
+    except:
+        import pdb
+    __builtins__.debug = pdb.set_trace
+    cli()

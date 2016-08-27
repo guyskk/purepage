@@ -1,5 +1,6 @@
+import hmac
 import requests
-import six
+from hashlib import sha1
 from flask import request, json, abort, current_app
 from ipaddress import ip_address, ip_network
 
@@ -8,7 +9,8 @@ class Webhooks():
     """Github Webhooks"""
 
     def __init__(self):
-        self.__name__ = "webhooks"
+        # Flask.route needs __name__
+        self.__name__ = 'webhooks'
 
     def __call__(self):
 
@@ -16,7 +18,7 @@ class Webhooks():
         try:
             fn = getattr(self, self.event)
         except:
-            abort(404, "Not Implemented")
+            abort(400, "Not Implemented")
         fn()
 
     def ping(self):
@@ -48,11 +50,8 @@ def parse_request():
 
 def check_ip():
     # Allow Github IPs only
-    src_ip = ip_address(
-        '{}'.format(request.remote_addr)  # Fix stupid ipaddress issue
-    )
+    src_ip = ip_address(request.remote_addr)
     whitelist = requests.get('https://api.github.com/meta').json()['hooks']
-
     for valid_ip in whitelist:
         if src_ip in ip_network(valid_ip):
             break
@@ -71,24 +70,8 @@ def check_signature(secret):
         abort(501)
 
     # HMAC requires the key to be bytes, but data is string
-    secret = ensure_bytes(secret)
-    signature = ensure_bytes(signature)
+    secret = secret.encode('ascii')
+    signature = signature.encode('ascii')
     mac = hmac.new(secret, msg=request.data, digestmod=sha1)
-    digest = ensure_bytes(mac.hexdigest())
-    # Python prior to 2.7.7 does not have hmac.compare_digest
-    if hasattr(hmac, "compare_digest"):
-        if not hmac.compare_digest(digest, signature):
-            abort(403, "bad signature")
-    else:
-        # What compare_digest provides is protection against timing
-        # attacks; we can live without this protection for a web-based
-        # application
-        if digest != strsignature:
-            abort(403, "bad signature")
-
-
-def ensure_bytes(text):
-    if six.PY2:
-        return str(text)
-    else:
-        return bytes(text, encoding="ascii")
+    if not hmac.compare_digest(str(mac.hexdigest()), str(signature)):
+        abort(403, "bad signature")

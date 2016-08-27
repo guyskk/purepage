@@ -1,0 +1,2 @@
+TESTING = True
+MAIL_SUPPRESS_SEND = True

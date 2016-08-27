@@ -1,14 +1,17 @@
-"""flask exts"""
-from flask_restaction import Api, Auth
 from flask_github import GitHub
 from flask_mail import Mail
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from flask_couchdb import CouchDB
+from werkzeug.local import LocalProxy
 
-db = CouchDB()
 github = GitHub()
 mail = Mail()
 limiter = Limiter(key_func=get_remote_address)
-api = Api()
-auth = Auth()
+
+
+class Dependency:
+    """Dependency"""
+
+d = Dependency()
+
+api = LocalProxy(lambda: d.api)

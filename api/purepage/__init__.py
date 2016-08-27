@@ -13,119 +13,84 @@ res.user.put({repo: 'https://github.com/guyskk/purepage-article.git'})
 6. 同步博客仓库:
 res.user.post_sync_repo({})
 """
-import os
-from flask import Flask, Blueprint, abort, g
+from flask import Flask
+from flask import Blueprint
 from werkzeug.routing import BaseConverter, ValidationError
-from flask_restaction import Resource, Gen, Permission
-from couchdb.http import NotFound
-from purepage.exts import db, github, mail, limiter, api, auth
+from flask_restaction import Api
+from .dependency import d, github, mail, limiter
+from .util import render_template
 from purepage.webhooks import Webhooks
-from purepage.views.user import User
-from purepage.views.article import Article
-from purepage.views.comment import Comment
-from purepage.views.captcha import Captcha
+# from purepage.views.user import User
+# from purepage.views.article import Article
+# from purepage.views.comment import Comment
+# from purepage.views.captcha import Captcha
 
 
-class Info(Resource):
-
-    def get(self):
-        return "welcome to purepage!"
-
-    def get_404(self):
-        abort(404, 'test')
-
-    def get_403(self):
-        abort(403, 'test')
-
-    def get_400(self):
-        abort(400, 'test')
-
-    def get_500(self):
-        raise ValueError('test')
-
-resources = [Info, User, Article, Comment, Captcha]
+# resources = [User, Article, Comment, Captcha]
 
 
-def fn_user_role(token):
-    if token and "userid" in token:
-        try:
-            user = db.get(token["userid"])
-            g.user = user
-            g.userid = token["userid"]
-            return user["role"]
-        except NotFound:
-            pass
-    g.user = None
-    g.userid = None
-    return None
+# def fn_user_role(token):
+#     if token and "userid" in token:
+#         try:
+#             user = db.get(token["userid"])
+#             g.user = user
+#             g.userid = token["userid"]
+#             return user["role"]
+#         except NotFound:
+#             pass
+#     g.user = None
+#     g.userid = None
+#     return None
+
+RESERVED_WORDS = ['api', 'webhooks', 'docs', 'login', 'signup']
 
 
-class NoConverter(BaseConverter):
-    """NoConverter."""
-
-    def __init__(self, map, *items):
-        BaseConverter.__init__(self, map)
-        self.items = items
+class NotReservedConverter(BaseConverter):
+    """NotReservedConverter"""
 
     def to_python(self, value):
-        if value in self.items:
+        if value in RESERVED_WORDS:
             raise ValidationError()
         return value
 
 
 def create_app(config=None):
     app = Flask(__name__)
+    # app.debug = True
     app.config.from_object("purepage.config_default")
-    if config:
-        app.config.from_object(config)
-    app.url_map.converters['no'] = NoConverter
+    # if config:
+    #     app.config.from_object(config)
+    app.url_map.converters['not_reserved'] = NotReservedConverter
     app.route("/webhooks")(Webhooks())
-    route_views(app)
-    db.init_app(app)
+    config_route(app)
     github.init_app(app)
     mail.init_app(app)
     limiter.init_app(app)
 
-    bp_api = Blueprint('api', __name__, static_folder='static')
-    api.init_app(app, blueprint=bp_api, docs=__doc__)
-    for x in resources:
-        api.add_resource(x)
-    api.add_resource(Permission, auth=auth)
-    auth.init_api(api, fn_user_role=fn_user_role)
-    app.register_blueprint(bp_api, url_prefix='/api')
+    bp_api = Blueprint('api', __name__)
+    d.api = api = Api(bp_api, docs=__doc__)
 
-    gen = Gen(api)
-    gen.resjs()
-    gen.resdocs()
-    gen.permission()
+    # app.add_url_rule("/docs", view_func=api.meta_view)
+    api.add_resource(type('Docs', (), {'get': api.meta_view}))
+    # for x in resources:
+    #     api.add_resource(x)
+    app.register_blueprint(bp_api, url_prefix='/api')
     return app
 
 
-def route_views(app):
-    views = [
-        ("/", "index.html"),
-        ("/login", "login.html"),
-        ("/signup", "signup.html"),
-        ("/<no(static):userid>", "user.html"),
-        ("/<no(static):userid>/<catalog>", "catalog.html"),
-        ("/<no(static):userid>/<catalog>/<article>", "article.html"),
-    ]
+def config_route(app):
+    @app.route('/')
+    def index():
+        return render_template('index.html')
 
-    # 静态文件
-    def make_view(filename):
-        return lambda *args, **kwargs: app.send_static_file(filename)
+    @app.route('/<not_reserved:userid>')
+    def user(userid):
+        return render_template('user.html')
 
-    for url, filename in views:
-        endpoint = os.path.splitext(filename)[0]
-        app.route(url, endpoint=endpoint)(make_view(filename))
+    @app.route('/<not_reserved:userid>/<catalog>')
+    def catalog(userid, catalog):
+        return render_template('catalog.html')
 
-
-def config_cors(app):
-    # 跨域
-    from flask_cors import CORS
-    auth_header = app.config.get("API_AUTH_HEADER") \
-        or getattr(api, "auth_header")
-    resources = {
-        r"*": {"expose_headers": [auth_header]},
-    }
-    CORS(app, resources=resources)
+    @app.route('/<not_reserved:userid>/<catalog>/<article>')
+    def article(userid, catalog, article):
+        return render_template('article.html')

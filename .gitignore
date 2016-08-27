@@ -1,8 +1,9 @@
 data/
-node_modules
+dist/
+node_modules/
+config_product.py
 
-.venv
-.vagrant
+.venv/
 *.box
 *.db
 
@@ -16,22 +17,7 @@ __pycache__/
 # C extensions
 *.so
 
-# Distribution / packaging
-.Python
-env/
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
 .eggs/
-lib/
-# purepage/static/lib/
-!purepage/static/lib/
-lib64/
-parts/
-dist/
-var/
 *.egg-info/
 .installed.cfg
 *.egg

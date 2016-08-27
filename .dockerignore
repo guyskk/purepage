@@ -1,8 +1,9 @@
-data
-.git
+.git/
+data/
+node_modules/
+__pycache__/
+tests/
+.tox/
+.venv/
 *.egg-info
 *.pyc
-**/tests
-**/.tox
-**/__pycache__
-**/node_modules
