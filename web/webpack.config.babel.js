@@ -1,5 +1,6 @@
 import webpack from 'webpack'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
+import CopyWebpackPlugin from 'copy-webpack-plugin'
 
 let isProduction = process.env.NODE_ENV === 'production'
 let entry = {}
@@ -8,6 +9,10 @@ let plugins = [
     new webpack.optimize.CommonsChunkPlugin(
         'common', 'static/common.[hash].js'
     ),
+    new CopyWebpackPlugin([{
+        from: 'src/assets/favicon.ico',
+        to: 'static/favicon.ico'
+    }])
 ]
 if (isProduction) {
     devtool = 'source-map'

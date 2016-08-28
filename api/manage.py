@@ -1,8 +1,9 @@
 """Purepage Commands"""
 import click
+import rethinkdb as r
+from rethinkdb.errors import RqlRuntimeError
 from flask.cli import FlaskGroup, run_command as flask_run_command
-from purepage import create_app
-
+from purepage import create_app, create_connect
 
 app = create_app()
 cli = FlaskGroup(create_app=lambda *args, **kwargs: app, help=__doc__)
@@ -21,10 +22,19 @@ def run_command(host, port, debug):
     )
 
 
-@cli.command()
-def db():
-    """Runs a database command"""
-    click.echo('db')
+@cli.command('db', short_help='Config database')
+@click.option('--setup', is_flag=True, help='Setup database or not')
+def db_command(setup):
+    if setup:
+        db = app.config['RETHINKDB_DB']
+        conn = create_connect(app)
+        try:
+            r.db_create(db).run(conn)
+            click.echo('Database setup completed.')
+        except RqlRuntimeError:
+            click.echo('App database already exists.')
+    else:
+        click.echo('Nothing to do.')
 
 if __name__ == '__main__':
     try:

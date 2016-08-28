@@ -1,3 +1,5 @@
+# import rethinkdb as r
+from flask import g
 from flask_github import GitHub
 from flask_mail import Mail
 from flask_limiter import Limiter
@@ -13,5 +15,5 @@ class Dependency:
     """Dependency"""
 
 d = Dependency()
-
 api = LocalProxy(lambda: d.api)
+conn = LocalProxy(lambda: g.conn)

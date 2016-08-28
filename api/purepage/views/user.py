@@ -1,12 +1,13 @@
 """User API"""
 import jwt
+# import rethinkdb as r
 from datetime import datetime, timedelta
 from flask import request, abort, g, current_app, render_template
 from json import JSONDecodeError
 from flask_restaction import Resource, Res
 from werkzeug.security import generate_password_hash, check_password_hash
 from couchdb.http import Conflict, NotFound
-from purepage import auth, api, db, util
+from purepage.exts import api, db, util
 
 
 class InvalidTokenError(Exception):
@@ -182,7 +183,7 @@ class User(Resource):
         if db.count(('user', 'email'), key=token["email"]) > 1:
             db.delete(user)
             abort(400, "Email Already SignUp")
-        headers = auth.gen_header({"userid": token['userid']})
+        headers = api.gen_auth_headers({"userid": token['userid']})
         return "OK", 201, headers
 
     def post_login(self, userid, password, expiration):
@@ -194,7 +195,8 @@ class User(Resource):
         if not check_password_hash(user["pwdhash"], password):
             abort(403, "Password Incorrect")
         auth_exp = expiration * 60
-        return user, auth.gen_header({"userid": userid}, auth_exp=auth_exp)
+        return user, api.gen_auth_headers(
+            {"userid": userid}, auth_exp=auth_exp)
 
     def post_forgot(self, email):
         """忘记密码"""

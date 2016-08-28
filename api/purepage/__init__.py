@@ -13,11 +13,12 @@ res.user.put({repo: 'https://github.com/guyskk/purepage-article.git'})
 6. 同步博客仓库:
 res.user.post_sync_repo({})
 """
-from flask import Flask
-from flask import Blueprint
+from flask import Flask, Blueprint, g, abort
 from werkzeug.routing import BaseConverter, ValidationError
 from flask_restaction import Api
-from .dependency import d, github, mail, limiter
+import rethinkdb as r
+from rethinkdb.errors import RqlDriverError
+from .exts import d, github, mail, limiter
 from .util import render_template
 from purepage.webhooks import Webhooks
 # from purepage.views.user import User
@@ -56,29 +57,59 @@ class NotReservedConverter(BaseConverter):
 
 def create_app(config=None):
     app = Flask(__name__)
-    # app.debug = True
     app.config.from_object("purepage.config_default")
     # if config:
     #     app.config.from_object(config)
-    app.url_map.converters['not_reserved'] = NotReservedConverter
-    app.route("/webhooks")(Webhooks())
+
     config_route(app)
+    config_db(app)
+
     github.init_app(app)
     mail.init_app(app)
     limiter.init_app(app)
 
     bp_api = Blueprint('api', __name__)
-    d.api = api = Api(bp_api, docs=__doc__)
-
-    # app.add_url_rule("/docs", view_func=api.meta_view)
-    api.add_resource(type('Docs', (), {'get': api.meta_view}))
-    # for x in resources:
-    #     api.add_resource(x)
+    config_api(bp_api)
     app.register_blueprint(bp_api, url_prefix='/api')
     return app
 
 
+def config_api(app):
+    d.api = api = Api(app, docs=__doc__)
+    api.add_resource(type('Docs', (), {'get': api.meta_view}))
+    # for x in resources:
+    #     api.add_resource(x)
+
+
+def create_connect(app):
+    host = app.config.setdefault('RETHINKDB_HOST', 'localhost')
+    port = app.config.setdefault('RETHINKDB_PORT', '28015')
+    auth = app.config.setdefault('RETHINKDB_AUTH', '')
+    db = app.config.setdefault('RETHINKDB_DB', 'test')
+    return r.connect(host=host, port=port, auth_key=auth, db=db)
+
+
+def config_db(app):
+
+    @app.before_request
+    def before_request():
+        try:
+            g.conn = create_connect(app)
+        except RqlDriverError:
+            abort(503, "No database connection could be established.")
+
+    @app.teardown_request
+    def teardown_request(exception):
+        try:
+            g.conn.close()
+        except AttributeError:
+            pass
+
+
 def config_route(app):
+    app.url_map.converters['not_reserved'] = NotReservedConverter
+    app.route("/webhooks")(Webhooks())
+
     @app.route('/')
     def index():
         return render_template('index.html')
