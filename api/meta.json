@@ -5,20 +5,23 @@
                 "post_signup", "post_login", "post_forgot", "post_reset",
                 "get", "get_me", "post_login", "put", "put_email", "put_password"
             ],
-            "admin": ["get", "put", "delete"]
+            "admin": ["get", "put", "delete"],
+            "article": ["get", "get_top", "get_list", "put", "post", "delete"]
         },
         "admin": {
             "user": [
                 "post_signup", "post_login", "post_forgot", "post_reset",
                 "get", "get_me", "post_login", "put", "put_email", "put_password"
             ],
-            "admin": ["get", "put", "delete"]
+            "admin": ["get", "put", "delete"],
+            "article": ["get", "get_top", "get_list", "put", "post", "delete"]
         },
         "normal": {
             "user": [
                 "post_signup", "post_login", "post_forgot", "post_reset",
                 "get", "get_me", "post_login", "put", "put_email", "put_password"
-            ]
+            ],
+            "article": ["get", "get_top", "get_list", "put", "post", "delete"]
         },
         "guest": {
             "user": ["post_signup", "post_login", "post_forgot", "post_reset"]

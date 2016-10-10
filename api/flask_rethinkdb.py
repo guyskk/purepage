@@ -37,3 +37,9 @@ class Rethinkdb:
             return data[0]
         else:
             return None
+
+    def pagging(self, q, page, per_page):
+        return self.run(
+            q.skip((page - 1) * per_page)
+            .limit(per_page)
+        )

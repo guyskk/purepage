@@ -1,133 +1,130 @@
-from flask import g, abort
-from flask_restaction import Resource
-from purepage import db
-from couchdb.http import NotFound, CouchdbException
+import arrow
+from purepage.ext import r, db, g, abort
 
 
-class Article(Resource):
-    """Article"""
+class Article:
+    """
+    文章
 
-    schema_article = {
-        "_id": ("unicode&required", "文章ID"),
-        "userid": ("unicode&required", "作者"),
-        "catalog": ("unicode&required", "目录"),
-        "article": ("unicode&required", "文章名称"),
-        "title": ("unicode&required", "文章标题"),
-        "summary": ("unicode", "文章摘要"),
-        "tags": [("unicode&required", "标签")],
-        "date": ("datetime&required&output", "创建/修改日期"),
-        "content": ("unicode&required", "文章内容"),
-    }
+    $shared:
+        article:
+            id?str: ID
+            catalog?str: 目录
+            name?str: 名称
+            user:
+                id?str: 用户ID
+                username?str: 用户名
+            title?str: 标题
+            summary?str: 摘要
+            tags:
+              - str&desc="标签"
+    """
 
-    schema_article_no_content = schema_article.copy()
-    del schema_article_no_content['content']
-
-    schema_article_create = schema_article.copy()
-    del schema_article_create['_id']
-    del schema_article_create['userid']
-
-    schema_inputs = {
-        "get": {
-            "userid": ("unicode&required", "作者"),
-            "catalog": ("unicode&required", "目录"),
-            "article": ("unicode&required", "文章名称"),
-        },
-        "get_list": {
-            "pagenum": ("+int&default=1", "第几页，从1开始计算"),
-            "pagesize": ("+int&default=10", "每页的数量"),
-            "userid": ("unicode", "作者"),
-            "catalog": ("unicode", "目录"),
-            "tag": ("unicode", "标签")
-        },
-        "post": schema_article_create
-    }
-    schema_outputs = {
-        "get": schema_article,
-        "get_list": {
-            "total": "int&required",
-            "offset": "int&required",
-            "rows": [schema_article_no_content]
-        },
-        "post": schema_article,
-    }
-
-    def get(self, userid, catalog, article):
-        """获取一篇文章"""
-        key = ".".join([userid, catalog, article])
-        result = db.get(key)
-        return result
-
-    def get_list(self, pagenum, pagesize, userid, catalog, tag):
+    def post(self, catalog, name, title, summary, tags, content):
         """
-        获取文章列表，结果按时间倒序排序。
+        创建文章
 
-        过滤参数有以下组合：
-        1. userid: 只返回指定作者的文章
-        2. userid + catalog: 只返回指定作者的指定目录的文章
-        3. userid + tag: 只返回指定作者的指定标签的文章
-        4. tag: 只返回指定标签的文章
+        $input:
+            catalog?str: 目录
+            name?str: 名称
+            title?str: 标题
+            summary?str: 摘要
+            tags:
+              - str
+            content?str: 内容
+        $output:
+            id?str: ID
         """
+        resp = db.run(r.table("article").insert({
+            "catalog": catalog,
+            "name": name,
+            "user": {
+                "id": g.user["id"],
+                "username": g.user["username"],
+            },
+            "title": title,
+            "summary": summary,
+            "tags": tags,
+            "content": content,
+            "date_create": arrow.utcnow().datetime,
+            "date_modify": arrow.utcnow().datetime
+        }))
+        return {"id": resp["generated_keys"][0]}
 
-        if userid:
-            if tag:
-                view = "by_user_tag"
-                startkey = [userid, tag, {}]
-                endkey = [userid, tag]
-            elif catalog:
-                view = "by_user_catalog"
-                startkey = [userid, catalog, {}]
-                endkey = [userid, catalog]
-            else:
-                view = "by_user"
-                startkey = [userid, {}]
-                endkey = [userid]
-        elif tag:
-            view = "by_tag"
-            startkey = [tag, {}]
-            endkey = [tag]
-        else:
-            view = "by_date"
-            startkey = None
-            endkey = {}
-        params = {
-            "reduce": False,
-            "include_docs": True,
-            "skip": (pagenum - 1) * pagesize,
-            "limit": pagesize,
-            "descending": True,
-        }
-        view = ("article", view)
-        if startkey:
-            params["startkey"] = startkey
-            params["endkey"] = endkey
-        result = db.query(view, **params)
-        return {
-            "total": result['total_rows'],
-            "offset": result['offset'],
-            "rows": [x['doc'] for x in result['rows']]
-        }
+    def put(self, id, catalog, name, title, summary, tags, content):
+        """
+        修改文章
 
-    def post(self, catalog, article, **info):
-        """创建或修改文章"""
-        userid = g.user['_id']
-        _id = '.'.join([userid, catalog, article])
-        try:
-            origin = db.get(_id)
-        except NotFound:
-            origin = {
-                'type': 'article',
-                '_id': _id,
-                'userid': userid,
-                'catalog': catalog,
-                'article': article
-            }
-        origin.update(info)
-        db.put(origin)
-        return origin
+        $input:
+            id?str: ID
+            catalog?str: 目录
+            name?str: 名称
+            meta:
+                title?str: 标题
+                summary?str: 摘要
+                tags:
+                  - str
+            content?str: 内容
+        $output: @message
+        """
+        q = r.table("article").get(id)
+        if not db.first(q):
+            abort(400, "ArticleNotFound", "文章不存在")
+        db.run(q.update({
+            "catalog": catalog,
+            "name": name,
+            "title": title,
+            "summary": summary,
+            "tags": tags,
+            "content": content,
+            "date_modify": arrow.utcnow().datetime
+        }))
+        return {"message": "OK"}
 
+    def get(self, id):
+        """
+        获取一篇文章
 
-@Article.error_handler
-def handler_404(self, ex):
-    if isinstance(ex, CouchdbException):
-        if ex.status_code == 404:
-            abort(404, '%s: %s' % (ex.error or 'Not Found', ex.reason or ''))
+        $input:
+            id?str: ID
+        $output:
+            $self@article&optional: 文章信息
+            content?str: 内容
+        """
+        return db.run(r.table("article").get(id))
+
+    def get_top(self, page, per_page, tag):
+        """
+        获取最新的文章，结果按时间倒序排序
+
+        $input:
+            $self@pagging: 分页
+            tag?str&optional: 标签
+        $output:
+            - @article
+        """
+        q = r.table("article")
+        if tag:
+            q = q.filter(lambda x: tag in x["tags"])
+        q = q.order_by(r.desc("date_modify"))
+        return db.pagging(q, page, per_page)
+
+    def get_list(self, page, per_page, username, catalog, tag):
+        """
+        获取作者文章列表，结果按时间倒序排序
+
+        $input:
+            $self@pagging: 分页
+            username?str: 用户名
+            catalog?str&optional: 目录
+            tag?str&optional: 标签
+        $output:
+            - @article
+        """
+        q = r.table("article").filter({"username": username})
+        if catalog:
+            q = q.filter({"catalog": catalog})
+        if tag:
+            q = q.filter(lambda x: tag in x["tags"])
+        q = q.order_by(r.desc("date_modify"))
+        return db.pagging(q, page, per_page)
