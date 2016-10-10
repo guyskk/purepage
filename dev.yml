@@ -1,0 +1,10 @@
+version: '2'
+services:
+    db:
+        extends:
+            file: docker-compose.yml
+            service: db
+        volumes:
+          - /tmp/rethinkdb:/data
+        ports:
+          - "28015:28015"

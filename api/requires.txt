@@ -1,5 +1,5 @@
 flask>=0.11.1
-flask-restaction>=0.22.5
+git+https://github.com/guyskk/flask-restaction.git
 flask-mail>=0.9.1
 flask-caching>=1.0.0
 flask-limiter>=0.9.3
@@ -7,8 +7,7 @@ requests>=2.7.0
 github-flask>=3.1.1
 rethinkdb>=2.3.0
 ipaddress>=1.0.16
-python-dateutil>=2.4.2
+arrow>=2.4.2
 giturlparse.py>=0.0.5
-pyyaml>=3.11
 gitpython>=2.0.2
 gunicorn>=19.4.5

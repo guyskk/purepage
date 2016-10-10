@@ -7,7 +7,6 @@ services:
         volumes:
           - ./data:/data
           - ./api:/api:ro
-          - ./web/dist:/api/purepage/templates:ro
     web:
         build:
             context: .
@@ -15,14 +14,13 @@ services:
         volumes:
           - ./web:/web
     nginx:
-        image: daocloud.io/nginx:stable-alpine
+        image: nginx:stable-alpine
         volumes:
           - ./data:/data
           - ./web/dist:/web:ro
           - ./nginx.conf:/etc/nginx/nginx.conf:ro
         ports:
           - "80:80"
-          - "5000:5000"
     db:
         image: rethinkdb:latest
         volumes:

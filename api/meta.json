@@ -1,0 +1,28 @@
+{
+    "$roles": {
+        "root": {
+            "user": [
+                "post_signup", "post_login", "post_forgot", "post_reset",
+                "get", "get_me", "post_login", "put", "put_email", "put_password"
+            ],
+            "admin": ["get", "put", "delete"]
+        },
+        "admin": {
+            "user": [
+                "post_signup", "post_login", "post_forgot", "post_reset",
+                "get", "get_me", "post_login", "put", "put_email", "put_password"
+            ],
+            "admin": ["get", "put", "delete"]
+        },
+        "normal": {
+            "user": [
+                "post_signup", "post_login", "post_forgot", "post_reset",
+                "get", "get_me", "post_login", "put", "put_email", "put_password"
+            ]
+        },
+        "guest": {
+            "user": ["post_signup", "post_login", "post_forgot", "post_reset"]
+        }
+    }
+
+}

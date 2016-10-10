@@ -1,17 +1,14 @@
 # flask
-DEBUG = True
 SECRET_KEY = "SECRET_KEY"
 
 # purepage
-USER_AUTH_SECRET = "SECRET"
-USER_AUTH_ALG = "HS256"
-SERVER_URL = "127.0.0.1:5000"
+SERVER_URL = "127.0.0.1"
 
 # database
 RETHINKDB_HOST = 'db'
 RETHINKDB_PORT = '28015'
 RETHINKDB_AUTH = ''
-RETHINKDB_DB = 'test'
+RETHINKDB_DB = 'purepage'
 
 # flask-limiter
 RATELIMIT_GLOBAL = "50 per hour"
