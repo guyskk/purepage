@@ -1,19 +1,13 @@
 """
-## PurePage
+# PurePage
 
-注册用户并设置博客仓库:
-1. 验证邮箱
-res.user.post_verify({userid:'guyskk',email:'guyskk@qq.com'})
-2. 在(命令行)控制台里面会显示发送的邮件内容，取出其中的token
-3. 注册
-res.user.post_signup({token:token,password:'123456'})
-4. 登录
-res.user.post_login({userid:'guyskk',password:'123456'})
-5. 设置代码仓库
-res.user.put({repo: 'https://github.com/guyskk/purepage-article.git'})
-6. 同步博客仓库:
-res.user.post_sync_repo({})
+注册
 
+    res.user.post_signup({username:'guyskk',password:'123456'})
+
+登录
+
+    res.user.post_login({username:'guyskk',password:'123456'})
 
 $shared:
     message:

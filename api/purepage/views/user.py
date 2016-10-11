@@ -56,6 +56,7 @@ class User:
             "role": "normal",
             "date_create": arrow.utcnow().datetime,
             "date_modify": arrow.utcnow().datetime,
+            "timestamp": arrow.utcnow().timestamp
         }))
         return {"message": "OK"}
 
@@ -86,7 +87,8 @@ class User:
             .update({
                 "lastlogin_date": arrow.utcnow().datetime,
                 "lastlogin_ip": request.remote_addr,
-                "lastlogin_ua": request.headers.get('User-Agent')
+                "lastlogin_ua": request.headers.get('User-Agent'),
+                "timestamp": arrow.utcnow().timestamp
             })
         )
         g.token = {"type": "login", "id": user["id"]}
@@ -125,7 +127,8 @@ class User:
             .update({
                 "github": github,
                 "avatar": avatar,
-                "date_modify": arrow.utcnow().datetime
+                "date_modify": arrow.utcnow().datetime,
+                "timestamp": arrow.utcnow().timestamp
             })
         )
         return {"message": "OK"}
@@ -142,7 +145,8 @@ class User:
         self.check_password(g.user, password)
         db.run(r.table("user").get(g.user["id"]).update({
             "email": email,
-            "date_modify": arrow.utcnow().datetime
+            "date_modify": arrow.utcnow().datetime,
+            "timestamp": arrow.utcnow().timestamp
         }))
         return {"message": "OK"}
 
@@ -158,7 +162,8 @@ class User:
         self.check_password(g.user, password)
         db.run(r.table("user").get(g.user["id"]).update({
             "pwdhash": gen_pwdhash(new_password),
-            "date_modify": arrow.utcnow().datetime
+            "date_modify": arrow.utcnow().datetime,
+            "timestamp": arrow.utcnow().timestamp
         }))
         return {"message": "OK"}
 
@@ -172,13 +177,14 @@ class User:
         $error:
             400.UserNotFound: 用户不存在
         """
-        user = db.first(r.table("user") .filter(r.row["email"] == email))
+        user = db.first(r.table("user").filter(r.row["email"] == email))
         if not user:
             abort(400, "UserNotFound", "用户不存在")
         token = auth.encode_token({
             "type": "reset",
             "id": user["id"],
-            "exp": arrow.utcnow().replace(hours=2).timestamp
+            "exp": arrow.utcnow().replace(hours=2).timestamp,
+            "timestamp": user["timestamp"]
         })
         token = token.decode("ascii")
         msg = Message("PurePage重置密码", recipients=[email])
@@ -200,78 +206,21 @@ class User:
         """
         token = auth.decode_token(token)
         if token and token.get("type") == "reset":
+            user = db.run(r.table("user").get(token["id"]))
+            if (
+                user is None
+                or "timestamp" not in token
+                or user["timestamp"] != token["timestamp"]
+            ):
+                abort(403, "InvalidToken", "Token无效")
             db.run(
                 r.table("user")
                 .get(token["id"])
-                .update({"pwdhash": gen_pwdhash(password)})
+                .update({
+                    "pwdhash": gen_pwdhash(password),
+                    "timestamp": arrow.utcnow().timestamp
+                })
             )
             return {"message": "OK"}
         else:
             abort(403, "InvalidToken", "Token无效")
-
-
-class Admin:
-    """
-    后台管理
-
-    $shared:
-        user:
-            id?str: ID
-            username?str: 用户名
-            email?email: 邮箱
-            role?str: 角色
-            github?url&optional: Github地址
-            avatar?url&default="http://purepage.org/static/avatar-default.png": 头像
-            date_create?datetime&optional: 创建时间
-            date_modify?datetime&optional: 修改时间
-            lastlogin_date?datetime&optional: 最近登录时间
-            lastlogin_ip?ipv4&optional: 最近登录IP
-            lastlogin_ua?str&optional: 最近登录设备UserAgent
-    """  # noqa
-
-    def put(self, id, username, role, email):
-        """
-        修改帐号信息
-
-        $input:
-            id?str: ID
-            username?str: 用户名
-            role?url: 角色
-            email?email: 邮箱
-        $output: @message
-        """
-        if role == "root":
-            abort(403, "PermissionDeny", "不能设为root帐号")
-        db.run(
-            r.table("user").get(id).update({
-                "username": username,
-                "role": role,
-                "email": email
-            })
-        )
-        return {"message": "OK"}
-
-    def get(self, username):
-        """
-        查找帐号
-
-        $input:
-            username?str: 用户名或邮箱
-        $output: @user
-        """
-        q = r.row["username"] == username or r.row["email"] == username
-        return db.first(r.table("user").filter(q))
-
-    def delete(self, id):
-        """
-        删除帐号
-
-        $input:
-            id?int: ID
-        $output: @message
-        """
-        user = db.run(r.table("user").get(id))
-        if user and user["role"] == "root":
-            abort(403, "PermissionDeny", "root帐号无法删除")
-        db.run(r.table("user").get(id).delete())
-        return {"message": "OK"}

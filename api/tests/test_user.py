@@ -107,6 +107,12 @@ def test_forgot_reset(res, user, assert_error):
         "token": token,
         "password": "jack1234"
     })
+    # Token只能用一次
+    with assert_error(403, "InvalidToken"):
+        res.user.post_reset({
+            "token": token,
+            "password": "1234"
+        })
     res.user.post_login({
         "username": "jack",
         "password": "jack1234"
