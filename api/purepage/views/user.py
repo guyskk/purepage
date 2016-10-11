@@ -73,8 +73,11 @@ class User:
             username?str: 用户名或邮箱
             password?str: 密码
         $output: @user
+        $error:
+            403.UserNotFound: 帐号不存在
+            403.WrongPassword: 密码错误
         """
-        q = r.row["username"] == username or r.row["email"] == username
+        q = r.or_(r.row["username"] == username, r.row["email"] == username)
         user = db.first(r.table("user").filter(q))
         self.check_password(user, password)
         db.run(
@@ -112,8 +115,8 @@ class User:
         修改个人信息
 
         $input:
-            github?url: Github地址
-            avatar?url: 头像
+            github?url&optional: Github地址
+            avatar?url&optional: 头像
         $output: @message
         """
         db.run(
@@ -121,7 +124,8 @@ class User:
             .get(g.user["id"])
             .update({
                 "github": github,
-                "avatar": avatar
+                "avatar": avatar,
+                "date_modify": arrow.utcnow().datetime
             })
         )
         return {"message": "OK"}
@@ -136,7 +140,10 @@ class User:
         $output: @message
         """
         self.check_password(g.user, password)
-        db.run(r.table("user").get(g.user["id"]).update({"email": email}))
+        db.run(r.table("user").get(g.user["id"]).update({
+            "email": email,
+            "date_modify": arrow.utcnow().datetime
+        }))
         return {"message": "OK"}
 
     def put_password(self, new_password, password):
@@ -149,28 +156,31 @@ class User:
         $output: @message
         """
         self.check_password(g.user, password)
-        db.run(
-            r.table("user")
-            .get(g.user["id"])
-            .update({"password": gen_pwdhash(password)})
-        )
+        db.run(r.table("user").get(g.user["id"]).update({
+            "pwdhash": gen_pwdhash(new_password),
+            "date_modify": arrow.utcnow().datetime
+        }))
         return {"message": "OK"}
 
     def post_forgot(self, email):
         """
-        忘记密码
+        忘记密码，Token有效时间为2小时
 
         $input:
             email?email: 邮箱
         $output: @message
+        $error:
+            400.UserNotFound: 用户不存在
         """
         user = db.first(r.table("user") .filter(r.row["email"] == email))
         if not user:
             abort(400, "UserNotFound", "用户不存在")
         token = auth.encode_token({
             "type": "reset",
-            "id": user["id"]
+            "id": user["id"],
+            "exp": arrow.utcnow().replace(hours=2).timestamp
         })
+        token = token.decode("ascii")
         msg = Message("PurePage重置密码", recipients=[email])
         msg.html = render_template(
             "user-reset.html", token=token, username=user["username"])

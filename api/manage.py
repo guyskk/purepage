@@ -2,7 +2,7 @@
 import click
 from flask.cli import FlaskGroup
 from purepage import create_app
-from purepage.ext import db, r
+from purepage.ext import db
 from purepage.util import create_root
 
 import config_develop as config
