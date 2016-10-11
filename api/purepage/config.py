@@ -3,6 +3,8 @@ SECRET_KEY = "SECRET_KEY"
 
 # purepage
 SERVER_URL = "127.0.0.1"
+ROOT_PASSWORD = "123456"
+ROOT_EMAIL = ""
 
 # database
 RETHINKDB_HOST = 'db'

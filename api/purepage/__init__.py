@@ -31,6 +31,7 @@ from .ext import (
 from . import views
 
 
+ALL_TABLE = ["user", "article"]
 ALL_RESOURCE = [getattr(views, x) for x in dir(views) if x[:1].isupper()]
 
 
@@ -52,7 +53,7 @@ def create_app(config=None):
     init_github(app)
     init_mail(app)
     init_limiter(key_func=get_remote_address)
-    init_db(app)
+    init_db(app, tables=ALL_TABLE)
     config_api(app)
     return app
 
