@@ -1,6 +1,5 @@
 import rethinkdb as r
-from flask import _app_ctx_stack  # use this if no request context
-from flask import _request_ctx_stack  # a connection per request
+from flask import _app_ctx_stack as stack
 
 
 class Rethinkdb:
@@ -16,15 +15,9 @@ class Rethinkdb:
         app.config.setdefault('RETHINKDB_AUTH', '')
         app.config.setdefault('RETHINKDB_DB', 'test')
 
-        @app.teardown_request
-        def teardown_request(exception):
-            ctx = _request_ctx_stack.top
-            if hasattr(ctx, 'rethinkdb'):
-                ctx.rethinkdb.close()
-
         @app.teardown_appcontext
         def teardown_appcontext(exception):
-            ctx = _app_ctx_stack.top
+            ctx = stack.top
             if hasattr(ctx, 'rethinkdb'):
                 ctx.rethinkdb.close()
 
@@ -58,9 +51,7 @@ class Rethinkdb:
 
     @property
     def conn(self):
-        ctx = _request_ctx_stack.top
-        if ctx is None:
-            ctx = _app_ctx_stack.top
+        ctx = stack.top
         if ctx is None:
             raise RuntimeError("Working outside of context")
         if not hasattr(ctx, 'rethinkdb'):

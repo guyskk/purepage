@@ -10,8 +10,7 @@ import pytest
 def app():
     app = create_app(config)
     db.create_all()
-    with app.app_context():
-        yield app
+    yield app
     db.drop_all()
 
 
@@ -23,7 +22,8 @@ def client(app):
 
 @pytest.fixture
 def root(app):
-    create_root()
+    with app.app_context():
+        create_root()
     res = Res(test_client=app.test_client)
     res.user.post_login({"username": "root", "password": "123456"})
     return res
