@@ -1,5 +1,5 @@
 def test_get(root, user):
-    user("jack", "jack@purepage.org")
+    user("jack", email="jack@purepage.org")
     jack = root.admin.get({"username": "jack"})
     assert root.admin.get({"username": "jack@purepage.org"}) == jack
     assert jack["email"] == "jack@purepage.org"

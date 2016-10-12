@@ -205,22 +205,21 @@ class User:
             403.InvalidToken: Token无效
         """
         token = auth.decode_token(token)
-        if token and token.get("type") == "reset":
-            user = db.run(r.table("user").get(token["id"]))
-            if (
-                user is None
-                or "timestamp" not in token
-                or user["timestamp"] != token["timestamp"]
-            ):
-                abort(403, "InvalidToken", "Token无效")
-            db.run(
-                r.table("user")
-                .get(token["id"])
-                .update({
-                    "pwdhash": gen_pwdhash(password),
-                    "timestamp": arrow.utcnow().timestamp
-                })
-            )
-            return {"message": "OK"}
-        else:
+        if not token or token.get("type") != "reset":
             abort(403, "InvalidToken", "Token无效")
+        user = db.run(r.table("user").get(token["id"]))
+        if (
+            user is None
+            or "timestamp" not in token
+            or user["timestamp"] != token["timestamp"]
+        ):
+            abort(403, "InvalidToken", "Token无效")
+        db.run(
+            r.table("user")
+            .get(token["id"])
+            .update({
+                "pwdhash": gen_pwdhash(password),
+                "timestamp": arrow.utcnow().timestamp
+            })
+        )
+        return {"message": "OK"}
