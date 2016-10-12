@@ -17,6 +17,9 @@
     <a href="https://github.com/vuejs/vue-router/" target="_blank">vue-router</a> for routing and
     <a href="https://github.com/vuejs/vuex/" target="_blank">vuex</a> for state management.
   </p>
+  <el-button>默认按钮</el-button>
+  <el-button type="primary">主要按钮</el-button>
+  <el-button type="text">文字按钮</el-button>
 </div>
 </template>
 
