@@ -7,12 +7,14 @@
   "scripts": {
     "dev": "node build/dev-server.js",
     "build": "node build/build.js",
-    "lint": "eslint --ext .js,.vue src"
+    "lint": "eslint --ext .js,.vue src",
+    "resjs": "resjs http://127.0.0.1:5000 -p /api -d static/res.js -m"
   },
   "dependencies": {
     "vue": "^2.0.1"
   },
   "devDependencies": {
+    "resjs": "^0.0.4",
     "autoprefixer": "^6.4.0",
     "babel-core": "^6.0.0",
     "babel-eslint": "^7.0.0",
