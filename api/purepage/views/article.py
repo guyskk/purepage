@@ -1,5 +1,6 @@
 import arrow
 from purepage.ext import r, db, g, abort
+from purepage.util import clear_empty
 
 
 class Article:
@@ -51,7 +52,7 @@ class Article:
         }))
         return {"id": resp["generated_keys"][0]}
 
-    def put(self, id, catalog, name, title, summary, tags, content):
+    def put(self, id, **kwargs):
         """
         修改文章
 
@@ -59,24 +60,56 @@ class Article:
             id?str: ID
             catalog?str: 目录
             name?str: 名称
-            meta:
-                title?str: 标题
-                summary?str: 摘要
-                tags:
-                  - str
+            title?str: 标题
+            summary?str: 摘要
+            tags:
+              - str
             content?str: 内容
         $output: @message
+        $error:
+            400.ArticleNotFound: 文章不存在
+            403.PermissionDeny: 只能修改自己的文章
         """
         q = r.table("article").get(id)
-        if not db.first(q):
+        art = db.run(q)
+        if not art:
             abort(400, "ArticleNotFound", "文章不存在")
+        if art["user"]["id"] != g.user["id"]:
+            abort(403, "PermissionDeny", "只能修改自己的文章")
         db.run(q.update({
-            "catalog": catalog,
-            "name": name,
-            "title": title,
-            "summary": summary,
-            "tags": tags,
-            "content": content,
+            **kwargs,
+            "date_modify": arrow.utcnow().datetime
+        }))
+        return {"message": "OK"}
+
+    def patch(self, id, **kwargs):
+        """
+        增量修改文章基本信息
+
+        $input:
+            id?str: ID
+            catalog?str&optional: 目录
+            name?str&optional: 名称
+            title?str&optional: 标题
+            summary?str&optional: 摘要
+            tags:
+              - &optional
+              - str
+            content?str&optional: 内容
+        $output: @message
+        $error:
+            400.ArticleNotFound: 文章不存在
+            403.PermissionDeny: 只能修改自己的文章
+        """
+        kwargs = clear_empty(kwargs)
+        q = r.table("article").get(id)
+        art = db.run(q)
+        if not art:
+            abort(400, "ArticleNotFound", "文章不存在")
+        if art["user"]["id"] != g.user["id"]:
+            abort(403, "PermissionDeny", "只能修改自己的文章")
+        db.run(q.update({
+            **kwargs,
             "date_modify": arrow.utcnow().datetime
         }))
         return {"message": "OK"}
@@ -121,10 +154,12 @@ class Article:
         $output:
             - @article
         """
-        q = r.table("article").filter({"username": username})
+        q = r.table("article").filter(
+            lambda x: x["user"]["username"] == username
+        )
         if catalog:
             q = q.filter({"catalog": catalog})
         if tag:
-            q = q.filter(lambda x: tag in x["tags"])
+            q = q.filter(lambda x: x["tags"].contains(tag))
         q = q.order_by(r.desc("date_modify"))
         return db.pagging(q, page, per_page)

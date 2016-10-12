@@ -26,6 +26,14 @@ def create_root():
                 "email": current_app.config.get("ROOT_EMAIL")
             }))
 
+
+def is_empty(v):
+    return v == "" or v is None
+
+
+def clear_empty(dic):
+    """去除字典中值为None或空字符串的元素"""
+    return {k: v for k, v in dic.items() if not is_empty(v)}
 logger = logging.getLogger(__name__)
 
 
