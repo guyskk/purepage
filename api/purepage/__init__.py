@@ -43,6 +43,8 @@ def create_app(config=None):
     app.config.from_object("purepage.config")
     if config:
         app.config.from_object(config)
+    else:
+        app.config.from_envvar("PUREPAGE_CONFIG", silent=True)
 
     init_github(app)
     init_mail(app)

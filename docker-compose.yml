@@ -7,6 +7,8 @@ services:
         volumes:
           - ./data:/data
           - ./api:/api:ro
+        environment:
+          - PUREPAGE_CONFIG=/api/config_product.py
     web:
         build:
             context: .
@@ -21,6 +23,8 @@ services:
           - ./nginx.conf:/etc/nginx/nginx.conf:ro
         ports:
           - "80:80"
+        depends_on:
+          - api
     db:
         image: rethinkdb:latest
         volumes:

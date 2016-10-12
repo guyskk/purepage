@@ -1,12 +1,15 @@
 """Purepage Commands"""
+import os
 import click
 from flask.cli import FlaskGroup
 from purepage import create_app
 from purepage.ext import db
 from purepage.util import create_root
 
-import config_develop as config
-app = create_app(config)
+if "PUREPAGE_CONFIG" in os.environ:
+    app = create_app()
+else:
+    app = create_app("config_develop")
 
 cli = FlaskGroup(create_app=lambda *args, **kwargs: app, help=__doc__)
 

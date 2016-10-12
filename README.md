@@ -13,33 +13,17 @@ PurePage 致力于达到以下目标:
 3. 运行稳定，安全，快速
 4. 开放API
 
-### 安装
+### 部署
 
-PurePage 使用 docker 进行部署，linux 平台下需要安装 docker 和 docker-compose，
-windows 和 mac 需要安装 docker-toolbox。安装教程请参考 https://docs.docker.com/ 。
+PurePage使用docker-compose进行部署。
 
-安装完docker之后，执行以下命令:
-```
-git clone https://github.com/guyskk/purepage.git
-cd purepage
-docker-compose up
-```
+安装完docker和docker-compose之后，执行以下命令:
 
-稍等片刻，PurePage 启动成功之后，
-另外一个控制台运行 `docker exec purepage_app_1 python manage.py initdb`
+    git clone https://github.com/guyskk/purepage.git
+    cd purepage
+    docker-compose up -d
+    docker-compose exec api python manage.py db --create --root
 
-访问 http://127.0.0.1:5000/static/resdocs.html 查看 API 文档
-
-打开浏览器控制台，注册用户并设置博客仓库地址:
-
-    res.user.post_signup({userid:'guyskk',password:'123456'})
-    res.user.post_login({userid:'guyskk',password:'123456'})
-    res.user.put({repo: 'https://github.com/guyskk/kkblog-article.git'})
-
-最后，同步博客仓库:
-
-    res.user.post_sync_repo({})
-	
 
 #### 基本配置
 
@@ -60,14 +44,14 @@ docker-compose up
 
 
 博客仓库
-	
+
 	/ 仓库根目录
 	/catalog 子目录
 	/catalog/article_xxx.md 文章
 	/2015/python2编码问题.md 示例
 
 #### 路由
-	
+
 路径                    | 对应的html        | 内容
 ----------------------- | ----------------- | --------------------------
 /                       | index.html        | 首页，主要显示最新文章列表
@@ -119,4 +103,3 @@ docker-compose up
 安装 pillow
 
 	apt-get install libjpeg-dev
-	
