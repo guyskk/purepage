@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import Hello from './components/Hello'
+import Hello from './comps/Hello'
 res.user.post_login({
   username: 'root',
   password: '123456'
