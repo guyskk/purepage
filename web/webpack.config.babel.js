@@ -1,14 +1,18 @@
 import webpack from 'webpack'
-import HtmlWebpackPlugin from 'html-webpack-plugin'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
+import HtmlWebpackPlugin from 'html-webpack-plugin'
 
 let isProduction = process.env.NODE_ENV === 'production'
-let entry = {}
 let devtool = 'eval'
 let plugins = [
     new webpack.optimize.CommonsChunkPlugin(
         'common', 'static/common.[hash].js'
     ),
+    new HtmlWebpackPlugin({
+        filename: 'index.html',
+        template: 'src/index.html',
+        inject: true
+    }),
     new CopyWebpackPlugin([{
         from: 'src/assets/favicon.ico',
         to: 'static/favicon.ico'
@@ -29,17 +33,11 @@ if (isProduction) {
         })
     )
 }
-for (let name of['index' /*, 'user', 'catalog'*/ , 'article']) {
-    entry[name] = './src/' + name + '.js'
-    plugins.push(new HtmlWebpackPlugin({
-        filename: name + '.html',
-        template: 'src/app.html',
-        chunks: [name, 'common']
-    }))
-}
 
 export default {
-    entry: entry,
+    entry: {
+        index: './src/index.js'
+    },
     output: {
         path: './dist',
         filename: 'static/[name].[hash].js'
@@ -68,6 +66,7 @@ export default {
     devServer: {
         contentBase: './dist',
         historyApiFallback: false,
+        port: 8000,
         proxy: {
             '/api': {
                 target: 'http://127.0.0.1:5000',
