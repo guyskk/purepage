@@ -8,6 +8,7 @@
 export default {}
 </script>
 
-<style>
-
+<style lang="scss">
+@import "./assets/variables";
+@import "./assets/common";
 </style>

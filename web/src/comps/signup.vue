@@ -22,22 +22,12 @@
       <div class="message"> {{message}} </div>
   </div>
 </div>
-
 </template>
 
-<style lang="css" scoped>
+<style lang="scss" scoped>
 .comp{
   width: 320px;
   margin: 0 auto;
-}
-.submit {
-  width: 300px;
-}
-.message {
-  height: 2em;
-  line-height: 2em;
-  text-align: center;
-  color: rgb(255, 152, 0);
 }
 </style>
 
@@ -58,6 +48,7 @@ export default {
     signup() {
       res.user.post_signup(this.form).then(data => {
         this.message = data.message
+        this.$router.push('/login')
       }).catch(error => {
         this.message = error.message
       })

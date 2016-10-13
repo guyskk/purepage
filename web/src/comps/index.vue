@@ -1,18 +1,14 @@
 <template>
-<div class="index">
-  <img class="logo" src="../assets/logo.png">
-  <el-row :gutter="20">
-    <el-col :span="12">
-      <el-button type="primary" @click.native="$router.push('/login')">
-        登录
-      </el-button>
-    </el-col>
-    <el-col :span="12">
-      <el-button type="success" @click.native="$router.push('/signup')">
-        注册
-      </el-button>
-    </el-col>
-  </el-row>
+<div class="comp">
+  <img class="logo" src="/static/logo.png">
+  <div class="action">
+    <button @click="go('/login')" class="login mdl-button mdl-js-button mdl-button--raised">
+      登录
+    </button>
+    <button @click="go('/signup')" class="signup mdl-button mdl-js-button mdl-button--raised">
+      注册
+    </button>
+  </div>
 </div>
 </template>
 
@@ -22,23 +18,43 @@ export default {
     return {
       msg: 'Hello Vue!'
     }
+  },
+  methods: {
+    go(url) {
+      this.$router.push(url)
+    }
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-a {
-  color: #fff;
-  text-decoration: none;
+<style lang="scss" scoped>
+@import "../assets/variables";
+.comp {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .logo {
-  max-width: 320px;
-  max-height: 320px;
+    width: 320px;
+    height: 320px;
 }
 
-.el-button {
-  width: 100%;
+.action {
+    display: flex;
+    width: 320px;
+}
+
+.action button {
+    flex: 1;
+    margin: 0 10px;
+    color: #fff;
+}
+
+.login {
+    background-color: $color-teal;
+}
+.signup {
+    background-color: $color-green;
 }
 </style>

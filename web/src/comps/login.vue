@@ -1,30 +1,29 @@
 <template lang="html">
-  <div class="login">
-    <h2 class="header">登录PurePage</h2>
-    <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-      <el-form-item label="帐号" prop="username">
-        <el-input v-model="form.username" placeholder="用户名或邮箱"></el-input>
-      </el-form-item>
-      <el-form-item label="密码" prop="password">
-        <el-input v-model="form.password" placeholder="密码"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" class="submit" @click.native="login">登录</el-button>
-      </el-form-item>
-    </el-form>
+  <div class="comp mdl-card mdl-shadow--2dp">
+    <div class="mdl-card__title">
+      <h3 class="mdl-card__title-text">登录PurePage</h3>
+    </div>
+    <div class="mdl-card__actions mdl-card--border">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+          <input v-model="form.username" class="mdl-textfield__input" type="text" id="username">
+          <label class="mdl-textfield__label" for="username">用户名或邮箱</label>
+        </div>
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+          <input v-model="form.password" class="mdl-textfield__input" type="text" id="password">
+          <label class="mdl-textfield__label" for="password">密码</label>
+        </div>
+        <button @click="login" class="submit mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
+          登录
+        </button>
+        <div class="message"> {{message}} </div>
+    </div>
   </div>
 </template>
 
-<style lang="css">
-.header {
-  text-align: center;
-}
-.login{
-  margin-top: 160px;
-  min-width: 320px;
-}
-.submit{
-  width: 100%;
+<style lang="scss" scoped>
+.comp{
+  width: 320px;
+  margin: 0 auto;
 }
 </style>
 
@@ -38,26 +37,16 @@ export default {
         password: '',
         email: ''
       },
-      rules: {
-        username: [{
-          required: true,
-          message: '请输入用户名',
-          trigger: 'blur'
-        }],
-        password: [{
-          required: true,
-          message: '请输入密码',
-          trigger: 'blur'
-        }],
-      }
+      message: ''
     }
   },
   methods: {
     login() {
       res.user.post_login(this.form).then(data => {
-        this.$alert(`Welcome ${data.username}!`);
+        this.message = data.message
+        this.$router.push('/')
       }).catch(error => {
-        this.$alert(error.message);
+        this.message = error.message
       })
     }
   }
