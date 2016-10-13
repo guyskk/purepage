@@ -21,7 +21,7 @@
 }
 .login{
   margin-top: 160px;
-  width: 400px;
+  min-width: 320px;
 }
 .submit{
   width: 100%;

@@ -33,6 +33,11 @@ a {
   text-decoration: none;
 }
 
+.logo {
+  max-width: 320px;
+  max-height: 320px;
+}
+
 .el-button {
   width: 100%;
 }
