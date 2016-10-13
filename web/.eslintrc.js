@@ -16,7 +16,9 @@ module.exports = {
   },
   "globals": {
     "res": true,
-    "componentHandler": true
+    "componentHandler": true,
+    "marked": true,
+    "hljs": true
   },
   // add your custom rules here
   'rules': {
