@@ -9,6 +9,5 @@ export default {}
 </script>
 
 <style>
-@import "./assets/normalize.css";
-@import "./assets/layout.css";
+
 </style>

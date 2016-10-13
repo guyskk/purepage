@@ -11,7 +11,7 @@
     "resjs": "resjs http://127.0.0.1:5000 -p /api -d static/res.js -m"
   },
   "dependencies": {
-    "element-ui": "^1.0.0-rc.6",
+    "material-design-lite": "^1.2.1",
     "vue": "^2.0.1"
   },
   "devDependencies": {
@@ -19,7 +19,6 @@
     "babel-core": "^6.0.0",
     "babel-eslint": "^7.0.0",
     "babel-loader": "^6.0.0",
-    "babel-plugin-component": "^0.4.2",
     "babel-plugin-transform-runtime": "^6.0.0",
     "babel-preset-es2015": "^6.0.0",
     "babel-preset-stage-2": "^6.0.0",

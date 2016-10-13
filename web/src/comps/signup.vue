@@ -1,33 +1,43 @@
 <template lang="html">
-  <div class="signup">
-    <h2 class="header">注册PurePage</h2>
-    <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-      <el-form-item label="用户名" prop="username">
-        <el-input v-model="form.username" placeholder="用户名"></el-input>
-      </el-form-item>
-      <el-form-item label="密码" prop="password">
-        <el-input v-model="form.password" placeholder="密码"></el-input>
-      </el-form-item>
-      <el-form-item label="邮箱" prop="email">
-        <el-input v-model="form.email" placeholder="邮箱可选"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" class="submit" @click.native="signup">注册</el-button>
-      </el-form-item>
-    </el-form>
+<div class="comp mdl-card mdl-shadow--2dp">
+  <div class="mdl-card__title">
+    <h3 class="mdl-card__title-text">注册PurePage</h3>
   </div>
+  <div class="mdl-card__actions mdl-card--border">
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+        <input v-model="form.username" class="mdl-textfield__input" type="text" id="username">
+        <label class="mdl-textfield__label" for="username">用户名</label>
+      </div>
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+        <input v-model="form.password" class="mdl-textfield__input" type="text" id="password">
+        <label class="mdl-textfield__label" for="password">密码</label>
+      </div>
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+        <input v-model="form.email" class="mdl-textfield__input" type="text" id="email">
+        <label class="mdl-textfield__label" for="email">邮箱可选</label>
+      </div>
+      <button @click="signup" class="submit mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
+        注册
+      </button>
+      <div class="message"> {{message}} </div>
+  </div>
+</div>
+
 </template>
 
-<style lang="css">
-.header {
+<style lang="css" scoped>
+.comp{
+  width: 320px;
+  margin: 0 auto;
+}
+.submit {
+  width: 300px;
+}
+.message {
+  height: 2em;
+  line-height: 2em;
   text-align: center;
-}
-.signup{
-  margin-top: 160px;
-  min-width: 320px;
-}
-.submit{
-  width: 100%;
+  color: rgb(255, 152, 0);
 }
 </style>
 
@@ -41,32 +51,15 @@ export default {
         password: '',
         email: ''
       },
-      rules: {
-        username: [{
-          required: true,
-          message: '请输入用户名',
-          trigger: 'blur'
-        }],
-        password: [{
-          required: true,
-          message: '请输入密码',
-          trigger: 'blur'
-        }],
-        email: [{
-          required: false,
-          message: '邮箱',
-          trigger: 'blur'
-        }]
-      }
-
+      message: '',
     }
   },
   methods: {
     signup() {
       res.user.post_signup(this.form).then(data => {
-        this.$alert(data.message);
+        this.message = data.message
       }).catch(error => {
-        this.$alert(error.message);
+        this.message = error.message
       })
     }
   }

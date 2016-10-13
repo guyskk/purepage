@@ -7,9 +7,6 @@ Vue.use(VueRouter)
 import Vuex from 'vuex'
 Vue.use(Vuex)
 
-import Element from 'element-ui'
-Vue.use(Element)
-
 import Signup from './comps/signup'
 import Index from './comps/index'
 import Login from './comps/login'
