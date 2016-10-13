@@ -5,5 +5,5 @@
   "asi": true,
   "browser": true,
   "devel": true,
-  "predef": ["res"]
+  "predef": ["res", "componentHandler"]
 }

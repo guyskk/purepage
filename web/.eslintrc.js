@@ -16,6 +16,7 @@ module.exports = {
   },
   "globals": {
     "res": true,
+    "componentHandler": true
   },
   // add your custom rules here
   'rules': {

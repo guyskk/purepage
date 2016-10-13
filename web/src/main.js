@@ -20,9 +20,15 @@ const routes = [
 
 const router = new VueRouter({
   mode: 'history',
-  routes: routes
+  routes: routes,
 })
 
+// 修复Material Design Lite动态效果
+router.afterEach(() => {
+  router.app.$nextTick(() => {
+    componentHandler.upgradeDom()
+  })
+})
 
 
 /* eslint-disable no-new */
