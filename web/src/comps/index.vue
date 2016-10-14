@@ -38,7 +38,7 @@ export default {
   methods: {
     read(article) {
       this.$store.commit('set_current_article', article)
-      this.$router.push(`/${article.user.username}/${article.catalog}/${article.name}`)
+      this.go(`/${article.user.username}/${article.catalog}/${article.name}`)
     }
   },
   created(){

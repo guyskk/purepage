@@ -74,11 +74,9 @@ const store = new Vuex.Store({
   }
 })
 
-import directives from './directives.js'
+import Custom from './custom.js'
+Vue.use(Custom, { router: router })
 
-for (let name in directives) {
-  Vue.directive(name, directives[name])
-}
 
 /* eslint-disable no-new */
 new Vue({
