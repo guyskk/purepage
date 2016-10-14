@@ -1,6 +1,7 @@
 """
-from .dbinit import setups
 # PurePage
+
+![PurePage](/static/logo.png)
 
 注册
 

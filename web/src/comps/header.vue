@@ -4,6 +4,7 @@
       <img @click="go('/')" src="/static/logo.png">
     </div>
     <div class="action">
+      <a href="/api">API文档</a>
       <button @click="go('/view/article')" class="create mdl-button mdl-js-button mdl-button--raised">
         创作
       </button>
@@ -47,6 +48,7 @@ export default {
 }
 .action {
     display: flex;
+    align-items: center;
 }
 .action button {
     flex: 1;
