@@ -158,7 +158,7 @@ class Article:
         $output:
             - @article
         """
-        q = r.table("article").filter({"author": author})
+        q = r.table("article").get_all(author, index="author")
         if catalog:
             q = q.filter({"catalog": catalog})
         if tag:

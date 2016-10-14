@@ -41,7 +41,7 @@ class User:
         """
         if db.run(r.table("user").get(id)):
             abort(400, "IDConflict", "%s already exists" % id)
-        if email and db.first(r.table("user").filter({"email": email})):
+        if email and db.first(r.table("user").get_all(email, index="email")):
             abort(400, "EmailConflict", "%s already exists" % email)
         db.run(r.table("user").insert({
             "id": id,
@@ -74,7 +74,7 @@ class User:
         """
         user = db.run(r.table("user").get(account))
         if not user:
-            user = db.first(r.table("user").filter({"email": account}))
+            user = db.first(r.table("user").get_all(account, index="email"))
         if not user:
             abort(403, "UserNotFound", "帐号不存在")
         self.check_password(user, password)
@@ -177,7 +177,7 @@ class User:
         $error:
             400.UserNotFound: 用户不存在
         """
-        user = db.first(r.table("user").filter(r.row["email"] == email))
+        user = db.first(r.table("user").get_all(email, index="email"))
         if not user:
             abort(400, "UserNotFound", "用户不存在")
         token = auth.encode_token({

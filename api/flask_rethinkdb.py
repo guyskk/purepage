@@ -4,12 +4,18 @@ from flask import _app_ctx_stack as stack
 
 class Rethinkdb:
 
-    def __init__(self, app, tables=None):
+    def __init__(self, app, setups=None):
+        """
+        A flask wrapper of rethinkdb
+
+        :param app: Flask
+        :param setups: ReQLs for setup database
+        """
         self.app = app
-        if tables:
-            self.tables = tables
+        if setups:
+            self.setups = setups
         else:
-            self.tables = []
+            self.setups = []
         app.config.setdefault('RETHINKDB_HOST', 'localhost')
         app.config.setdefault('RETHINKDB_PORT', '28015')
         app.config.setdefault('RETHINKDB_AUTH', '')
@@ -37,9 +43,9 @@ class Rethinkdb:
                 r.db_create(db).run(conn)
             except r.errors.RqlRuntimeError:
                 pass
-            for table in self.tables:
+            for op in self.setups:
                 try:
-                    r.table_create(table).run(conn)
+                    op.run(conn)
                 except r.errors.ReqlOpFailedError:
                     pass
 

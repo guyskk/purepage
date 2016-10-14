@@ -1,4 +1,5 @@
 """
+from .dbinit import setups
 # PurePage
 
 注册
@@ -22,7 +23,7 @@ from flask_limiter.util import get_remote_address
 from .ext import (
     r, db, init_db, init_github, init_mail, init_limiter, init_auth
 )
-from . import views
+from . import dbinit, views
 
 
 ALL_TABLE = ["user", "article"]
@@ -49,7 +50,7 @@ def create_app(config=None):
     init_github(app)
     init_mail(app)
     init_limiter(key_func=get_remote_address)
-    init_db(app, tables=ALL_TABLE)
+    init_db(app, setups=dbinit.setups)
     config_api(app)
     return app
 

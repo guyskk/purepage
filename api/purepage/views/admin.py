@@ -56,7 +56,7 @@ class Admin:
         """
         user = db.run(r.table("user").get(account))
         if not user:
-            user = db.first(r.table("user").filter({"email": account}))
+            user = db.first(r.table("user").get_all(account, index="email"))
         if not user:
             abort(404, "NotFound", "用户不存在")
         return user
