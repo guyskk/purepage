@@ -10,11 +10,9 @@ class Article:
     $shared:
         article:
             id?str: ID
+            author?str: 作者
             catalog?str: 目录
             name?str: 名称
-            user:
-                id?str: 用户ID
-                username?str: 用户名
             title?str: 标题
             summary?str: 摘要
             tags:
@@ -27,22 +25,25 @@ class Article:
 
         $input:
             catalog?str: 目录
-            name?str: 名称
             title?str: 标题
-            summary?str: 摘要
+            name?str&optional: 名称
+            summary?str&optional: 摘要
             tags:
               - str
             content?str: 内容
         $output:
             id?str: ID
         """
+        if not name:
+            name = title[:32]
+        if not summary:
+            summary = content[:160]
+        id = "/".join([g.user["id"], catalog, name])
         resp = db.run(r.table("article").insert({
+            "id": id,
+            "author": g.user["id"],
             "catalog": catalog,
             "name": name,
-            "user": {
-                "id": g.user["id"],
-                "username": g.user["username"],
-            },
             "title": title,
             "summary": summary,
             "tags": tags,
@@ -50,7 +51,9 @@ class Article:
             "date_create": arrow.utcnow().datetime,
             "date_modify": arrow.utcnow().datetime
         }))
-        return {"id": resp["generated_keys"][0]}
+        if resp["errors"]:
+            abort(400, "Conflict", "创建失败: %s" % resp["first_error"])
+        return {"id": id}
 
     def put(self, id, **kwargs):
         """
@@ -58,8 +61,6 @@ class Article:
 
         $input:
             id?str: ID
-            catalog?str: 目录
-            name?str: 名称
             title?str: 标题
             summary?str: 摘要
             tags:
@@ -74,7 +75,7 @@ class Article:
         art = db.run(q)
         if not art:
             abort(400, "ArticleNotFound", "文章不存在")
-        if art["user"]["id"] != g.user["id"]:
+        if art["author"] != g.user["id"]:
             abort(403, "PermissionDeny", "只能修改自己的文章")
         db.run(q.update({
             **kwargs,
@@ -88,8 +89,6 @@ class Article:
 
         $input:
             id?str: ID
-            catalog?str&optional: 目录
-            name?str&optional: 名称
             title?str&optional: 标题
             summary?str&optional: 摘要
             tags:
@@ -106,7 +105,7 @@ class Article:
         art = db.run(q)
         if not art:
             abort(400, "ArticleNotFound", "文章不存在")
-        if art["user"]["id"] != g.user["id"]:
+        if art["author"] != g.user["id"]:
             abort(403, "PermissionDeny", "只能修改自己的文章")
         db.run(q.update({
             **kwargs,
@@ -121,10 +120,15 @@ class Article:
         $input:
             id?str: ID
         $output:
-            $self@article&optional: 文章信息
+            $self@article: 文章信息
             content?str: 内容
+        $error:
+            404.NotFound: 文章不存在
         """
-        return db.run(r.table("article").get(id))
+        article = db.run(r.table("article").get(id))
+        if not article:
+            abort(404, "NotFound", "文章不存在")
+        return article
 
     def get_top(self, page, per_page, tag):
         """
@@ -142,21 +146,19 @@ class Article:
         q = q.order_by(r.desc("date_modify"))
         return db.pagging(q, page, per_page)
 
-    def get_list(self, page, per_page, username, catalog, tag):
+    def get_list(self, page, per_page, author, catalog, tag):
         """
         获取作者文章列表，结果按时间倒序排序
 
         $input:
             $self@pagging: 分页
-            username?str: 用户名
+            author?str: 作者
             catalog?str&optional: 目录
             tag?str&optional: 标签
         $output:
             - @article
         """
-        q = r.table("article").filter(
-            lambda x: x["user"]["username"] == username
-        )
+        q = r.table("article").filter({"author": author})
         if catalog:
             q = q.filter({"catalog": catalog})
         if tag:

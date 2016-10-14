@@ -1,18 +1,21 @@
 
 def test_signup(user, assert_error):
     user("test")
-    with assert_error(400, "Conflict"):
+    user("jack", email="jack@purepage.org")
+    with assert_error(400, "IDConflict"):
         user("test")
+    with assert_error(400, "EmailConflict"):
+        user("jack1234", email="jack@purepage.org")
 
 
 def test_login(res, user, assert_error):
     with assert_error(403, "UserNotFound"):
-        res.user.post_login({"username": "jack", "password": "123456"})
+        res.user.post_login({"account": "jack", "password": "123456"})
     user("jack", email="jack@purepage.org")
     with assert_error(403, "WrongPassword"):
-        res.user.post_login({"username": "jack", "password": "xxxxxx"})
+        res.user.post_login({"account": "jack", "password": "xxxxxx"})
     res.user.post_login({
-        "username": "jack@purepage.org",
+        "account": "jack@purepage.org",
         "password": "123456"
     })
 
@@ -20,7 +23,7 @@ def test_login(res, user, assert_error):
 def test_get_me(res, user, assert_error):
     jack = user("jack")
     me = jack.user.get_me()
-    assert me["username"] == "jack"
+    assert me["id"] == "jack"
     with assert_error(403):
         res.user.get_me()
 
@@ -29,7 +32,7 @@ def test_get(user):
     jack = user("jack")
     jack_id = jack.user.get_me()["id"]
     tom = user("tom")
-    assert tom.user.get({"id": jack_id})["username"] == "jack"
+    assert tom.user.get({"id": jack_id})["id"] == "jack"
 
 
 def test_put(user):
@@ -50,7 +53,7 @@ def test_put_email(res, user, assert_error):
     jack = user("jack")
     with assert_error(403):
         res.user.post_login({
-            "username": "jack@purepage.org",
+            "account": "jack@purepage.org",
             "password": "123456"
         })
     jack.user.put_email({
@@ -58,7 +61,7 @@ def test_put_email(res, user, assert_error):
         "password": "123456"
     })
     res.user.post_login({
-        "username": "jack@purepage.org",
+        "account": "jack@purepage.org",
         "password": "123456"
     })
 
@@ -67,7 +70,7 @@ def test_put_password(res, user, assert_error):
     jack = user("jack")
     with assert_error(403):
         res.user.post_login({
-            "username": "jack",
+            "account": "jack",
             "password": "jack1234"
         })
     jack.user.put_password({
@@ -75,12 +78,12 @@ def test_put_password(res, user, assert_error):
         "password": "123456"
     })
     res.user.post_login({
-        "username": "jack",
+        "account": "jack",
         "password": "jack1234"
     })
     with assert_error(403):
         res.user.post_login({
-            "username": "jack",
+            "account": "jack",
             "password": "123456"
         })
 
@@ -98,6 +101,9 @@ def test_forgot_reset(res, user, assert_error):
     token = re.findall(r'http://purepage.org/reset/(.*)"', outbox[0].html)
     assert token
     token = token[0]
+    # TODO: 基于时间戳的验证机制待改进
+    import time
+    time.sleep(1)
     with assert_error(403, "InvalidToken"):
         res.user.post_reset({
             "token": "xxxxxx",
@@ -114,11 +120,11 @@ def test_forgot_reset(res, user, assert_error):
             "password": "1234"
         })
     res.user.post_login({
-        "username": "jack",
+        "account": "jack",
         "password": "jack1234"
     })
     with assert_error(403):
         res.user.post_login({
-            "username": "jack",
+            "account": "jack",
             "password": "123456"
         })

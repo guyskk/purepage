@@ -17,8 +17,7 @@ class User:
 
     $shared:
         user:
-            id?str: ID
-            username?str: 用户名
+            id?str: 用户ID
             role?str: 角色
             github?url&optional: Github地址
             avatar?url&default="http://purepage.org/static/avatar-default.png": 头像
@@ -27,30 +26,25 @@ class User:
             lastlogin_date?datetime&optional: 最近登录时间
     """  # noqa
 
-    def post_signup(self, username, email, password):
+    def post_signup(self, id, email, password):
         """
         注册
 
         $input:
-            username?str: 用户名
+            id?str: 用户ID
             email?email&optional: 邮箱
             password?str: 密码
         $output: @message
         $error:
-            400.Conflict: 用户名或邮箱已存在
+            400.IDConflict: 用户ID已存在
+            400.EmailConflict: 邮箱已存在
         """
-        q = r.row["username"] == username
-        if email:
-            q = q or r.row["email"] == email
-        user = db.first(r.table("user").filter(q))
-        if user:
-            if user["username"] == username:
-                message = "%s already exists" % username
-            else:
-                message = "%s already exists" % email
-            abort(400, "Conflict", message)
+        if db.run(r.table("user").get(id)):
+            abort(400, "IDConflict", "%s already exists" % id)
+        if email and db.first(r.table("user").filter({"email": email})):
+            abort(400, "EmailConflict", "%s already exists" % email)
         db.run(r.table("user").insert({
-            "username": username,
+            "id": id,
             "email": email,
             "pwdhash": gen_pwdhash(password),
             "role": "normal",
@@ -66,20 +60,23 @@ class User:
         if not check_password_hash(user["pwdhash"], password):
             abort(403, "WrongPassword", "密码错误")
 
-    def post_login(self, username, password):
+    def post_login(self, account, password):
         """
         登录
 
         $input:
-            username?str: 用户名或邮箱
+            account?str: 用户ID或邮箱
             password?str: 密码
         $output: @user
         $error:
             403.UserNotFound: 帐号不存在
             403.WrongPassword: 密码错误
         """
-        q = r.or_(r.row["username"] == username, r.row["email"] == username)
-        user = db.first(r.table("user").filter(q))
+        user = db.run(r.table("user").get(account))
+        if not user:
+            user = db.first(r.table("user").filter({"email": account}))
+        if not user:
+            abort(403, "UserNotFound", "帐号不存在")
         self.check_password(user, password)
         db.run(
             r.table("user")
@@ -108,9 +105,12 @@ class User:
 
         $input:
             id?str: ID
-        $output: @user&optional
+        $output: @user
         """
-        return db.run(r.table("user").get(id))
+        user = db.run(r.table("user").get(id))
+        if not user:
+            abort(404, "NotFound", "用户不存在")
+        return user
 
     def put(self, github, avatar):
         """
@@ -189,7 +189,7 @@ class User:
         token = token.decode("ascii")
         msg = Message("PurePage重置密码", recipients=[email])
         msg.html = render_template(
-            "user-reset.html", token=token, username=user["username"])
+            "user-reset.html", token=token, userid=user["id"])
         mail.send(msg)
         return {"message": "重置链接已发送至邮箱，请查收"}
 
@@ -205,7 +205,7 @@ class User:
             403.InvalidToken: Token无效
         """
         token = auth.decode_token(token)
-        if not token or token.get("type") != "reset":
+        if token is None or token.get("type") != "reset":
             abort(403, "InvalidToken", "Token无效")
         user = db.run(r.table("user").get(token["id"]))
         if (

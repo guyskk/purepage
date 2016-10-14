@@ -12,7 +12,7 @@ from purepage.views.user import gen_pwdhash
 
 
 def create_root():
-    if db.first(r.table("user").filter({"username": "root"})):
+    if db.run(r.table("user").get("root")):
         raise ValueError("root already exists")
     else:
         if "ROOT_PASSWORD" not in current_app.config:
@@ -20,7 +20,7 @@ def create_root():
         else:
             pwdhash = gen_pwdhash(current_app.config["ROOT_PASSWORD"])
             db.run(r.table("user").insert({
-                "username": "root",
+                "id": "root",
                 "pwdhash": pwdhash,
                 "role": "root",
                 "email": current_app.config.get("ROOT_EMAIL")

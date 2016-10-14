@@ -9,8 +9,7 @@ class Admin:
 
     $shared:
         user:
-            id?str: ID
-            username?str: 用户名
+            id?str: 用户ID
             role?str: 角色
             email?email&optional: 邮箱
             github?url&optional: Github地址
@@ -23,13 +22,12 @@ class Admin:
             lastlogin_ua?str&optional: 最近登录设备UserAgent
     """  # noqa
 
-    def put(self, id, username, role, email):
+    def put(self, id, role, email):
         """
         修改帐号信息
 
         $input:
-            id?str: ID
-            username?str: 用户名
+            id?str: 用户ID
             role?str: 角色
             email?email: 邮箱
         $output: @message
@@ -38,7 +36,6 @@ class Admin:
             abort(403, "PermissionDeny", "不能设为root帐号")
         db.run(
             r.table("user").get(id).update({
-                "username": username,
                 "role": role,
                 "email": email,
                 "date_modify": arrow.utcnow().datetime,
@@ -47,16 +44,22 @@ class Admin:
         )
         return {"message": "OK"}
 
-    def get(self, username):
+    def get(self, account):
         """
         查找帐号
 
         $input:
-            username?str: 用户名或邮箱
-        $output: @user&optional
+            account?str: 用户名或邮箱
+        $output: @user
+        $error:
+            404.NotFound: 用户不存在
         """
-        q = r.or_(r.row["username"] == username, r.row["email"] == username)
-        return db.first(r.table("user").filter(q))
+        user = db.run(r.table("user").get(account))
+        if not user:
+            user = db.first(r.table("user").filter({"email": account}))
+        if not user:
+            abort(404, "NotFound", "用户不存在")
+        return user
 
     def get_list(self, page, per_page):
         """

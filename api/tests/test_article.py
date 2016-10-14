@@ -31,7 +31,7 @@ def test_get(article, user, res):
     assert resp["name"] == "hello-root"
     assert resp["tags"] == []
     assert resp["content"] == "test"
-    assert resp["user"]["username"] == "root"
+    assert resp["author"] == "root"
 
 
 def test_put(article, user, root, assert_error):
@@ -79,8 +79,8 @@ def test_get_list(article, user, res):
     def query(**kwargs):
         return len(res.article.get_list(kwargs))
 
-    assert query(username="jack") == 3
-    assert query(username="jack", tag="jack") == 1
-    assert query(username="jack", catalog="jack") == 1
-    assert query(username="tom") == 1
-    assert query(username="tom", catalog="unknown") == 0
+    assert query(author="jack") == 3
+    assert query(author="jack", tag="jack") == 1
+    assert query(author="jack", catalog="jack") == 1
+    assert query(author="tom") == 1
+    assert query(author="tom", catalog="unknown") == 0

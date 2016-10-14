@@ -34,21 +34,21 @@ def root(app):
     with app.app_context():
         create_root()
     res = Res(test_client=app.test_client)
-    res.user.post_login({"username": "root", "password": "123456"})
+    res.user.post_login({"account": "root", "password": "123456"})
     return res
 
 
 @pytest.fixture
 def user(app):
-    def _user(username, password="123456", **kwargs):
+    def _user(id, password="123456", **kwargs):
         res = Res(test_client=app.test_client)
         res.user.post_signup({
-            "username": username,
+            "id": id,
             "password": password,
             **kwargs
         })
         res.user.post_login({
-            "username": username,
+            "account": id,
             "password": password,
         })
         return res

@@ -5,13 +5,13 @@ def test_client(client):
 
 def test_root(root):
     me = root.user.get_me()
-    assert me["username"] == "root"
+    assert me["id"] == "root"
     assert me["role"] == "root"
 
 
 def test_user(user):
     res = user("guyskk", email="guyskk@purepage.org")
     me = res.user.get_me()
-    assert me["username"] == "guyskk"
+    assert me["id"] == "guyskk"
     assert me["role"] == "normal"
     assert "email" not in me
