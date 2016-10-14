@@ -36,11 +36,13 @@ if (typeof webpackHotUpdate === 'undefined') {
 const router = new VueRouter(router_config)
 
 // 检查登录状态
-router.afterEach(() => {
+router.afterEach(route => {
   res.user.get_me().then(data => {
     console.log(data.username)
   }).catch(() => {
-    router.replace('/login')
+    if (route.path !== '/') {
+      router.replace('/login')
+    }
   })
 })
 

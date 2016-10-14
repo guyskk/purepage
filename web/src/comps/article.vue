@@ -1,15 +1,18 @@
-<template>
-<div class="comp">
-  <h3>{{article.title}}</h3>
-  {{params.username}}/{{params.catalog}}/{{params.article}}
-  <div v-marked="article.content"></div>
+<template lang="html">
+<div class="container">
+  <p-header></p-header>
   <div class="message">
     {{message}}
+  </div>
+  <div class="article">
+    <h3>{{ article.title }}</h3>
+    <div v-marked="article.content"></div>
   </div>
 </div>
 </template>
 <script>
-console.log('x')
+import Header from './header'
+
 export default {
   data() {
     return {
@@ -18,44 +21,31 @@ export default {
       params:{}
     }
   },
+  components:{
+    'p-header': Header
+  },
   created(){
-    console.log('x')
-    this.params = this.$route.params
-    if(this.$store.state.current_article){
-      this.article = this.$store.state.current_article
-    }else{
-      let params = [this.params.author,this.params.catalog,this.params.name]
-      console.log(params)
-      this.article = {id:params.join('/')}
-    }
-    res.article.get({id:this.article.id}).then(data=>{
+    let params = [
+      this.$route.params.author,
+      this.$route.params.catalog,
+      this.$route.params.name
+    ]
+    let aid = params.join('/')
+    res.article.get({id:aid}).then(data=>{
       this.article = data
     }).catch(error=>{
       this.message = error.message
     })
   },
   methods: {
-
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@import "../assets/variables";
-.comp {
-    display: flex;
-    flex-direction: column;
-    align-items: left;
-    padding: 2em;
+@import "../assets/style";
+.article {
+  width: 100%;
+  margin: 0 auto;
 }
-
-.content {
-    width: 100%;
-    min-width: 300px;
-}
-
-.create {
-    color: #fff;
-}
-
 </style>

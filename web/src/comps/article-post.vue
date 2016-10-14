@@ -1,5 +1,6 @@
 <template>
-<div class="comp">
+<div class="container">
+  <p-header></p-header>
   <h3>创建文章</h3>
   <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
     <input v-model="article.name" class="mdl-textfield__input" type="text" id="name">
@@ -31,6 +32,7 @@
 </template>
 
 <script>
+import Header from './header'
 
 export default {
   data() {
@@ -40,6 +42,9 @@ export default {
         tags:[]
       }
     }
+  },
+  components:{
+    'p-header':Header
   },
   methods: {
     create() {
@@ -55,16 +60,9 @@ export default {
 
 <style lang="scss" scoped>
 @import "../assets/variables";
-.comp {
-    display: flex;
-    flex-direction: column;
-    align-items: left;
-    padding: 2em;
-}
 
 .content {
   width: 100%;
-  min-width: 300px;
 }
 
 .create {

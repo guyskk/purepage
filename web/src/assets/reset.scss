@@ -1,0 +1,21 @@
+// Reset the box-sizing
+html {
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+body{
+  display: flex;
+  font-size: 15px;
+}
+
+pre {
+  background: #f5f5f5;
+  padding: 8px;
+  overflow: auto;
+}
