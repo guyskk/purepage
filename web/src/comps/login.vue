@@ -5,11 +5,11 @@
     </div>
     <div class="mdl-card__actions mdl-card--border">
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-          <input v-model="form.username" class="mdl-textfield__input" type="text" id="username">
-          <label class="mdl-textfield__label" for="username">用户名或邮箱</label>
+          <input v-model="form.account" class="mdl-textfield__input" type="text" id="account">
+          <label class="mdl-textfield__label" for="account">用户名或邮箱</label>
         </div>
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-          <input v-model="form.password" class="mdl-textfield__input" type="text" id="password">
+          <input v-model="form.password" class="mdl-textfield__input" type="password" id="password">
           <label class="mdl-textfield__label" for="password">密码</label>
         </div>
         <button @click="login" class="submit mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
@@ -32,11 +32,7 @@
 export default {
   data() {
     return {
-      form: {
-        username: '',
-        password: '',
-        email: ''
-      },
+      form: {},
       message: ''
     }
   },

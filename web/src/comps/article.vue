@@ -9,7 +9,7 @@
 </div>
 </template>
 <script>
-
+console.log('x')
 export default {
   data() {
     return {
@@ -19,9 +19,14 @@ export default {
     }
   },
   created(){
+    console.log('x')
     this.params = this.$route.params
     if(this.$store.state.current_article){
       this.article = this.$store.state.current_article
+    }else{
+      let params = [this.params.author,this.params.catalog,this.params.name]
+      console.log(params)
+      this.article = {id:params.join('/')}
     }
     res.article.get({id:this.article.id}).then(data=>{
       this.article = data

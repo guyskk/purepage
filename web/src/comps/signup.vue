@@ -5,8 +5,8 @@
   </div>
   <div class="mdl-card__actions mdl-card--border">
       <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-        <input v-model="form.username" class="mdl-textfield__input" type="text" id="username">
-        <label class="mdl-textfield__label" for="username">用户名</label>
+        <input v-model="form.id" class="mdl-textfield__input" type="text" id="id">
+        <label class="mdl-textfield__label" for="id">用户名</label>
       </div>
       <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
         <input v-model="form.password" class="mdl-textfield__input" type="text" id="password">
@@ -36,11 +36,7 @@
 export default {
   data() {
     return {
-      form: {
-        username: '',
-        password: '',
-        email: ''
-      },
+      form: {},
       message: '',
     }
   },

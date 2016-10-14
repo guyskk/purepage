@@ -22,16 +22,18 @@ const routes = [
   { path: '/signup', component: Signup },
   { path: '/login', component: Login },
   { path: '/view/article', component: ArticlePost },
-  { path: '/:username', component: User },
-  { path: '/:username/:catalog', component: Catalog },
-  { path: '/:username/:catalog/:article', component: Article },
+  { path: '/:author', component: User },
+  { path: '/:author/:catalog([^\/]+)', component: Catalog },
+  { path: '/:author/:catalog([^\/]+)/:name([^\/]+)', component: Article },
   { path: '*', redirect: '/' },
 ]
 
-const router = new VueRouter({
-  mode: 'history',
-  routes: routes,
-})
+// 开发环境下dev server无法正确处理中文URL
+let router_config = { routes: routes }
+if (typeof webpackHotUpdate === 'undefined') {
+  router_config.mode = 'history'
+}
+const router = new VueRouter(router_config)
 
 // 检查登录状态
 router.afterEach(() => {
