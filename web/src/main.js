@@ -81,6 +81,8 @@ const store = new Vuex.Store({
 import Custom from './custom.js'
 Vue.use(Custom, { router: router })
 
+import VueWaves from './vue-waves'
+Vue.use(VueWaves)
 
 /* eslint-disable no-new */
 new Vue({

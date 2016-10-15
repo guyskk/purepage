@@ -2,6 +2,7 @@
 <div class="container">
   <p-header></p-header>
   <main>
+    <button v-waves.button>Vue-Waves</button>
     <div v-for="article in articles" class="mdl-card mdl-shadow--2dp">
       <div class="mdl-card__title">
         <h3 class="mdl-card__title-text">{{ article.title }}</h3>
@@ -20,7 +21,7 @@
 </template>
 
 <style lang="scss" scoped>
-@import "../assets/style";
+@import "../assets/variables";
 .mdl-card {
   width: 100%;
   margin-top: 16px;
@@ -28,6 +29,10 @@
 .mdl-card > .mdl-card__title {
   color: $color-teal;
   background: #fff;
+}
+.purepage{
+  background: $color-teal;
+  color: #fff;
 }
 </style>
 <script>
