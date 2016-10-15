@@ -5,15 +5,9 @@
     </div>
     <div class="action">
       <a href="/api">API文档</a>
-      <button @click="go('/view/article')" class="create mdl-button mdl-js-button mdl-button--raised">
-        创作
-      </button>
-      <button @click="go('/login')" class="login mdl-button mdl-js-button mdl-button--raised">
-        登录
-      </button>
-      <button @click="go('/signup')" class="signup mdl-button mdl-js-button mdl-button--raised">
-        注册
-      </button>
+      <a @click="go('/view/article')">创作</a>
+      <a @click="go('/login')">登录</a>
+      <a @click="go('/signup')">注册</a>
     </div>
   </header>
 </template>
@@ -32,14 +26,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "../assets/style";
+@import "../assets/variables";
 .header {
-  width: 100%;
   display: flex;
+  flex-wrap: nowrap;
   justify-content: space-between;
   align-items: center;
-  background-color: #fff;
+  background-color: #ffffff;
   border-bottom: 1px solid #f1f1f1;
+  width: 100%;
+  height: 60px;
 }
 .logo img{
     width: 60px;
@@ -50,18 +46,8 @@ export default {
     display: flex;
     align-items: center;
 }
-.action button {
-    flex: 1;
+.action a {
     margin-left: 20px;
-    color: #fff;
-}
-.login {
-    background-color: $color-teal;
-}
-.signup {
-    background-color: $color-green;
-}
-.create {
-  background-color: $color-green;
+    cursor: pointer;
 }
 </style>

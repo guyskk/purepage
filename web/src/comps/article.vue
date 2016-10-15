@@ -1,18 +1,20 @@
 <template lang="html">
-<div class="container">
-  <p-header></p-header>
+<div>
   <div class="message">
     {{message}}
   </div>
-  <div class="article">
-    <h3>{{ article.title }}</h3>
-    <div v-marked="article.content"></div>
+  <div class="wrapper">
+    <div class="article">
+      <h3>{{ article.title }}</h3>
+      <div v-marked="article.content"></div>
+    </div>
+    <div class="catalog">
+
+    </div>
   </div>
 </div>
 </template>
 <script>
-import Header from './header'
-
 export default {
   data() {
     return {
@@ -20,9 +22,6 @@ export default {
       article:{},
       params:{}
     }
-  },
-  components:{
-    'p-header': Header
   },
   created(){
     let params = [
@@ -43,9 +42,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "../assets/style";
+@import "../assets/variables";
+.wrapper {
+  display: flex;
+}
 .article {
-  width: 100%;
-  margin: 0 auto;
+  flex: 1;
+}
+.catalog {
+  width: 220px;
+  min-height: 320px;
+  background: #f1f1f1;
+  margin-left: 32px;
+}
+
+@media (max-width:768px) {
+  display: none;
 }
 </style>

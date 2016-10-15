@@ -1,11 +1,17 @@
 <template>
-<div>
+<div class="container">
+  <p-header></p-header>
   <router-view></router-view>
 </div>
 </template>
 
 <script>
-export default {}
+import Header from './comps/header'
+export default {
+  components:{
+    'p-header': Header
+  }
+}
 </script>
 
 <style lang="scss">

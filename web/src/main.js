@@ -40,9 +40,10 @@ router.afterEach(route => {
   res.user.get_me().then(data => {
     console.log(data.username)
   }).catch(() => {
-    if (route.path !== '/') {
-      router.replace('/login')
-    }
+    // console.log(route.path)
+    // if (!(route.path in ['/', '/signup', '/login', '/article'])) {
+    //   router.replace('/login')
+    // }
   })
 })
 

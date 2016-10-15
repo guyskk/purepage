@@ -1,38 +1,39 @@
 <template>
-<div class="container">
-  <p-header></p-header>
-  <main>
-    <button v-waves.button>Vue-Waves</button>
-    <div v-for="article in articles" class="mdl-card mdl-shadow--2dp">
-      <div class="mdl-card__title">
-        <h3 class="mdl-card__title-text">{{ article.title }}</h3>
-      </div>
-      <div class="mdl-card__supporting-text">
-        {{ article.summary }}
-      </div>
-      <div class="mdl-card__actions mdl-card--border">
-        <a @click="read(article)" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-          继续阅读
-        </a>
-      </div>
+<div class="wrapper">
+  <div v-for="article in articles" class="card mdl-shadow--2dp">
+    <h3 class="card__title">{{ article.title }}</h3>
+    <p class="card__summary">{{ article.summary }}</p>
+    <div class="card__action">
+      <a @click="read(article)"> 继续阅读 </a>
     </div>
-  </main>
+  </div>
 </div>
 </template>
 
 <style lang="scss" scoped>
 @import "../assets/variables";
-.mdl-card {
+.wrapper {
+}
+.card {
   width: 100%;
   margin-top: 16px;
+  padding: 8px;
 }
-.mdl-card > .mdl-card__title {
+.card__summary {
+  min-height: 48px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+.card__title {
   color: $color-teal;
   background: #fff;
 }
-.purepage{
-  background: $color-teal;
-  color: #fff;
+.card__action {
+  a {
+    color: $color-teal;
+    cursor: pointer;
+    margin-left: 16px;
+  }
 }
 </style>
 <script>

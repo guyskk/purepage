@@ -1,9 +1,6 @@
-html {
-  height: 100%;
-}
-
-body {
-  display: flex;
-  justify-content: center;
-  height: 100%;
+.container {
+  width: 100%;
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 8px;
 }

@@ -1,6 +1,5 @@
 <template lang="html">
-  <div class="container">
-    <p-header></p-header>
+  <div class="wrapper">
     <div class="mdl-card mdl-shadow--2dp">
       <div class="mdl-card__title">
         <h3 class="mdl-card__title-text">注册PurePage</h3>
@@ -29,6 +28,7 @@
 
 <style lang="scss" scoped>
 .mdl-card {
+  margin: 0 auto;
   margin-top: 16px;
   width: 300px + 8px * 2;
 }
@@ -39,16 +39,12 @@
 
 
 <script>
-import Header from './header'
 export default {
   data() {
     return {
       form: {},
       message: '',
     }
-  },
-  components:{
-    'p-header':Header
   },
   methods: {
     signup() {
