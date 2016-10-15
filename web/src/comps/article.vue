@@ -5,11 +5,14 @@
   </div>
   <div class="wrapper">
     <div class="article">
-      <h3>{{ article.title }}</h3>
       <div v-marked="article.content"></div>
     </div>
     <div class="catalog">
-
+      <ul class="mdl-shadow--4dp">
+        <li v-for="item in catalog_articles">
+          <a @click="read(item)">{{ item.title }}</a>
+        </li>
+      </ul>
     </div>
   </div>
 </div>
@@ -20,23 +23,39 @@ export default {
     return {
       message:'',
       article:{},
-      params:{}
+      catalog_articles:[]
     }
   },
   created(){
-    let params = [
-      this.$route.params.author,
-      this.$route.params.catalog,
-      this.$route.params.name
-    ]
-    let aid = params.join('/')
-    res.article.get({id:aid}).then(data=>{
-      this.article = data
-    }).catch(error=>{
-      this.message = error.message
-    })
+    this.fetchData()
+  },
+  watch: {
+    // 如果路由有变化，会再次执行该方法
+    '$route': 'fetchData'
   },
   methods: {
+    fetchData () {
+      let {author, catalog, name} =   this.$route.params
+      let params = [ author, catalog, name ]
+      let aid = params.join('/')
+      res.article.get({id:aid}).then(data=>{
+        this.article = data
+        res.article.get_list({
+          author:author,
+          catalog: catalog
+        }).then(data=>{
+          this.catalog_articles = data
+        }).catch(error=>{
+          this.message = error.message
+        })
+      }).catch(error=>{
+        this.message = error.message
+      })
+    },
+    read(article) {
+      this.$store.commit('set_current_article', article)
+      this.go(`/${article.author}/${article.catalog}/${article.name}`)
+    }
   }
 }
 </script>
@@ -52,8 +71,16 @@ export default {
 .catalog {
   width: 220px;
   min-height: 320px;
-  background: #f1f1f1;
   margin-left: 32px;
+
+  a{
+    cursor: pointer;
+  }
+  ul {
+    padding-top: 16px;
+    padding-bottom: 16px;
+    min-height: 300px;
+  }
 }
 
 @media (max-width:768px) {
