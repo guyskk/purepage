@@ -27,3 +27,8 @@ PurePage使用docker-compose进行部署。
     # 开启ssh代理
     ssh -L 8080:localhost:8080 user@server
     # 本地访问localhost:8080
+
+### 技术栈
+
+前端: Vue.js + Material Design Lite  
+后端: Flask-Restaction + RethinkDB + Docker  
